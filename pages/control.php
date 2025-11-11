@@ -14,4 +14,4 @@ include "../includes/header.php";
   <button class="red" onclick="sendWS('red_off')">Red OFF</button>
 </div>
 
-<?php include "../includes/footer.php"; ?>
+<?php include BASE_PATH . "/includes/footer.php"; ?>

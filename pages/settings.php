@@ -1,16 +1,17 @@
 <?php 
 $page_title = "Settings";
 include "../includes/header.php"; 
+session_start();
 ?>
 
 <main>
-    <form action="../user/change-password.php">
-        <input type="text" name="username">
-        <input type="password" name="current_password"> 
-        <input type="password" name="new_password">
-        <input type="password" name="confirm_new_password">
-        <button type="">Change password</button>  
+    <form action="<?= BASE_URL ?>/user/change-password.php" class="validate-form">
+        <input type="text" name="username" value="<?= $_SESSION["username"] ?>" disabled>
+        <input type="password" name="current_password" placeholder="Current Password" required> 
+        <input type="password" name="new_password" placeholder="New Password" required>
+        <input type="password" name="confirm_new_password" placeholder="Confirm Password" required>
+        <button type="submit">Change password</button>  
     </form>
 </main>
 
-<?php include "../includes/footer.php"; ?>
+<?php include BASE_PATH . "/includes/footer.php"; ?>

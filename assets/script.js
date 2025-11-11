@@ -14,3 +14,68 @@ function sendWS(message){
     console.log('WebSocket not open yet');
   }
 }
+
+// const loginForm = document.getElementById('login-form');
+// const changePasswordForm = document.getElementById('change-password-form');
+
+// loginForm.addEventListener("submit", async (event) => {
+//   event.preventDefault();
+//   const data = Object.fromEntries(new FormData(event.target));
+
+//   const res = await fetch("./includes/login-process.php", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json"
+//     },
+//     body: JSON.stringify(data)
+//   });
+
+//   const result = await res.json();
+//   if(result.success) {
+//     window.location.href = "./pages/dashboard.php";
+//   }
+//   event.target.reset();
+// })
+// changePasswordForm.addEventListener("submit", async (event) => {
+//   event.preventDefault();
+
+//   const data = Object.fromEntries(new FormData(event.target));
+
+//   const res = await fetch("./user/change-password.php", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json"
+//     },
+//     body: JSON.stringify(data)
+//   });
+
+//   const result = await res.json();
+//   if(result.success) {
+//     console.log("Change successfully");
+//   }
+// })
+
+document.querySelectorAll(".validate-form").forEach(form => {
+  form.addEventListener("submit", async (e)=> {
+    e.preventDefault();
+    
+    const data = Object.fromEntries(new FormData(e.target));
+
+    const res = await fetch(form.action, {
+      method: form.method,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    if(result.success) {
+      console.log("Successfull");
+      console.log(result);
+      if(result.redirect) {
+        window.location.href = result.redirect;
+      }
+    }
+  })
+})
