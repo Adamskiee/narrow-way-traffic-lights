@@ -1,20 +1,16 @@
-const ESP32_IP = "10.42.0.76";
+// Connect to WebSocket (port 81 as in ESP32 sketch)
+let ws = new WebSocket('ws://10.42.0.76/ws');
 
-async function toggleLED(led, state) {
-    let url = `http://${ESP32_IP}`;
-    console.log("toogl");
-    if(led === "green") {
-        url += state ? "/led_green_on" : "/led_green_off";
-    }else if(led === "red") {
-        url += state ? "/led_red_on": "/led_red_off";
-    }
-    console.log(url);
-    await fetch(url)
-        .then(res => res.text())
-        .then(data => {
-            document.getElementById("result").innerText = data;
-        })
-        .catch(err => {
-            console.error(err);
-        });
+ws.onopen = () => console.log('WebSocket connected', ws);
+ws.onclose = () => console.log('WebSocket disconnected', ws);
+ws.onerror = (err) => console.error('WebSocket error', err);
+
+// Send LED commands
+function sendWS(message){
+  if(ws.readyState === WebSocket.OPEN){
+    ws.send(message);
+    console.log('Sent:', message);
+  } else {
+    console.log('WebSocket not open yet');
+  }
 }
