@@ -10,6 +10,8 @@ define("BASE_URL", "http://localhost/narrow-way-traffic-lights");
 
 
 require BASE_PATH ."/includes/vendor/autoload.php";
+require BASE_PATH ."/includes/auth.php";
+require BASE_PATH ."/includes/helpers.php";
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();

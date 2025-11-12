@@ -12,4 +12,4 @@ require_once __DIR__ . "/config.php";
 
 </head>
 <body>
-    <?php include BASE_PATH . "/includes/navbar.php" ?>
+    <?php include BASE_PATH . "/components/navbar.php" ?>
