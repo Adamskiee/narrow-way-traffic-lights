@@ -12,4 +12,4 @@ require_once __DIR__ . "/config.php";
 
 </head>
 <body>
-    <?php $page_title === "Login" ? "" : (include "../includes/navbar.php") ?>
+    <?php include BASE_PATH . "/includes/navbar.php" ?>
