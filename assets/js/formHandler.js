@@ -9,8 +9,7 @@ export async function handleFormSubmit(formId, onSuccess, onError, extendedLogic
     const formData = new FormData(form);
     const payload = Object.fromEntries(formData.entries());
     if(extendedLogic(payload) === false) return;
-    console.log("hello");
-    return;
+    
     try {
       const response = await fetch(form.action, {
         method: form.method,
@@ -22,7 +21,7 @@ export async function handleFormSubmit(formId, onSuccess, onError, extendedLogic
       if (data.success) onSuccess(data);
       else onError(data);
     } catch (err) {
-      onError("Request failed.");
+      onError(err);
       console.log(err);
     }
   });

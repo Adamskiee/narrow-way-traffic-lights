@@ -14,4 +14,6 @@ include "../includes/header.php";
   <button class="red" onclick="sendWS('red_off')">Red OFF</button>
 </div>
 
+<?php include BASE_PATH . "/components/form/setupIpForm.php"; ?>
+
 <?php include BASE_PATH . "/includes/footer.php"; ?>

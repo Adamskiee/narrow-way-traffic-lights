@@ -29,7 +29,7 @@ if($result && $result->num_rows > 0) {
         $_SESSION["username"] = $row["username"];
         $_SESSION["user_id"] = $row["id"];
 
-        echo json_encode(["success" => true, "redirect" => BASE_URL . "/pages/dashboard.php"]);
+        echo json_encode(["success" => true, "redirect" => BASE_URL . "/index.php"]);
 
     }else {
         echo json_encode(["success" => false, "message"=>"Invalid password"]);
