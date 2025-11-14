@@ -9,14 +9,16 @@ define("BASE_PATH", realpath(__DIR__ . '/..'));
 define("BASE_URL", "http://localhost/narrow-way-traffic-lights");
 
 
-require BASE_PATH ."/includes/vendor/autoload.php";
+// require BASE_PATH ."/includes/vendor/autoload.php";
 require BASE_PATH ."/includes/auth.php";
 require BASE_PATH ."/includes/helpers.php";
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+// $dotenv->load();
 
-$conn = new mysqli($_ENV["DATABASE_HOSTNAME"], $_ENV["DATABASE_USERNAME"], $_ENV["DATABASE_PASSWORD"], $_ENV["DATABASE_NAME"]);
+// $conn = new mysqli($_ENV["DATABASE_HOSTNAME"], $_ENV["DATABASE_USERNAME"], $_ENV["DATABASE_PASSWORD"], $_ENV["DATABASE_NAME"]);
+
+$conn = new mysqli("localhost", "root", "", "narrowway_traffic_db");
 
 if( $conn->connect_error ) {
     die("Failed". $conn->connect_error);
