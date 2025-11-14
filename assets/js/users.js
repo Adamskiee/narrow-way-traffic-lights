@@ -29,6 +29,20 @@ function openEditModal(id) {
     .then(res => res.json())
     .then(data => {
         const user = data.user;
+        const modalForm = document.querySelector(".modalForm");
+
+        modalForm.action = "../admin/edit-user.php";
+        modalForm.method = "post";
+        modalForm.id = "user-edit";
+        handleFormSubmit(
+            "user-edit", 
+            (data)=>{
+                document.getElementById("result").innerText=data.message
+                location.reload();
+            },
+            (error)=>document.getElementById("result").innerText=error.message
+        )
+
         openModal({
             title: "Edit User",
             body: `
@@ -38,10 +52,11 @@ function openEditModal(id) {
             <input type="email" name="email" placeholder="Email" value=${user["email"]}>
             <input type="text" name="phone" placeholder="Phone #" value=${user["phone_number"]}>
             <input type="text" name="username" placeholder="Username" required value=${user["username"]}>
-            <input type="password" name="password" placeholder="Password" id="password" required value=${user["password"]}>
             <button type="button" id="generate-btn">Generate</button>
+            <br>
+            <span id="result"></span>
             `,
-            footer: `Footer
+            footer: `<button type="submit">Edit</button>
             `
         });
 

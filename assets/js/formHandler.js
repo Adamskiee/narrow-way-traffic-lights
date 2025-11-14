@@ -1,5 +1,4 @@
 export async function handleFormSubmit(formId, onSuccess, onError, extendedLogic=()=>{}) {
-  console.log("asdfasd")
   const form = document.getElementById(formId);
   if (!form) return;
 
@@ -8,8 +7,7 @@ export async function handleFormSubmit(formId, onSuccess, onError, extendedLogic
 
     const formData = new FormData(form);
     const payload = Object.fromEntries(formData.entries());
-    console.log(payload);
-    return;
+
     if(extendedLogic(payload) === false) return;
     
     try {

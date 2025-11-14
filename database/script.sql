@@ -2,7 +2,7 @@ CREATE DATABASE narrowway_traffic_db;
 USE narrowway_traffic_db;
 
 CREATE TABLE users (
-  id AUTO_INCREMENT PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(255) NOT NULL,
   created_by int(11) NOT NULL,
   password VARCHAR(255) NOT NULL,
