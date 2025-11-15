@@ -14,6 +14,7 @@ try {
     $username = $input["username"];
     $password = $input["password"];
     $phone_number = $input["phone"];
+    $user_id = $input["user_id"] ?? $_SESSION["user_id"];
 
     $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
@@ -25,7 +26,7 @@ try {
     }else {
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
         $ins = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by) VALUES(?, ?, ?, ?, ?, ?, ?)");
-        $ins->bind_param("ssssssi", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $_SESSION["user_id"]);
+        $ins->bind_param("ssssssi", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $user_id);
         $ins->execute();
         echo json_encode(["success" => true, "message" => "User created successfully"]);
     }

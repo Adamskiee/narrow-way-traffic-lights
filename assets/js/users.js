@@ -5,7 +5,7 @@ function attachEvents() {
     document.querySelectorAll(".delete-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const id = btn.dataset.id;
-            deleteUser(id);
+            openDeleteModal(id);
         });
     });
 
@@ -24,6 +24,30 @@ function generatePassword(length = 16) {
   return Array.from(array, num => charset[num % charset.length]).join('');
 }
 
+function openDeleteModal(id) {
+    const modalForm = document.querySelector(".modalForm");
+
+    modalForm.action = "../admin/delete-user.php";
+    modalForm.method = "post";
+    modalForm.id = "user-delete";
+    handleFormSubmit(
+        "user-delete", 
+        (data)=>{
+            location.reload();
+        },
+        (error)=>document.getElementById("result").innerText=error.message
+    )
+
+    openModal({
+        title: "Delete User",
+        body: `
+        <input type="hidden" name="user-id" value="${id}">
+        <p>Are you sure to delete?</p>
+        `,
+        footer: `<button type="submit">Delete</button>
+        `
+    });
+}
 function openEditModal(id) {
     fetch(`../admin/get-user.php?id=${id}`)
     .then(res => res.json())

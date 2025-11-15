@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 define("BASE_PATH", realpath(__DIR__ . '/..'));
 
 // Define base URL (useful for linking assets)
-define("BASE_URL", "http://localhost/narrow-way-traffic-lights");
+define( "BASE_URL", "http://localhost/narrow-way-traffic-lights");
 
 
 // require BASE_PATH ."/includes/vendor/autoload.php";
