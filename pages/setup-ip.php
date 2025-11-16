@@ -1,6 +1,6 @@
 <?php 
 $page_title = "Setup IP";
-include "./includes/header.php";
+include "../includes/header.php";
  ?>
 <main class="container">
     <div class="form-box">
@@ -16,7 +16,7 @@ include "./includes/header.php";
         <button type="submit">Submit</button>
         <span id="ip-result"></span>
     </form>
-</div>
+    </div>
 </main>
 <script type="module" src="<?= BASE_URL ?>/assets/js/forms/setupIpForm.js"></script>
 <script type="module" src="<?= BASE_URL ?>/assets/js/forms/loginForm.js"></script>
