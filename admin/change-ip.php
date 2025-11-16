@@ -17,17 +17,17 @@ try {
     $result = $stmt->get_result();
 
     if($result->num_rows > 0 ) {
-        echo json_encode([
-            "success" => false,
-            "message" => "IP Address already exist"
-        ]);
-    }else{
-        $ins = $conn->prepare("INSERT INTO ip_addresses(ip_address_1, ip_address_2, admin_id) VALUES(?, ?, ?)");
-        $ins->bind_param("ssi", $ip_address_1, $ip_address_2, $admin_id);
+        $ins = $conn->prepare("UPDATE ip_addresses SET ip_address_1 = ?, ip_address_2 = ?");
+        $ins->bind_param("ss", $ip_address_1, $ip_address_2);
         $ins->execute();
         echo json_encode([
             "success" => true,
-            "message" => "IP Addresses successfully inserted"
+            "message" => "IP Addresses successfully edited"
+        ]);
+    }else{
+        echo json_encode([
+            "success" => false,
+            "message" => "IP Address already exist"
         ]);
     }
 

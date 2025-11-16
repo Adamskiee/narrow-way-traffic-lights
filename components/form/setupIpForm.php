@@ -1,5 +1,6 @@
 <div class="form-box">
-    <form action="<?= BASE_URL ?>/includes/setup-ip.php" method="post" id="setup-ip-form">
+    <form action="<?= BASE_URL ?>/admin/insert-ip.php" method="post" id="setup-ip-form">
+        <input type="hidden" name="user_id" value="<?= $_SESSION["user_id"] ?>">
         <input type="text" name="ip_address_cam_1" placeholder="IP Address CAM 1" class="ip-input" required>
         <button type="button" id="connect-cam-1">Connect</button>
         <span id="result_cam_1"></span>
