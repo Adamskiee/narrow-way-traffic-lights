@@ -14,3 +14,5 @@ function sendWS(message){
     console.log('WebSocket not open yet');
   }
 }
+
+fetch
