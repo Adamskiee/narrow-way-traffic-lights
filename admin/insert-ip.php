@@ -19,7 +19,8 @@ try {
     if($result->num_rows > 0 ) {
         echo json_encode([
             "success" => false,
-            "message" => "IP Address already exist"
+            "message" => "IP Address already exist",
+            "redirect" => BASE_URL . "/pages/setup-ips.php"
         ]);
     }else{
         $ins = $conn->prepare("INSERT INTO ip_addresses(ip_address_1, ip_address_2, admin_id) VALUES(?, ?, ?)");
@@ -27,7 +28,8 @@ try {
         $ins->execute();
         echo json_encode([
             "success" => true,
-            "message" => "IP Addresses successfully inserted"
+            "message" => "IP Addresses successfully inserted",
+            "redirect" => BASE_URL . "/pages/control.php"
         ]);
     }
 

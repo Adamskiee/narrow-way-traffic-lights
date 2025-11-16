@@ -14,7 +14,7 @@ include "./includes/header.php";
             <span id="result"></span>
         </form>
     </div>
-    <?php include BASE_PATH . "/components/form/setupIpForm.php" ?>
+    <!-- <?php include BASE_PATH . "/components/form/setupIpForm.php" ?> -->
 </main>
 <script type="module" src="<?= BASE_URL ?>/assets/js/forms/loginForm.js"></script>
 <?php include BASE_PATH . "/includes/footer.php" ?>

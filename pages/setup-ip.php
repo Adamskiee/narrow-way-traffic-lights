@@ -1,4 +1,9 @@
-<div class="form-box">
+<?php 
+$page_title = "Setup IP";
+include "./includes/header.php";
+ ?>
+<main class="container">
+    <div class="form-box">
     <form action="<?= BASE_URL ?>/admin/insert-ip.php" method="post" id="insert-ip-form">
         <input type="hidden" name="user_id" value="<?= $_SESSION["user_id"] ?>">
         <input type="text" name="ip_address_cam_1" placeholder="IP Address CAM 1" class="ip-input" required>
@@ -12,4 +17,7 @@
         <span id="ip-result"></span>
     </form>
 </div>
+</main>
 <script type="module" src="<?= BASE_URL ?>/assets/js/forms/setupIpForm.js"></script>
+<script type="module" src="<?= BASE_URL ?>/assets/js/forms/loginForm.js"></script>
+<?php include BASE_PATH . "/includes/footer.php" ?>

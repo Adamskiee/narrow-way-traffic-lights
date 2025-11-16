@@ -24,44 +24,44 @@ include '../includes/header.php';
 
 <style>
     .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(3px);
-    transition: opacity 0.3s;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(3px);
+        transition: opacity 0.3s;
     }
 
     .modal.hidden {
-    opacity: 0;
-    pointer-events: none;
+        opacity: 0;
+        pointer-events: none;
     }
 
     .modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    width: 350px;
-    max-width: 90%;
-    animation: scaleIn 0.25s ease;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        width: 350px;
+        max-width: 90%;
+        animation: scaleIn 0.25s ease;
     }
 
     @keyframes scaleIn {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
     }
 
     .close-btn {
-    float: right;
-    background: transparent;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
+        float: right;
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
     }
 </style>
 

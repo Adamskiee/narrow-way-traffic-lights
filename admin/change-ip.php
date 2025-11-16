@@ -27,7 +27,7 @@ try {
     }else{
         echo json_encode([
             "success" => false,
-            "message" => "IP Address already exist"
+            "message" => "Updating Error"
         ]);
     }
 
