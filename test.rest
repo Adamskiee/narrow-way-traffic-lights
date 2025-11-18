@@ -1,0 +1,24 @@
+GET http://localhost/narrow-way-traffic-lights/user/get_durations.php?user_id=2
+Content-Type: application/json
+
+###
+
+POST http://localhost/narrow-way-traffic-lights/admin/insert-duration.php
+Content-Type: application/json
+
+{
+    "weekday": 4,
+    "weekday-duration": 30,
+    "user-id": 2
+}
+
+###
+
+POST http://localhost/narrow-way-traffic-lights/admin/edit-duration.php
+Content-Type: application/json
+
+{
+    "weekday": 4,
+    "weekday-duration": 40,
+    "user-id": 2
+}

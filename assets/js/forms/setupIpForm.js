@@ -1,7 +1,7 @@
 import { handleFormSubmit } from "../formHandler.js";
 
 const result = document.getElementById("ip-result");
-console.log(result);
+const weekDays = document.getElementById("week-days");
 
 const ipRegex = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
 
@@ -44,7 +44,7 @@ handleFormSubmit("insert-ip-form",
     }
 );
 
-handleFormSubmit("change-ip-form",
+handleFosrmSubmit("change-ip-form",
     (data)=>(result.innerText = data.message),
     (error) => (result.innerText = error.message),
     async (data) => {
@@ -60,6 +60,14 @@ handleFormSubmit("change-ip-form",
     }
 );
 
+
+
 document.getElementById("connect-cam-1").addEventListener("click", ()=>checkESP(1));
 
 document.getElementById("connect-cam-2").addEventListener("click", ()=>checkESP(2));
+
+// weekDays.querySelectorAll("button[data-week]").forEach(btn => {
+//     btn.addEventListener("click", (e) => {
+
+//     })
+// })
