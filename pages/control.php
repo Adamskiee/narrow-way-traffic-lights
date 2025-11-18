@@ -9,21 +9,33 @@ include "../includes/header.php";
 <span id="cam1-status"></span>
 <img src="" id="cam2" width="480" alt="Camera 2 Stream">
 <span id="cam2-status"></span>
-
-<div class="led-buttons">
-  <h3>CAM1</h3>
-  <button class="green" onclick="sendLED('cam1', 'green_on')">Green ON</button>
-  <button class="green" onclick="sendLED('cam1', 'green_off')">Green OFF</button>
-  <button class="red" onclick="sendLED('cam1', 'red_on')">Red ON</button>
-  <button class="red" onclick="sendLED('cam1', 'red_off')">Red OFF</button>
+<div class="mode-btn">
+  <h3>Mode</h3>
+  <button id="auto-mode-button">Start automatic</button>
+  <button id="manual-mode-button">Start manual</button>
 </div>
-
-<div class="led-buttons">
-  <h3>CAM2</h3>
-  <button class="green" onclick="sendLED('cam2', 'green_on')">Green ON</button>
-  <button class="green" onclick="sendLED('cam2', 'green_off')">Green OFF</button>
-  <button class="red" onclick="sendLED('cam2', 'red_on')">Red ON</button>
-  <button class="red" onclick="sendLED('cam2', 'red_off')">Red OFF</button>
+<div id="manual-mode" class="mode-view">
+  <div class="led-buttons">
+    <h3>CAM1</h3>
+    <button id="cam1-button" data-color="green">Green ON</button>
+    <span id="cam1-button-status">Red light</span>
+  </div>
+  
+  <div class="led-buttons">
+    <h3>CAM2</h3>
+    <button id="cam2-button" data-color="red">Red ON</button>
+    <span id="cam2-button-status">Green light</span>
+  </div>
+</div>
+<div id="auto-mode" class="mode-view hidden">
+  <div>
+    <h3>CAM1</h3>
+    <span id="cam1-count"></span>
+  </div>
+  <div>
+    <h3>CAM2</h3>
+    <span id="cam2-count"></span>
+  </div>
 </div>
 <div>
   <h2>Admin Control</h2>

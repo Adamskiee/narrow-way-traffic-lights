@@ -8,8 +8,15 @@ const durationFormAdd = document.getElementById("add-weekday-form");
 const durationFormEdit = document.getElementById("edit-weekday-form");
 const weekDayAdd = document.getElementById("weekday-add");
 const weekDayEdit = document.getElementById("weekday-edit");
+const currentDuration = document.getElementById("current-duration");
+const cam1Btn = document.getElementById("cam1-button");
+const cam2Btn = document.getElementById("cam2-button");
+const cam1BtnStatus = document.getElementById("cam1-button-status");
+const cam2BtnStatus = document.getElementById("cam2-button-status");
+const autoModeBtn = document.getElementById("auto-mode-button");
+const manualModeBtn = document.getElementById("manual-mode-button");
 
-console.log(weekDayDurationAdd)
+const currentWeekDay = (new Date).getDay(); 
 
 let durations = [];
 
@@ -104,6 +111,8 @@ document.addEventListener("DOMContentLoaded", ()=> {
     .then(res => res.json())
     .then(data => {
       durations = data["schedules"];
+
+      currentDuration.value = findDuration(currentWeekDay);
     })
   })
 
@@ -157,3 +166,56 @@ weekDays.querySelectorAll("button[data-week]").forEach(btn => {
     })
 })
 
+cam1Btn.addEventListener("click", () => {
+  const color = cam1Btn.dataset.color;
+
+  cam1Btn.innerText = color === "green" ? "Red ON" : "Green ON";
+  cam1Btn.dataset.color = color === "green" ? "red" : "green";
+  cam2Btn.innerText = color === "green" ? "Green ON" : "Red ON";
+  cam2Btn.dataset.color = color === "green" ? "green" : "red";
+  cam1BtnStatus.innerText = color === "green" ? "Green Light" : "Red Light";
+  cam2BtnStatus.innerText = color === "green" ? "Red Light":"Green Light";
+})
+
+cam2Btn.addEventListener("click", () => {
+  const color = cam2Btn.dataset.color;
+
+  cam2Btn.innerText = color === "green" ? "Red ON" : "Green ON";
+  cam2Btn.dataset.color = color === "green" ? "red" : "green";
+  cam1Btn.innerText = color === "green" ? "Green ON" : "Red ON";
+  cam1Btn.dataset.color = color === "green" ? "green" : "red";
+  cam2BtnStatus.innerText = color === "green" ? "Green Light" : "Red Light";
+  cam1BtnStatus.innerText = color === "green" ? "Red Light":"Green Light";
+})
+
+async function count(num) {
+  return new Promise((res) => {
+    setInterval(() => {
+      res(num);
+  }, 1000)})
+}
+
+function toggleMode(id) {
+  document.querySelectorAll(".mode-view").forEach(view => {
+    view.classList.add("hidden");
+  })
+  document.getElementById(id).classList.remove("hidden");
+}
+
+autoModeBtn.addEventListener("click", async () => {
+  toggleMode("auto-mode");
+  
+  while(true){
+    for (let i = currentDuration.value; i > 0; i--) {
+      const num = await count(i);
+      document.getElementById("cam1-count").innerText = num
+    }
+    document.getElementById("cam1-count").innerText = "";
+    for (let i = currentDuration.value; i > 0; i--) {
+      const num = await count(i);
+      document.getElementById("cam2-count").innerText = num
+    }
+    document.getElementById("cam2-count").innerText = "";
+  }
+})
+manualModeBtn.addEventListener("click", () => {toggleMode("manual-mode")})
