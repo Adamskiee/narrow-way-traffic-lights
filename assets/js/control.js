@@ -173,7 +173,9 @@ cam1Btn.addEventListener("click", async() => {
     sendLED('cam1', 'green_on');
     const res = await fetch(`http://${cams.cam1.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
     const result = await res.json();
-    console.log(result);
+    if(!result.state) {
+      cam1BtnStatus.innerText = "Green LED is not working";
+    }
     cam1Btn.dataset.color = "red";
 
     cam2Btn.innerText = "Green ON";
@@ -185,7 +187,9 @@ cam1Btn.addEventListener("click", async() => {
     sendLED('cam1', 'red_on');
     const res = await fetch(`http://${cams.cam1.ip}/check-red`, {method: "GET", headers:{'Content-Type': 'application/json'}})
     const result = await res.json();
-    console.log(result);
+    if(!result.state) {
+      cam1BtnStatus.innerText = "Red LED is not working";
+    }
     cam1Btn.dataset.color = "green";
     cam1BtnStatus.innerText = "Red Light";
 
@@ -203,6 +207,9 @@ cam2Btn.addEventListener("click", async() => {
     sendLED('cam2', 'green_on');
     const res = await fetch(`http://${cams.cam1.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
     const result = await res.json();
+    if(!result.state) {
+      cam2BtnStatus.innerText = "Green LED is not working";
+    }
     cam2Btn.dataset.color = "red";
     
     cam1Btn.innerText = "Green ON";
@@ -212,8 +219,12 @@ cam2Btn.addEventListener("click", async() => {
   }else {
     cam2Btn.innerText = "Green ON";
     sendLED('cam2', 'red_on');
-    const res = await fetch(`http://${cams.cam1.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
+    const res = await fetch(`http://${cams.cam1.ip}/check-red`, {method: "GET", headers:{'Content-Type': 'application/json'}})
     const result = await res.json();
+    if(!result.state) {
+      cam2BtnStatus.innerText = "Red LED is not working";
+    }
+
     cam2Btn.dataset.color = "green";
     cam1Btn.innerText = "Red ON"
     cam1Btn.dataset.color = "red";
@@ -238,14 +249,18 @@ function toggleMode(id) {
 
 autoModeBtn.addEventListener("click", async () => {
   toggleMode("auto-mode");
-  
+  console.log("click")
   while(true){
-    for (let i = currentDuration.value; i > 0; i--) {
+    sendLED("cam1", "green_on");
+    sendLED("cam2", "red_on");
+    for (let i = 20; i > 0; i--) {
       const num = await count(i);
       document.getElementById("cam1-count").innerText = num
     }
     document.getElementById("cam1-count").innerText = "";
-    for (let i = currentDuration.value; i > 0; i--) {
+    sendLED("cam1", "red_on");
+    sendLED("cam2", "green_on");
+    for (let i =  20; i > 0; i--) {
       const num = await count(i);
       document.getElementById("cam2-count").innerText = num
     }
