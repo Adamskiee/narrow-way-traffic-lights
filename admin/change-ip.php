@@ -22,7 +22,7 @@ try {
         $ins->execute();
         echo json_encode([
             "success" => true,
-            "message" => "IP Addresses successfully edited"
+            "message" => "IP Addresses successfully changed"
         ]);
     }else{
         echo json_encode([

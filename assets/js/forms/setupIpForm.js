@@ -31,34 +31,19 @@ export async function checkESP(num) {
 handleFormSubmit("insert-ip-form",
     (data)=>(window.location.href = data.redirect),
     (error) => (result.innerText = error.message),
-    async (data) => {
-        const valid = [];
-        for (let i = 1; i <= 2; i++) {
-            const validIP = await checkESP(i);
-            if(!validIP) {
-                valid.push(false);
-            }            
-        }
-        valid.forEach(v => {if(!v) return false;})
-        return true;
-    }
+    // async (data) => {
+    //     const valid = [];
+    //     for (let i = 1; i <= 2; i++) {
+    //         const validIP = await checkESP(i);
+    //         if(!validIP) {
+    //             valid.push(false);
+    //         }            
+    //     }
+    //     valid.forEach(v => {if(!v) return false;})
+    //     return true;
+    // }
 );
 
-handleFosrmSubmit("change-ip-form",
-    (data)=>(result.innerText = data.message),
-    (error) => (result.innerText = error.message),
-    async (data) => {
-        const valid = [];
-        for (let i = 1; i <= 2; i++) {
-            const validIP = await checkESP(i);
-            if(!validIP) {
-                valid.push(false);
-            }            
-        }
-        valid.forEach(v => {if(!v) return false;})
-        return true;
-    }
-);
 
 
 

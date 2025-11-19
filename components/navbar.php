@@ -8,16 +8,10 @@ if(isset($_GET["logout"])) {
 }
 
 $isLoggedIn = isset($_SESSION["user_id"]);
-
-// if(!isset($_SESSION["user_id"])) {
-//     header("Location: ../index.php");
-//     exit();
-// }
-
 ?>
 <nav class="navbar">
     <div class="navbar-container">
-        <a href=<?= $isLoggedIn ? BASE_URL . "/pages/dashboard.php" : BASE_URL . "/index.php" ?>>Logo</a>
+        <a href=<?= $isLoggedIn ? BASE_URL . "/pages/control.php" : BASE_URL . "/index.php" ?>>Logo</a>
         <?php if ($isLoggedIn): ?>
         <ul class="navbar-links">
             <li><a class="navbar-link" href="<?=BASE_URL?>/pages/control.php">Control</a></li>

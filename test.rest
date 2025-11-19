@@ -22,3 +22,14 @@ Content-Type: application/json
     "weekday-duration": 40,
     "user-id": 2
 }
+
+###
+
+POST http://localhost/narrow-way-traffic-lights/admin/change-ip.php
+Content-Type: application/json
+
+{
+    "ip_address_cam_1": "10.42.0.76",
+    "ip_address_cam_2": "10.42.0.131",
+    "user_id": 2
+}

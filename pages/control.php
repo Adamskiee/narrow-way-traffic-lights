@@ -1,8 +1,11 @@
 <?php 
 $page_title = "Control";
 include "../includes/header.php"; 
+if(!$isLoggedIn) {
+  header("Location: ". BASE_URL ."/index.php");
+  exit();
+}
 ?>
-
 
 <h2>ESP32-CAM Stream</h2>
 <img src="" width="480" id="cam1" alt="Camera 1 Stream">
@@ -74,7 +77,7 @@ include "../includes/header.php";
   <div class="form-box">
     <h3>Change IP</h3>
     <form action="<?= BASE_URL ?>/admin/change-ip.php" method="post" id="change-ip-form">
-      <input type="hidden" name="user_id" value="<?= $_SESSION["user_id"] ?>">
+        <input type="hidden" name="user_id" value="<?= $_SESSION["user_id"] ?>">
         <input type="text" name="ip_address_cam_1" placeholder="IP Address CAM 1" class="ip-input" required>
         <button type="button" id="connect-cam-1">Connect</button>
         <span id="result_cam_1"></span>
@@ -82,7 +85,7 @@ include "../includes/header.php";
         <input type="text" name="ip_address_cam_2" placeholder="IP Address CAM 2" class= "ip-input"  required>
         <button type="button" id="connect-cam-2">Connect</button>
         <span id="result_cam_2"></span>
-        <button type="submit">Submit</button>
+        <button type="submit">Change</button>
         <span id="ip-result"></span>
     </form>
   </div>

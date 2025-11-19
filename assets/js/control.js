@@ -166,26 +166,60 @@ weekDays.querySelectorAll("button[data-week]").forEach(btn => {
     })
 })
 
-cam1Btn.addEventListener("click", () => {
+cam1Btn.addEventListener("click", async() => {
   const color = cam1Btn.dataset.color;
+  if(color === "green") {
+    cam1Btn.innerText = "Red ON";
+    sendLED('cam1', 'green_on');
+    const res = await fetch(`http://${cams.cam1.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
+    const result = await res.json();
+    console.log(result);
+    cam1Btn.dataset.color = "red";
 
-  cam1Btn.innerText = color === "green" ? "Red ON" : "Green ON";
-  cam1Btn.dataset.color = color === "green" ? "red" : "green";
-  cam2Btn.innerText = color === "green" ? "Green ON" : "Red ON";
-  cam2Btn.dataset.color = color === "green" ? "green" : "red";
-  cam1BtnStatus.innerText = color === "green" ? "Green Light" : "Red Light";
-  cam2BtnStatus.innerText = color === "green" ? "Red Light":"Green Light";
+    cam2Btn.innerText = "Green ON";
+    cam2Btn.dataset.color = "green";
+    cam1BtnStatus.innerText = "Green Light";
+    cam2BtnStatus.innerText = "Red Light";
+  }else {
+    cam1Btn.innerText = "Green ON";
+    sendLED('cam1', 'red_on');
+    const res = await fetch(`http://${cams.cam1.ip}/check-red`, {method: "GET", headers:{'Content-Type': 'application/json'}})
+    const result = await res.json();
+    console.log(result);
+    cam1Btn.dataset.color = "green";
+    cam1BtnStatus.innerText = "Red Light";
+
+
+    cam2Btn.innerText = "Red ON"
+    cam2Btn.dataset.color = "red";
+    cam2BtnStatus.innerText = "Green Light";
+  }
 })
 
-cam2Btn.addEventListener("click", () => {
+cam2Btn.addEventListener("click", async() => {
   const color = cam2Btn.dataset.color;
-
-  cam2Btn.innerText = color === "green" ? "Red ON" : "Green ON";
-  cam2Btn.dataset.color = color === "green" ? "red" : "green";
-  cam1Btn.innerText = color === "green" ? "Green ON" : "Red ON";
-  cam1Btn.dataset.color = color === "green" ? "green" : "red";
-  cam2BtnStatus.innerText = color === "green" ? "Green Light" : "Red Light";
-  cam1BtnStatus.innerText = color === "green" ? "Red Light":"Green Light";
+  if(color === "green") {
+    cam2Btn.innerText = "Red ON";
+    sendLED('cam2', 'green_on');
+    const res = await fetch(`http://${cams.cam1.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
+    const result = await res.json();
+    cam2Btn.dataset.color = "red";
+    
+    cam1Btn.innerText = "Green ON";
+    cam1Btn.dataset.color = "green";
+    cam1BtnStatus.innerText = "Green Light";
+    cam2BtnStatus.innerText = "Red Light";
+  }else {
+    cam2Btn.innerText = "Green ON";
+    sendLED('cam2', 'red_on');
+    const res = await fetch(`http://${cams.cam1.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
+    const result = await res.json();
+    cam2Btn.dataset.color = "green";
+    cam1Btn.innerText = "Red ON"
+    cam1Btn.dataset.color = "red";
+    cam1BtnStatus.innerText = "Red Light";
+    cam2BtnStatus.innerText = "Green Light";
+  }
 })
 
 async function count(num) {
@@ -219,3 +253,9 @@ autoModeBtn.addEventListener("click", async () => {
   }
 })
 manualModeBtn.addEventListener("click", () => {toggleMode("manual-mode")})
+
+
+handleFormSubmit("change-ip-form",
+    (data)=>(document.getElementById("ip-result").innerText = data.message),
+    (error) => (document.getElementById("ip-result") = error.message),
+);
