@@ -33,3 +33,12 @@ Content-Type: application/json
     "ip_address_cam_2": "10.42.0.131",
     "user_id": 2
 }
+
+###
+
+POST http://localhost/narrow-way-traffic-lights/user/get-info.php
+Content-Type: application/json
+
+{
+    "user_id": 5
+}
