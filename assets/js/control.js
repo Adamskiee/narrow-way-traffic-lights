@@ -171,9 +171,15 @@ cam1Btn.addEventListener("click", async() => {
   if(color === "green") {
     cam1Btn.innerText = "Red ON";
     sendLED('cam1', 'green_on');
-    const res = await fetch(`http://${cams.cam1.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
+    sendLED('cam2', 'red_on');
+    const res = await fetch(`http://${cams.cam2.ip}/check-red`, {method: "GET", headers:{'Content-Type': 'application/json'}})
     const result = await res.json();
     if(!result.state) {
+      cam2BtnStatus.innerText = "Red LED is not working";
+    }
+    const res1 = await fetch(`http://${cams.cam1.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
+    const result1 = await res1.json();
+    if(!result1.state) {
       cam1BtnStatus.innerText = "Green LED is not working";
     }
     cam1Btn.dataset.color = "red";
@@ -185,10 +191,16 @@ cam1Btn.addEventListener("click", async() => {
   }else {
     cam1Btn.innerText = "Green ON";
     sendLED('cam1', 'red_on');
+    sendLED('cam2', 'green_on');
     const res = await fetch(`http://${cams.cam1.ip}/check-red`, {method: "GET", headers:{'Content-Type': 'application/json'}})
     const result = await res.json();
     if(!result.state) {
       cam1BtnStatus.innerText = "Red LED is not working";
+    }
+    const res1 = await fetch(`http://${cams.cam2.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
+    const result1 = await res1.json();
+    if(!result1.state) {
+      cam1BtnStatus.innerText = "Green LED is not working";
     }
     cam1Btn.dataset.color = "green";
     cam1BtnStatus.innerText = "Red Light";
@@ -205,10 +217,16 @@ cam2Btn.addEventListener("click", async() => {
   if(color === "green") {
     cam2Btn.innerText = "Red ON";
     sendLED('cam2', 'green_on');
-    const res = await fetch(`http://${cams.cam1.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
+    const res = await fetch(`http://${cams.cam2.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
     const result = await res.json();
     if(!result.state) {
       cam2BtnStatus.innerText = "Green LED is not working";
+    }
+    sendLED('cam1', 'red_on');
+    const res1 = await fetch(`http://${cams.cam1.ip}/check-red`, {method: "GET", headers:{'Content-Type': 'application/json'}})
+    const result1 = await res1.json();
+    if(!result1.state) {
+      cam2BtnStatus.innerText = "Red LED is not working";
     }
     cam2Btn.dataset.color = "red";
     
@@ -223,6 +241,12 @@ cam2Btn.addEventListener("click", async() => {
     const result = await res.json();
     if(!result.state) {
       cam2BtnStatus.innerText = "Red LED is not working";
+    }
+    sendLED('cam1', 'green_on');
+    const res1 = await fetch(`http://${cams.cam1.ip}/check-green`, {method: "GET", headers:{'Content-Type': 'application/json'}})
+    const result1 = await res1.json();
+    if(!result1.state) {
+      cam2BtnStatus.innerText = "Green LED is not working";
     }
 
     cam2Btn.dataset.color = "green";
@@ -253,14 +277,14 @@ autoModeBtn.addEventListener("click", async () => {
   while(true){
     sendLED("cam1", "green_on");
     sendLED("cam2", "red_on");
-    for (let i = 20; i > 0; i--) {
+    for (let i = currentDuration.value; i > 0; i--) {
       const num = await count(i);
       document.getElementById("cam1-count").innerText = num
     }
     document.getElementById("cam1-count").innerText = "";
     sendLED("cam1", "red_on");
     sendLED("cam2", "green_on");
-    for (let i =  20; i > 0; i--) {
+    for (let i =  currentDuration.value; i > 0; i--) {
       const num = await count(i);
       document.getElementById("cam2-count").innerText = num
     }

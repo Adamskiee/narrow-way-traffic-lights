@@ -44,7 +44,6 @@ if(!$isLoggedIn) {
   <h2>Admin Control</h2>
   <div>
     <h3>Current duration</h3>
-    <button id="start-traffic-light">Start</button>
     <input type="text" name="duration" id="current-duration" disabled>
   </div>
   <div>
