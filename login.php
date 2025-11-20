@@ -4,7 +4,7 @@ $page_title = "Login";
 include "./includes/header.php";
  ?>
 
- <main class="container">
+ <main class="pt-20">
     <div class="form-box">
         <form action="<?= BASE_URL ?>/includes/login-process.php" method="post" class="validate-form" id="loginForm">
             <input type="text" name="username" placeholder="Username" required>
