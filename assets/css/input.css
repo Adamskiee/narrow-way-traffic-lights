@@ -4,6 +4,9 @@
 @theme {
   --color-orange: #FF2828;
   --color-green: #42DC34;
+  --shadow-card: 0 0 30px 15px rgba(66, 220, 52, .25);
+  --shadow-card-hover: 0 0 30px 15px rgba(255, 40, 40, .25);
+  --color-gray: #D9D9D9;
 }
 
 html { scroll-behavior: smooth; }
@@ -20,6 +23,27 @@ html { scroll-behavior: smooth; }
     }
     .nav-links {
         @apply flex flex-col p-4 md:p-0 mt-4 font-medium border md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0
+    }
+    .card {
+        @apply border-x-green border-x-3 border-b-3 border-b-green rounded-4xl flex flex-col justify-center items-center gap-2 shadow-card cursor-pointer
+    }
+    .card:hover, .card.card-active {
+        @apply border-x-orange border-b-orange shadow-card-hover
+    }
+    .card.card-active > h3{
+        @apply hidden
+    }
+    .card > img {
+        @apply rounded-full max-w-full w-[100px] h-[100px] object-cover bg-white
+    }
+    .card > h3 {
+        @apply font-bold text-white text-center;
+    }
+    .card .last-name {
+        @apply text-3xl block;
+    }
+    .card .first-name {
+        @apply text-xl;
     }
     
 }

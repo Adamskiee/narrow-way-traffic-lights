@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     link.addEventListener('click', () => {
       links.forEach(l => l.classList.remove('active'));
       link.classList.add('active');
+      document.getElementById("navbar-sticky").classList.add("hidden")
     });
   });
 });

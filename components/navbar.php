@@ -12,7 +12,7 @@ if(isset($_GET["logout"])) {
 $isLoggedIn = isset($_SESSION["user_id"]);
 ?>
 <nav class="bg-neutral-primary fixed w-full z-20 top-0 start-0 border-b border-default">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto py-4 w-7xl">
         <a href=<?= $isLoggedIn ? BASE_URL . "/pages/control.php" : BASE_URL . "/index.php" ?> class="flex items-center space-x-3 rtl:space-x-reverse">
             <span class="self-center text-5xl text-heading font-extrabold whitespace-nowrap text-orange">Flow<span class="text-green">Sync</span></span>
         </a>
