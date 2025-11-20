@@ -1,0 +1,26 @@
+{
+  "name": "narrow-way-traffic-lights",
+  "version": "1.0.0",
+  "description": "``` bash git clone https://github.com/Adamskiee/WST-Project.git ``` ## Go to the localhost/phpmyadmin ## Go to the import tab and click \"Choose File\" and locate the database folder of WST-Project then click Import",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tailwindcss -i ./assets/css/input.css -o ./dist/css/output.css --watch",
+    "build": "tailwindcss -i ./assets/css/input.css -o ./dist/css/output.css --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Adamskiee/WST-Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Adamskiee/WST-Project/issues"
+  },
+  "homepage": "https://github.com/Adamskiee/WST-Project#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.17",
+    "flowbite": "^4.0.1",
+    "tailwindcss": "^4.1.17"
+  }
+}

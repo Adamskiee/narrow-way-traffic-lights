@@ -1,4 +1,5 @@
 vendor
 .env
 composer*
-camera_ino
+ESP32CAM_code
+node_modules
