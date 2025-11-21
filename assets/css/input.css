@@ -3,15 +3,24 @@
 
 @theme {
   --color-orange: #FF2828;
+  --color-orange-500: #FF0000;
   --color-green: #42DC34;
+  --color-dark-green: #1A6713;
   --shadow-card: 0 0 30px 15px rgba(66, 220, 52, .25);
   --shadow-card-hover: 0 0 30px 15px rgba(255, 40, 40, .25);
+  --shadow-input: inset 0 4px 4px 0 rgba(0,0,0,.25)
   --color-gray: #D9D9D9;
+  --color-gray-300: #6C6C73;
+  --color-gray-400: #36404D;
+  --color-gray-500: #161616;
 }
 
 html { scroll-behavior: smooth; }
 
 @layer components{
+    .nav {
+        @apply flex justify-between items-center w-[92%] mx-auto
+    }
     .nav-link {
         @apply text-orange text-3xl font-bold block py-2 px-3 rounded  md:hover:bg-transparent md:border-0 md:p-0 md:dark:hover:bg-transparent relative;
     }
@@ -23,6 +32,9 @@ html { scroll-behavior: smooth; }
     }
     .nav-links {
         @apply flex flex-col p-4 md:p-0 mt-4 font-medium border md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0
+    }
+    .nav__button {
+        @apply text-orange box-border border border-transparent shadow-xs font-bold leading-5 text-xl px-3 py-2 focus:outline-none;
     }
     .card {
         @apply border-x-green border-x-3 border-b-3 border-b-green rounded-4xl flex flex-col justify-center items-center gap-2 shadow-card cursor-pointer
@@ -45,11 +57,24 @@ html { scroll-behavior: smooth; }
     .card .first-name {
         @apply text-xl;
     }
+
+    .contact__label {
+        @apply block mb-2.5 text-sm font-medium text-white;
+    }
+    .contact__input {
+        @apply border text-sm block w-full px-3 py-2.5 shadow-xs;
+    }
+    .contact__textarea {
+        @apply border text-sm block w-full p-3.5 shadow-xs
+    }
+    .contact__button {
+        @apply text-white bg-orange box-border border border-transparent shadow-xs font-medium leading-5  text-sm px-4 py-2.5 focus:outline-none;
+    }
     
 }
 
 @layer utilities {
     .section-bg {
-       @apply bg-radial from-[#1B1E22] from-0% to-black
+       @apply bg-radial from-[#1B1E22] from-0% to-black object-cover
     }
 }
