@@ -18,6 +18,7 @@ try {
 }catch(Error $e){
     echo json_encode([
         "success" => false,
+        "message" => "Delete user failed",
         "error" => "Database error: " . $e->getMessage()
     ]);
 }

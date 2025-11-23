@@ -1,4 +1,5 @@
-import { openModal } from "./modal.js";
+import { openModal, closeModal } from "./modal.js";
+import { openInfoModal, closeInfoModal } from "./infoModal.js";
 import { handleFormSubmit } from "./formHandler.js";
 
 function attachEvents() {
@@ -33,9 +34,9 @@ function openDeleteModal(id) {
     handleFormSubmit(
         "user-delete", 
         (data)=>{
-            location.reload();
+            openSuccessModal(data.message)
         },
-        (error)=>document.getElementById("result").innerText=error.message
+        (error)=> openErrorModal(error.message)
     )
 
     openModal({
@@ -61,33 +62,101 @@ function openEditModal(id) {
         handleFormSubmit(
             "user-edit", 
             (data)=>{
-                document.getElementById("result").innerText=data.message
-                location.reload();
+                openSuccessModal(data.message)
             },
-            (error)=>document.getElementById("result").innerText=error.message
+            (error)=>openErrorModal(error.message)
         )
 
         openModal({
             title: "Edit User",
             body: `
             <input type="hidden" name="user-id" value="${id}">
-            <input type="text" name="first-name" placeholder="First Name" value=${user["first_name"]} required>
-            <input type="text" name="last-name" placeholder="Last Name" value=${user["last_name"]}>
-            <input type="email" name="email" placeholder="Email" value=${user["email"]}>
-            <input type="text" name="phone" placeholder="Phone #" value=${user["phone_number"]}>
-            <input type="text" name="username" placeholder="Username" required value=${user["username"]}>
-            <button type="button" id="generate-btn">Generate</button>
-            <br>
-            <span id="result"></span>
+            <div class="mb-3">
+                <label for="firstName" class="form-label">First Name*</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="first-name"
+                    id="firstName"
+                    value='${user["first_name"]}' required
+                />
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="last-name"
+                    id="lastName"
+                    value='${user["last_name"]}'
+                />
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email*</label>
+                <input
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    id="email"
+                    value='${user["email"]}' required
+                />
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="phone"
+                    id="phone"
+                    value='${user["phone_number"]}'
+                />
+            </div>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username*</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="username"
+                    id="username"
+                    value='${user["username"]}' required
+                />
+            </div>
             `,
-            footer: `<button type="submit">Edit</button>
+            footer: `<button type="submit" class="btn btn-primary">Edit</button>
             `
         });
 
-        document.getElementById("generate-btn").addEventListener("click", () => {
-            document.getElementById("password").value = generatePassword();
-        })
     })
+}
+
+function openSuccessModal(message) {
+    closeModal();
+
+    openInfoModal({
+        title: "Success",
+        body: `<p>${message}</p>`,
+        footer: `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`
+    })
+
+    setTimeout(() => {
+        closeInfoModal();
+        location.reload();
+    }, 1000);
+}
+
+function openErrorModal(message) {
+    closeModal();
+
+    openInfoModal({
+        title: "Error",
+        body: `<p>${message}</p>`,
+        footer: `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`
+    })
+
+    setTimeout(() => {
+        closeInfoModal();
+        location.reload();
+    }, 3000);
 }
 
 document.addEventListener("DOMContentLoaded", ()=>{
@@ -105,8 +174,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
                     <td>${user["phone_number"] ?? ""}</td>
                     <td>${user["created_at"] ?? ""}</td>
                     <td>
-                        <button class="delete-btn" data-id="${user.id}">Delete</button>
-                        <button class="edit-btn" data-id="${user.id}">Edit</button>
+                        <button class="btn btn-danger delete-btn" data-id="${user.id}">Delete</button>
+                        <button class="btn btn-tertiary edit-btn" data-id="${user.id}">Edit</button>
                     </td>
                 </tr>
                 `
@@ -120,18 +189,77 @@ function openAddModal() {
     openModal({
         title: "Add User",
         body: `
-        <input type="text" name="first-name" placeholder="First Name" value="Operator3" required>
-        <input type="text" name="last-name" placeholder="Last Name">
-        <input type="email" name="email" placeholder="Email" value="operator3@gmail.com">
-        <input type="text" name="phone" placeholder="Phone #" value="09123456782">
-        <input type="text" name="username" placeholder="Username" value="Operator3" required>
-        <input type="password" name="password" placeholder="Password" id="password" value="operator3" required>
-        <button type="button" id="generate-btn">Generate</button>
-        <hr>
-        <span id="result"></span>
+        <div class="mb-3">
+            <label for="firstName" class="form-label">First Name*</label>
+            <input
+                type="text"
+                class="form-control"
+                name="first-name"
+                id="firstName"
+                placeholder="e.g. Juan"
+                required
+            />
+        </div>
+        <div class="mb-3">
+            <label for="lastName" class="form-label">Last Name</label>
+            <input
+                type="text"
+                class="form-control"
+                name="last-name"
+                id="lastName"
+                placeholder="e.g. Dela Cruz"
+            />
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email*</label>
+            <input
+                type="email"
+                class="form-control"
+                name="email"
+                id="email"
+                placeholder="e.g. juandelacruz@gmail.com"
+                required
+            />
+        </div>
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input
+                type="text"
+                class="form-control"
+                name="phone"
+                id="phone"
+                placeholder="e.g. 09123456789"
+            />
+        </div>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username*</label>
+            <input
+                type="text"
+                class="form-control"
+                name="username"
+                id="username"
+                placeholder="e.g. Juan"
+                required
+            />
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password*</label>
+            <div class="input-group">
+                <input
+                    type="password"
+                    class="form-control"
+                    name="password"
+                    id="password"
+                    placeholder="Password"
+                    aria-describedby="generate-btn"
+                    required
+                />
+                <button type="button" class="btn btn-secondary" id="generate-btn">Generate</button>
+            </div>
+        </div>
         `,
         footer: `
-        <button type="submit">Add User</button>
+        <button type="submit" class="btn btn-primary">Add User</button>
         `
     });
     document.getElementById("generate-btn").addEventListener("click", () => {
@@ -147,10 +275,9 @@ document.getElementById("add-user-btn").addEventListener("click", () => {
     handleFormSubmit(
         "user-add", 
         (data)=>{
-            document.getElementById("result").innerText=data.message
-            location.reload();
+            openSuccessModal(data.message);
         },
-        (error)=>document.getElementById("result").innerText=error.message
+        (error) => openErrorModal(error.message)
     )
     openAddModal();
 })

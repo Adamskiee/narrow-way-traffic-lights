@@ -1,4 +1,4 @@
 vendor
 .env
 composer*
-camera_ino
+node_modules

@@ -1,19 +1,30 @@
-const modal = document.getElementById("modal");
-const closeModalBtn = document.getElementById("modalClose");
+let bsModal = null;
+const modalEl = document.getElementById('modal');
 
-export function openModal({title, body, footer}) {
-  modal.classList.remove("hidden");
-    document.getElementById("modalTitle").innerHTML = title;
-    document.getElementById("modalBody").innerHTML = body;
-    document.getElementById("modalFooter").innerHTML = footer;
+if (typeof bootstrap === 'undefined') {
+  console.error('Bootstrap is not loaded. Ensure bootstrap.bundle.js is included before modal.js');
+}
+
+function initModal() {
+  if (!modalEl) return null;
+  if (!bsModal) bsModal = new bootstrap.Modal(modalEl);
+  return bsModal;
+}
+
+export function openModal({ title = '', body = '', footer = '', focusSelector = '.btn-close' } = {}) {
+  const m = initModal();
+  if (!m) return;
+  modalEl.querySelector('#modalTitle').textContent = title;
+  modalEl.querySelector('#modalBody').innerHTML = body;
+  modalEl.querySelector('#modalFooter').innerHTML = footer;
+  m.show();
+  modalEl.addEventListener('shown.bs.modal', () => {
+    const el = modalEl.querySelector(focusSelector);
+    if (el) el.focus();
+  }, { once: true });
 }
 
 export function closeModal() {
-  modal.classList.add("hidden");
+  if (!bsModal) return;
+  bsModal.hide();
 }
-
-closeModalBtn.addEventListener("click", closeModal);
-
-window.addEventListener("click", e => {
-  if (e.target === modal) closeModal();
-});

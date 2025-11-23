@@ -1,11 +1,7 @@
-:root {
-    
+li {
+    list-style: none;
 }
 
 .hidden {
     display: none;
-}
-
-.active {
-    display: block;
 }

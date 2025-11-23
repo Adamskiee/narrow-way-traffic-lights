@@ -54,6 +54,8 @@ function connectWebSocket(camName) {
   cam.ws.onopen = () => {
     cam.connected = true;
     updateStatus(camName, true);
+    document.getElementById(camName).src = "http://" + cam.ip + "/stream";
+    // document.getElementById("cam2").src = "http://" + cams.cam2.ip + "/stream";
     console.log(`${camName} WebSocket connected`);
   };
 
@@ -84,11 +86,13 @@ function sendLED(camName, cmd) {
 }
 
 function updateStatus(camName, online) {
-  const el = document.getElementById(camName + "-status");
-  el.innerText = online ? "ONLINE" : "OFFLINE";
-  el.style.color = online ? "green" : "red";
+  // const el = document.getElementById(camName + "-status");
+  // el.innerText = online ? "ONLINE" : "OFFLINE";
+  // el.style.color = online ? "green" : "red";
+  if(!online) {
+    document.getElementById(camName).src = "../assets/images/gray.png"
+  }
 }
-
 document.addEventListener("DOMContentLoaded", ()=> {
   fetch("../user/get-ip.php")
     .then(res => res.json())
@@ -97,8 +101,8 @@ document.addEventListener("DOMContentLoaded", ()=> {
       cams.cam1.ip = ip_address_1;
       cams.cam2.ip = ip_address_2;
       
-      document.getElementById("cam1").src = "http://" + cams.cam1.ip + "/stream";
-      document.getElementById("cam2").src = "http://" + cams.cam2.ip + "/stream";
+      // document.getElementById("cam1").src = "http://" + cams.cam1.ip + "/stream";
+      // document.getElementById("cam2").src = "http://" + cams.cam2.ip + "/stream";
     
       connectWebSocket("cam1");
       connectWebSocket("cam2");
@@ -112,17 +116,20 @@ document.addEventListener("DOMContentLoaded", ()=> {
     .then(data => {
       durations = data["schedules"];
 
-      currentDuration.value = findDuration(currentWeekDay);
+      currentDuration.value = findDuration(currentWeekDay === 0 ? 7 : currentWeekDay);
     })
   })
 
 function findDuration(weekDay) {
   let durationOfDay;
+  console.log(weekDay)
   durations.forEach(duration => {
     if(duration["week_day"] == weekDay) {
       durationOfDay = duration["duration"];
+      console.log(duration["duration"]);
     }
   })
+  console.log(durationOfDay)
   return durationOfDay;
 }
 
