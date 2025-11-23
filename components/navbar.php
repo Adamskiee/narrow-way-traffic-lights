@@ -9,9 +9,9 @@ if(isset($_GET["logout"])) {
 
 $isLoggedIn = isset($_SESSION["user_id"]);
 ?>
-<nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
+<nav class="navbar sticky-top navbar-expand-lg container">
   <div class="container-fluid">
-    <a href="<?= $isLoggedIn ? BASE_URL . '/pages/control.php' : BASE_URL . '/index.php' ?>" class="navbar-brand">FlowSync</a>
+    <a href="<?= $isLoggedIn ? BASE_URL . '/pages/control.php' : BASE_URL . '/index.php' ?>" class="navbar-brand header-color">Flow <span>Sync</span></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -52,3 +52,5 @@ $isLoggedIn = isset($_SESSION["user_id"]);
     </div>
   </div>
 </nav>
+
+<script src="<?= BASE_URL ?>/assets/js/navbar.js"></script>
