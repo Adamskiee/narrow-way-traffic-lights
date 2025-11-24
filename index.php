@@ -5,66 +5,311 @@ include './includes/header.php';
 ?>
 
 <main class="container">
-    <section class="row row-cols-1 row-cols-md-2 vh-100">
-        <div class="col d-flex flex-column justify-content-center order-2 order-lg-1">
-            <p>Introducing</p>
-            <h2 class="header-color">Flow<span>Sync</span></h2>
-            <p>
-                When a road is under construction and only one lane is available, driving through can get confusing and stressful. FlowSync was created to make that experience simple, safe, and organized for everyone. 
-                <br>
-                Instead of drivers guessing who should go first, our system uses clear, easy-to-see traffic lights to guide cars from both directions one side at a time. It keeps traffic moving smoothly, prevents sudden stops, and helps protect workers on the road. 
-                <br>
-                Whether it's a short repair or a long-term project, the system ensures that cars can still pass through the area without chaos or long delays. It’s a reliable, user-friendly way to handle one-lane traffic during construction, keeping the road safe and stress-free for all drivers.
-            </p>
-            <button class="hero-btn" type="button">Get Started</button>
+    <section class="hero-section position-relative overflow-hidden">
+        <div class="hero-background">
+            <!-- Animated background elements -->
+            <div class="traffic-light-bg"></div>
+            <div class="road-pattern"></div>
         </div>
-        <div class="col d-flex flex-column justify-content-center order-1 order-lg-2" style="padding-inline: 100px;">
-            <img
-            src="assets/images/traffic-light.png"
-            class="img-fluid mw-50"
-            />
+        
+        <div class="container">
+            <div class="row min-vh-100 align-items-center g-5">
+                <!-- Hero Content -->
+                <div class="col-lg-6 order-2 order-lg-1">
+                    <div class="hero-content">
+                        <div class="hero-badge">
+                            <i class="fas fa-traffic-light me-2"></i>
+                            <span>Introducing</span>
+                        </div>
+                        
+                        <h1 class="hero-title">
+                            Flow<span class="text-gradient">Sync</span>
+                        </h1>
+                        
+                        <p class="hero-description">
+                            When a road is under construction and only one lane is available, driving through can get confusing and stressful. <strong>FlowSync</strong> was created to make that experience simple, safe, and organized for everyone.
+                        </p>
+                        
+                        <div class="hero-features">
+                            <div class="feature-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Safe & Reliable</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Real-time Control</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-cogs"></i>
+                                <span>Smart Automation</span>
+                            </div>
+                        </div>
+                        
+                        <div class="hero-actions">
+                            <a href="<?= BASE_URL ?>/login.php" class="btn btn-hero-primary">
+                                <i class="fas fa-rocket me-2"></i>
+                                <span>Get Started</span>
+                                <div class="btn-glow"></div>
+                            </a>
+                            <a href="#tutorial" class="btn btn-hero-secondary">
+                                <i class="fas fa-play me-2"></i>
+                                <span>Learn More</span>
+                            </a>
+                        </div>
+                        
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">99.9%</div>
+                                <div class="stat-label">Uptime</div>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item">
+                                <div class="stat-number">24/7</div>
+                                <div class="stat-label">Monitoring</div>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item">
+                                <div class="stat-number">Instant</div>
+                                <div class="stat-label">Response</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hero Visual -->
+                <div class="col-lg-6 order-1 order-lg-2">
+                    <div class="hero-visual">
+                        <div class="traffic-light-container">
+                            <img src="assets/images/traffic-light.png" 
+                                 class="img-fluid traffic-light-img" 
+                                 alt="FlowSync Traffic Light">
+                            
+                            <!-- Animated elements -->
+                            <div class="light-glow red-glow"></div>
+                            <div class="light-glow green-glow"></div>
+                            
+                            <!-- Status indicators -->
+                            <div class="status-card">
+                                <div class="status-item">
+                                    <div class="status-indicator active"></div>
+                                    <span>System Online</span>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-indicator"></div>
+                                    <span>Auto Mode</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating elements -->
+                        <div class="floating-card card-1">
+                            <i class="fas fa-video"></i>
+                            <span>Live Camera Feed</span>
+                        </div>
+                        <div class="floating-card card-2">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Traffic Analytics</span>
+                        </div>
+                        <div class="floating-card card-3">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>Remote Control</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="scroll-indicator">
+            <div class="scroll-arrow">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <span>Scroll to explore</span>
         </div>
     </section>
-    <section id="tutorial">
-        <div class="tutorials-header">
-            <h2>Tutorials</h2>
-        </div>
-        <div class="row row-cols-1 row-cols-lg-2  align-items-center justify-content-center">
-            <div class="col-lg-2 d-flex align-items-center">
-                <h3>Step 1</h3>
+    <section id="tutorial" class="py-5">
+        <div class="container">
+            <!-- Section Header -->
+            <div class="tutorial-header text-center mb-5">
+                <h2 class="header-color mb-3">
+                    <i class="fas fa-graduation-cap text-primary me-3"></i>
+                    How It <span>Works</span>
+                </h2>
+                <p class="text-muted fs-5">Get started with FlowSync in three simple steps</p>
             </div>
-            <div class="col-lg-10">
-                <img
-                    src="assets/images/gray.png"
-                    class="img-fluid rounded-top w-100"
-                    alt=""
-                />
-                <p>First, contact the admin for the account creation, preparing your necessary personal information.</p>
+
+            <!-- Tutorial Steps -->
+            <div class="tutorial-steps">
+                <!-- Step 1 -->
+                <div class="tutorial-step mb-5" data-step="1">
+                    <div class="row align-items-center g-4">
+                        <div class="col-lg-2 text-center">
+                            <div class="step-number">
+                                <span>01</span>
+                            </div>
+                            <h3 class="step-title mt-3">Setup</h3>
+                        </div>
+                        <div class="col-lg-10">
+                            <div class="step-content-card">
+                                <div class="row g-0">
+                                    <div class="col-md-6">
+                                        <div class="step-image-container">
+                                            <img src="assets/images/tutorial-step1.png" 
+                                                class="img-fluid step-image" 
+                                                alt="Account Setup"
+                                                loading="lazy">
+                                            <div class="image-overlay">
+                                                <i class="fas fa-user-plus"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="step-text">
+                                            <h4>Account Registration</h4>
+                                            <p>Contact our system administrator to create your account. Prepare your personal information including name, email, and contact details for quick account setup.</p>
+                                            <div class="step-features">
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    Secure account creation
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    Admin verification process
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    Personal credentials setup
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="tutorial-step mb-5" data-step="2">
+                    <div class="row align-items-center g-4">
+                        <div class="col-lg-10 order-1 order-lg-0">
+                            <div class="step-content-card">
+                                <div class="row g-0">
+                                    <div class="col-md-6 order-1 order-md-0">
+                                        <div class="step-text">
+                                            <h4>System Access</h4>
+                                            <p>Login to the FlowSync dashboard using your provided credentials. Access the intuitive control panel designed for efficient traffic management.</p>
+                                            <div class="step-features">
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    Secure authentication
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    User-friendly interface
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    Real-time dashboard
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 order-0 order-md-1">
+                                        <div class="step-image-container">
+                                            <img src="assets/images/tutorial-step2.png" 
+                                                class="img-fluid step-image" 
+                                                alt="Login Process"
+                                                loading="lazy">
+                                            <div class="image-overlay">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 text-center order-0 order-lg-1">
+                            <div class="step-number">
+                                <span>02</span>
+                            </div>
+                            <h3 class="step-title mt-3">Login</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="tutorial-step mb-5" data-step="3">
+                    <div class="row align-items-center g-4">
+                        <div class="col-lg-2 text-center">
+                            <div class="step-number">
+                                <span>03</span>
+                            </div>
+                            <h3 class="step-title mt-3">Control</h3>
+                        </div>
+                        <div class="col-lg-10">
+                            <div class="step-content-card">
+                                <div class="row g-0">
+                                    <div class="col-md-6">
+                                        <div class="step-image-container">
+                                            <img src="assets/images/tutorial-step3.png" 
+                                                class="img-fluid step-image" 
+                                                alt="Traffic Control"
+                                                loading="lazy">
+                                            <div class="image-overlay">
+                                                <i class="fas fa-traffic-light"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="step-text">
+                                            <h4>Traffic Management</h4>
+                                            <p>Take full control of traffic light operations. Switch between manual and automatic modes, monitor real-time camera feeds, and ensure smooth traffic flow.</p>
+                                            <div class="step-features">
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    Manual & auto control modes
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    Live camera monitoring
+                                                </div>
+                                                <div class="feature-item">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    Traffic flow optimization
+                                                </div>
+                                            </div>
+                                            <div class="step-cta mt-4">
+                                                <a href="<?= BASE_URL ?>/login.php" class="btn btn-get-started">
+                                                    <i class="fas fa-rocket me-2"></i>
+                                                    Start Managing Traffic
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="tutorials-content row row-cols-1 row-cols-lg-2 align-items-center justify-content-center">
-            <div class="col col-lg-10 order-1">
-                <img
-                src="assets/images/gray.png"
-                class="img-fluid rounded-top w-100"
-                />
-                <p>Second, login to the page using the account credentials.</p>
-            </div>
-            <div class="col col-lg-2 d-flex align-items-center justify-content-lg-end order-0 order-lg-2">
-                <h3>Step 2</h3>
-            </div>
-        </div>
-        <div class="tutorials-content row row-cols-1 row-cols-lg-2 align-items-center">
-            <div class="col col-lg-2">
-                <h3>Step 3</h3>
-            </div>
-            <div class="col col-lg-10">
-                <img
-                    src="assets/images/gray.png"
-                    class="img-fluid rounded-top w-100"
-                    alt=""
-                />
-                <p>Third, you may now use and control the traffic lights for road operations.</p>
+
+            <!-- Tutorial Navigation -->
+            <div class="tutorial-navigation text-center mt-5">
+                <div class="step-indicators">
+                    <button class="step-indicator active" data-target="1">
+                        <span class="indicator-number">1</span>
+                        <span class="indicator-label">Setup</span>
+                    </button>
+                    <button class="step-indicator" data-target="2">
+                        <span class="indicator-number">2</span>
+                        <span class="indicator-label">Login</span>
+                    </button>
+                    <button class="step-indicator" data-target="3">
+                        <span class="indicator-number">3</span>
+                        <span class="indicator-label">Control</span>
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -221,6 +466,7 @@ include './includes/header.php';
 </main>
 
 <script src="<?= BASE_URL ?>/assets/js/about.js"></script>
+<script src="<?= BASE_URL ?>/assets/js/tutorial.js"></script>
 <script src="<?= BASE_URL ?>/assets/js/contact.js"></script>
 <?php
 include BASE_PATH . "/includes/footer.php"
