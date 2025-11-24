@@ -12239,4 +12239,78 @@ body {
   background-color: var(--bs-bg-medium-gray);
   border-radius: 10px;
   padding: 1rem;
+}
+.led-control {
+  position: relative;
+}
+
+.led-toggle-btn {
+  position: relative;
+  min-width: 140px;
+  padding: 0.75rem 1rem;
+  border: 2px solid #6c757d;
+  border-radius: 10px;
+  background-color: #2d3436;
+  color: #fff;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.led-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.led-toggle-btn:active {
+  transform: translateY(0);
+}
+
+.led-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #6c757d;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.3);
+}
+
+.led-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cam1-led[data-state=on] {
+  background-color: var(--bs-bg-green);
+  border-color: var(--bs-green);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(66, 220, 52, 0.4);
+}
+.cam1-led[data-state=on] .led-indicator {
+  background-color: var(--bs-green);
+  box-shadow: 0 0 8px rgba(66, 220, 52, 0.6), 0 0 0 2px rgba(66, 220, 52, 0.3);
+}
+
+.cam1-led[data-state=off] .led-text::after {
+  content: " (OFF)";
+  color: #6c757d;
+}
+
+.cam2-led[data-state=on] {
+  background-color: #8B0000;
+  border-color: var(--bs-red);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(255, 40, 40, 0.4);
+}
+.cam2-led[data-state=on] .led-indicator {
+  background-color: var(--bs-red);
+  box-shadow: 0 0 8px rgba(255, 40, 40, 0.6), 0 0 0 2px rgba(255, 40, 40, 0.3);
+}
+
+.cam2-led[data-state=off] .led-text::after {
+  content: " (OFF)";
+  color: #6c757d;
 }/*# sourceMappingURL=custom.css.map */

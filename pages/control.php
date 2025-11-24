@@ -12,9 +12,14 @@ if(!$isLoggedIn) {
     <div class="row row-cols-1 row-cols-sm-2 py-4 g-3">
       <div class="col">
         <div class="row gap-2">
-          <div class="d-flex justify-content-between" >
-              <button id="cam1-button" data-color="green">Green ON</button>
-              <span id="cam1-count">10</span>
+          <div class="d-flex justify-content-between align-items-center" >
+              <div class="led-control">
+                <button id="cam1-button" class="btn btn-lg led-toggle-btn cam1-led" data-color="green" data-state="off">
+                  <span class="led-indicator"></span>
+                  <span class="led-text">CAM 1: OFF</span>
+                </button>
+              </div>
+              <span id="cam1-count" class="badge bg-secondary fs-6">10</span>
               <button id="auto-mode-button" class="btn btn-primary">Start automatic</button>
             </div>
           <div class="position-relative row justify-content-center m-0" id="cam1-container">
@@ -25,10 +30,15 @@ if(!$isLoggedIn) {
       </div>
       <div class="col" >
         <div class="row gap-2">
-          <div class="d-flex justify-content-between">
+          <div class="d-flex justify-content-between align-items-center">
             <button id="manual-mode-button" class="btn btn-primary">Start manual</button>
-            <span id="cam2-count">10</span>
-            <button id="cam2-button" data-color="red">Red ON</button>
+            <span id="cam2-count" class="badge bg-secondary fs-6">10</span>
+            <div class="led-control">
+              <button id="cam2-button" class="btn btn-lg led-toggle-btn cam2-led" data-color="red" data-state="off">
+                <span class="led-indicator"></span>
+                <span class="led-text">CAM 2: OFF</span>
+              </button>
+            </div>
           </div>
           <div class="position-relative row justify-content-center m-0" id="cam1-container">
             <img src="<?= BASE_URL ?>/assets/images/gray.png" id="cam2" alt="Camera 2 Stream" class="img-fluid rounded px-0">
@@ -89,6 +99,18 @@ if(!$isLoggedIn) {
             <button class="btn flex-fill btn-secondary" data-week="5">Fri</button>
             <button class="btn flex-fill btn-secondary" data-week="6">Sat</button>
             <button class="btn flex-fill btn-secondary" data-week="7">Sun</button>
+          </div>
+          
+          <!-- Always visible duration input form -->
+          <div class="mt-3">
+            <input type="hidden" name="user-id" value="<?= $_SESSION["user_id"] ?>">
+            <label for="duration-input" class="form-label">Duration (seconds)</label>
+            <div class="input-group">
+              <input type="number" class="form-control" placeholder="Enter duration" id="duration-input" min="1" required>
+              <button class="btn btn-primary" type="button" id="save-duration-btn">Save</button>
+            </div>
+            <small class="form-text text-muted">Select a day above and enter duration</small>
+            <div id="duration-result" class="mt-2"></div>
           </div>
           
           <form action="<?= BASE_URL ?>/admin/insert-duration.php" id="add-weekday-form" method="post" class="weekday-form hidden">
