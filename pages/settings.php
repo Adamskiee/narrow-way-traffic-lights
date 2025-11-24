@@ -3,7 +3,7 @@ $page_title = "Settings";
 include "../includes/header.php"; 
 ?>
 
-<main class="container-fluid ">
+<main class="container-fluid " style="padding-top: 70px;">
     <div class="py-4 mw-100 container" style="width: 500px">
         <h3>Profile Information</h3>
         <div>

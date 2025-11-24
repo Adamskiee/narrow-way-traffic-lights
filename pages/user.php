@@ -9,7 +9,7 @@ if(!$isLoggedIn) {
 }
 ?>
 
-<main class="container-fluid py-4">
+<main class="container-fluid " style="padding-top: 100px;">
     <!-- Alert Container -->
     <div id="alert-container"></div>
     

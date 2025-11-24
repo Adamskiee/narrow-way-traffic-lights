@@ -4,11 +4,18 @@ $page_title = "Login";
 include "./includes/header.php";
  ?>
 
-<main>
-    <div class="login-container container-fluid d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 70px)">
-        <div class="mw-100  p-5 rounded login-form-container" style="width: 500px;">
+<main >
+    <div class="login-container">
+        <div class="login-form-container">
+            <div class="login-brand">
+                <div class="brand-logo">
+                    <i class="fas fa-traffic-light"></i>
+                </div>
+                <h1>Flow<span>Sync</span></h1>
+                <p>Traffic Light Management System</p>
+            </div>
             <span id="result" class = "text-danger mb-3"></span>
-            <form action="<?= BASE_URL ?>/includes/login-process.php" method="post" class="validate-form" id="loginForm">
+            <form action="<?= BASE_URL ?>/includes/login-process.php" method="post" class="validate-form login-form" id="loginForm">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <input
@@ -35,9 +42,11 @@ include "./includes/header.php";
                 </div>
                 <button
                     type="submit"
-                    class="btn btn-secondary-custom"
+                    class="btn btn-login "
                 >
-                    Submit
+                <span>
+                    Sign In
+                </span>
                 </button>
             </form>
         </div>

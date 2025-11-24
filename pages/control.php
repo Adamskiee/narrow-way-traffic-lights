@@ -6,9 +6,17 @@ if(!$isLoggedIn) {
   exit();
 }
 ?>
-<main class="container-fluid">
+<main class="container-fluid" style="padding-top: 70px;">
   <?php include BASE_PATH . "/components/infoModal.php" ?>
   <div class="px-2 container">
+    <!-- Automatic Mode Control -->
+    <div class="text-center py-3">
+      <button id="auto-mode-button" class="btn btn-primary btn-lg px-4">
+        <i class="fas fa-play me-2"></i>Start Automatic Mode
+      </button>
+      <p class="text-muted mt-2 mb-0">Control both cameras automatically based on duration schedule</p>
+    </div>
+    
     <div class="row row-cols-1 row-cols-sm-2 py-4 g-3">
       <div class="col">
         <div class="row gap-2">
@@ -20,7 +28,6 @@ if(!$isLoggedIn) {
                 </button>
               </div>
               <span id="cam1-count" class="badge bg-secondary fs-6"></span>
-              <button id="auto-mode-button" class="btn btn-primary">Start automatic</button>
             </div>
           <div class="position-relative row justify-content-center m-0" id="cam1-container">
             <img src="<?= BASE_URL ?>/assets/images/gray.png" id="cam1" alt="Camera 1 Stream" class="img-fluid rounded px-0">
@@ -31,7 +38,6 @@ if(!$isLoggedIn) {
       <div class="col" >
         <div class="row gap-2">
           <div class="d-flex justify-content-between align-items-center">
-            <button id="manual-mode-button" class="btn btn-primary">Start manual</button>
             <span id="cam2-count" class="badge bg-secondary fs-6"></span>
             <div class="led-control">
               <button id="cam2-button" class="btn btn-lg led-toggle-btn cam2-led" data-color="red" data-state="off">
@@ -47,30 +53,6 @@ if(!$isLoggedIn) {
         </div>
       </div>
     </div>
-    <!-- <div class="mode-btn">
-      <h3>Mode</h3>
-      <span id="cam2-button-status">Green light</span>
-    </div>
-    <div id="manual-mode" class="mode-view">
-      <div class="led-buttons">
-        <h3>CAM1</h3>
-        <span id="cam1-button-status">Red light</span>
-      </div>
-      
-      <div class="led-buttons">
-        <h3>CAM2</h3>
-      </div>
-    </div> -->
-    <!-- <div id="auto-mode" class="mode-view hidden col">
-      <div>
-        <h3>CAM1</h3>
-        <span id="cam1-count"></span>
-      </div>
-      <div>
-        <h3>CAM2</h3>
-        <span id="cam2-count"></span>
-      </div>
-    </div> -->
     <div class=" mb-5 control__card-container">
       <div class="control__card ">
         <div>
@@ -159,81 +141,6 @@ if(!$isLoggedIn) {
             <button type="submit" class="btn btn-primary">Change</button>
             <span id="ip-result"></span>
           </form>
-        </div>
-      </div>
-      <div class="control__card">
-        <div>
-          <h3>Recent Activity</h3>
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-muted">Last 5 traffic logs</span>
-            <a href="<?= BASE_URL ?>/pages/logs.php" class="btn btn-sm btn-outline-primary">
-              <i class="fas fa-list me-1"></i>View All
-            </a>
-          </div>
-          <div id="recent-logs-container">
-            <div class="text-center py-3">
-              <div class="spinner-border spinner-border-sm text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-              <div class="mt-2 small text-muted">Loading recent logs...</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Quick Stats Row -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body text-center">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <div class="fs-4 fw-bold" id="total-logs-today">-</div>
-              <div class="small">Today's Logs</div>
-            </div>
-            <i class="fas fa-calendar-day fa-2x opacity-75"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body text-center">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <div class="fs-4 fw-bold" id="auto-mode-today">-</div>
-              <div class="small">Auto Mode</div>
-            </div>
-            <i class="fas fa-robot fa-2x opacity-75"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body text-center">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <div class="fs-4 fw-bold" id="manual-mode-today">-</div>
-              <div class="small">Manual Mode</div>
-            </div>
-            <i class="fas fa-hand-pointer fa-2x opacity-75"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body text-center">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <div class="fs-4 fw-bold" id="avg-duration-today">-</div>
-              <div class="small">Avg Duration</div>
-            </div>
-            <i class="fas fa-clock fa-2x opacity-75"></i>
-          </div>
         </div>
       </div>
     </div>

@@ -35,7 +35,6 @@ const WEEKDAY_MAPPING = {
 const cam1Btn = document.getElementById("cam1-button");
 const cam2Btn = document.getElementById("cam2-button");
 const autoModeBtn = document.getElementById("auto-mode-button");
-const manualModeBtn = document.getElementById("manual-mode-button");
 
 // Duration and scheduling elements
 const weekDays = document.getElementById("week-days");
