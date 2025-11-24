@@ -5,7 +5,7 @@ include './includes/header.php';
 ?>
 
 <main class="container">
-    <section class="hero-section position-relative overflow-hidden">
+    <section class="hero-section position-relative overflow-hidden section-animated">
         <div class="hero-background">
             <!-- Animated background elements -->
             <div class="traffic-light-bg"></div>
@@ -127,7 +127,13 @@ include './includes/header.php';
             <span>Scroll to explore</span>
         </div>
     </section>
-    <section id="tutorial" class="py-5">
+    
+    <!-- Section Transition -->
+    <div class="section-transition">
+        <div class="transition-line"></div>
+    </div>
+    
+    <section id="tutorial" class="tutorial-section py-5 section-animated">
         <div class="container">
             <!-- Section Header -->
             <div class="tutorial-header text-center mb-5">
@@ -313,7 +319,13 @@ include './includes/header.php';
             </div>
         </div>
     </section>
-    <section id="about" class="about-section-enhanced">
+    
+    <!-- Section Transition -->
+    <div class="section-transition">
+        <div class="transition-line"></div>
+    </div>
+    
+    <section id="about" class="about-section-enhanced section-animated">
         <div class="about-background-pattern"></div>
         <div class="container">
             <div class="row row-cols-1 row-cols-lg-2 min-vh-100 about__container" >
@@ -371,7 +383,13 @@ include './includes/header.php';
         </div>
         </div>
     </section>
-    <section id="contact" class="contact-section-enhanced">
+    
+    <!-- Section Transition -->
+    <div class="section-transition">
+        <div class="transition-line"></div>
+    </div>
+    
+    <section id="contact" class="contact-section-enhanced section-animated">
         <div class="contact-background-pattern"></div>
         <div class="contact-glow-effects">
             <div class="glow-orb glow-orb-1"></div>
@@ -570,6 +588,7 @@ include './includes/header.php';
 <script src="<?= BASE_URL ?>/assets/js/about.js"></script>
 <script src="<?= BASE_URL ?>/assets/js/tutorial.js"></script>
 <script src="<?= BASE_URL ?>/assets/js/contact.js"></script>
+<script src="<?= BASE_URL ?>/assets/js/transitions.js"></script>
 <?php
 include BASE_PATH . "/includes/footer.php"
 ?>

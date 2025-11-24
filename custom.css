@@ -12972,6 +12972,251 @@ body {
     opacity: 0.08;
   }
 }
+.section-transition {
+  position: relative;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(var(--bs-dark-rgb), 0.95) 0%, rgba(var(--bs-dark-rgb), 0.98) 50%, rgba(var(--bs-dark-rgb), 0.95) 100%);
+  overflow: hidden;
+}
+.section-transition::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(var(--bs-red-rgb), 0.05) 0%, transparent 70%);
+  animation: pulse 4s ease-in-out infinite;
+}
+.section-transition .transition-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(var(--bs-red-rgb), 0.3) 20%, rgba(var(--bs-green-rgb), 0.5) 50%, rgba(var(--bs-red-rgb), 0.3) 80%, transparent 100%);
+  transform: translateY(-50%);
+}
+.section-transition .transition-line::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+  transform: translateY(-50%);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.section-animated {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1s ease-out;
+}
+.section-animated.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+.section-animated .step-content-card,
+.section-animated .about__card,
+.section-animated .contact__profile,
+.section-animated .hero-content > *,
+.section-animated .hero-visual > * {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+.section-animated .step-content-card.animate-in,
+.section-animated .about__card.animate-in,
+.section-animated .contact__profile.animate-in,
+.section-animated .hero-content > *.animate-in,
+.section-animated .hero-visual > *.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.section-animated .step-content-card:nth-child(1),
+.section-animated .about__card:nth-child(1),
+.section-animated .contact__profile:nth-child(1) {
+  transition-delay: 0.1s;
+}
+.section-animated .step-content-card:nth-child(2),
+.section-animated .about__card:nth-child(2),
+.section-animated .contact__profile:nth-child(2) {
+  transition-delay: 0.2s;
+}
+.section-animated .step-content-card:nth-child(3),
+.section-animated .about__card:nth-child(3),
+.section-animated .contact__profile:nth-child(3) {
+  transition-delay: 0.3s;
+}
+.section-animated .step-content-card:nth-child(4),
+.section-animated .about__card:nth-child(4),
+.section-animated .contact__profile:nth-child(4) {
+  transition-delay: 0.4s;
+}
+
+.hero-section.section-animated .hero-content .hero-badge {
+  transition-delay: 0.1s;
+}
+.hero-section.section-animated .hero-content .hero-title {
+  transition-delay: 0.2s;
+}
+.hero-section.section-animated .hero-content .hero-description {
+  transition-delay: 0.3s;
+}
+.hero-section.section-animated .hero-content .hero-features {
+  transition-delay: 0.4s;
+}
+.hero-section.section-animated .hero-content .hero-actions {
+  transition-delay: 0.5s;
+}
+.hero-section.section-animated .hero-content .hero-stats {
+  transition-delay: 0.6s;
+}
+.hero-section.section-animated .hero-visual .traffic-light-container {
+  transition-delay: 0.2s;
+}
+.hero-section.section-animated .hero-visual .floating-card:nth-child(1) {
+  transition-delay: 0.4s;
+}
+.hero-section.section-animated .hero-visual .floating-card:nth-child(2) {
+  transition-delay: 0.5s;
+}
+.hero-section.section-animated .hero-visual .floating-card:nth-child(3) {
+  transition-delay: 0.6s;
+}
+
+.tutorial-section {
+  position: relative;
+  background: linear-gradient(135deg, rgba(var(--bs-dark-rgb), 0.95) 0%, rgba(var(--bs-dark-rgb), 0.98) 100%);
+}
+.tutorial-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(var(--bs-green-rgb), 0.02) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(var(--bs-red-rgb), 0.02) 0%, transparent 50%);
+  z-index: 0;
+}
+.tutorial-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+section {
+  position: relative;
+  z-index: 1;
+}
+section:not(:last-child) {
+  margin-bottom: 0;
+}
+section::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+  z-index: 2;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, rgba(var(--bs-dark-rgb), 0.95) 0%, rgba(var(--bs-dark-rgb), 0.98) 50%, rgba(var(--bs-dark-rgb), 0.95) 100%);
+}
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(var(--bs-red-rgb), 0.03) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(var(--bs-green-rgb), 0.03) 0%, transparent 50%);
+  z-index: 0;
+}
+.hero-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+.about-section-enhanced {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.contact-section-enhanced {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.contact-section-enhanced::after {
+  display: none;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-50%);
+  }
+  100% {
+    transform: translateX(100%) translateY(-50%);
+  }
+}
 .navbar {
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
