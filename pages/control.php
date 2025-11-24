@@ -19,7 +19,7 @@ if(!$isLoggedIn) {
                   <span class="led-text">CAM 1: OFF</span>
                 </button>
               </div>
-              <span id="cam1-count" class="badge bg-secondary fs-6">10</span>
+              <span id="cam1-count" class="badge bg-secondary fs-6"></span>
               <button id="auto-mode-button" class="btn btn-primary">Start automatic</button>
             </div>
           <div class="position-relative row justify-content-center m-0" id="cam1-container">
@@ -32,7 +32,7 @@ if(!$isLoggedIn) {
         <div class="row gap-2">
           <div class="d-flex justify-content-between align-items-center">
             <button id="manual-mode-button" class="btn btn-primary">Start manual</button>
-            <span id="cam2-count" class="badge bg-secondary fs-6">10</span>
+            <span id="cam2-count" class="badge bg-secondary fs-6"></span>
             <div class="led-control">
               <button id="cam2-button" class="btn btn-lg led-toggle-btn cam2-led" data-color="red" data-state="off">
                 <span class="led-indicator"></span>

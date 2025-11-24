@@ -278,6 +278,27 @@ body {
     box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.3);
 }
 
+// Disabled state for toggle buttons during auto mode
+.led-toggle-btn:disabled,
+.led-toggle-btn.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    
+    &:hover {
+        transform: none !important;
+        box-shadow: none;
+    }
+    
+    .led-indicator {
+        opacity: 0.5;
+    }
+    
+    .led-text {
+        opacity: 0.7;
+    }
+}
+
 .led-text {
     font-size: 0.875rem;
     font-weight: 600;
@@ -285,8 +306,9 @@ body {
     letter-spacing: 0.5px;
 }
 
-// CAM 1 (GREEN) States
+// CAM 1 LED States
 .cam1-led[data-state="on"] {
+    // Default green state
     background-color: var(--bs-bg-green);
     border-color: var(--bs-green);
     color: #fff;
@@ -295,6 +317,18 @@ body {
     .led-indicator {
         background-color: var(--bs-green);
         box-shadow: 0 0 8px rgba(66, 220, 52, 0.6), 0 0 0 2px rgba(66, 220, 52, 0.3);
+    }
+    
+    // Red state for CAM1
+    &.red-active {
+        background-color: #8B0000;
+        border-color: var(--bs-red);
+        box-shadow: 0 0 20px rgba(255, 40, 40, 0.4);
+        
+        .led-indicator {
+            background-color: var(--bs-red);
+            box-shadow: 0 0 8px rgba(255, 40, 40, 0.6), 0 0 0 2px rgba(255, 40, 40, 0.3);
+        }
     }
 }
 
@@ -305,8 +339,9 @@ body {
     }
 }
 
-// CAM 2 (RED) States  
+// CAM 2 LED States  
 .cam2-led[data-state="on"] {
+    // Default red state
     background-color: #8B0000;
     border-color: var(--bs-red);
     color: #fff;
@@ -316,6 +351,18 @@ body {
         background-color: var(--bs-red);
         box-shadow: 0 0 8px rgba(255, 40, 40, 0.6), 0 0 0 2px rgba(255, 40, 40, 0.3);
     }
+    
+    // Green state for CAM2
+    &.green-active {
+        background-color: var(--bs-bg-green);
+        border-color: var(--bs-green);
+        box-shadow: 0 0 20px rgba(66, 220, 52, 0.4);
+        
+        .led-indicator {
+            background-color: var(--bs-green);
+            box-shadow: 0 0 8px rgba(66, 220, 52, 0.6), 0 0 0 2px rgba(66, 220, 52, 0.3);
+        }
+    }
 }
 
 .cam2-led[data-state="off"] {
@@ -323,4 +370,29 @@ body {
         content: " (OFF)";
         color: #6c757d;
     }
+}
+
+// Disconnected state for both cameras
+.led-toggle-btn.disconnected {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #fff;
+    opacity: 0.6;
+    
+    .led-indicator {
+        background-color: #dc3545;
+        box-shadow: 0 0 8px rgba(220, 53, 69, 0.6), 0 0 0 2px rgba(220, 53, 69, 0.3);
+        animation: blink 1s infinite;
+    }
+    
+    &:hover {
+        transform: none;
+        box-shadow: none;
+        cursor: not-allowed;
+    }
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
 }
