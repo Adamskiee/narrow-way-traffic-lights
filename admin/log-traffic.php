@@ -4,13 +4,17 @@ require_once "../includes/config.php";
 
 header('Content-Type: application/json');
 
+// Handle both JSON and form data
 $input = json_decode(file_get_contents('php://input'), true);
+if (!$input) {
+    $input = $_POST;
+}
 
 $user_id = $input['user_id'] ?? $_SESSION["user_id"];
-$camera_id = $input['camera_id'] ?? null;
-$light_state = $input['light_state'] ?? null;
-$mode_type = $input['mode_type'] ?? null;
-$duration_seconds = $input['duration_seconds'] ?? null;
+$camera_id = $input['camera_name'] ?? $input['camera_id'] ?? null;
+$light_state = $input['light_color'] ?? $input['light_state'] ?? null;
+$mode_type = $input['mode'] ?? $input['mode_type'] ?? null;
+$duration_seconds = $input['duration'] ?? $input['duration_seconds'] ?? null;
 
 if (!$camera_id || !$light_state || !$mode_type) {
     http_response_code(400);
@@ -25,13 +29,17 @@ try {
     ");
     $stmt->bind_param("isssi", $user_id, $camera_id, $light_state, $mode_type, $duration_seconds);
     
-    $stmt->execute();
+    if ($stmt->execute()) {
+        $log_id = $stmt->insert_id;
+    } else {
+        throw new Exception("Failed to execute statement: " . $stmt->error);
+    }
     
-    $log_id = $stmt->insert_id;
-    
-} catch (PDOException $e) {
+} catch (Exception $e) {
     error_log("Traffic log error: " . $e->getMessage());
-    return false;
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+    exit;
 }
 
 if ($log_id) {

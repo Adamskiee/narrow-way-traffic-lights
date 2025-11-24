@@ -1,76 +1,157 @@
+/**
+ * Traffic Light Control System
+ * Main control module for ESP32-CAM based traffic light management
+ * 
+ * Features:
+ * - Manual LED control with toggle buttons
+ * - Automated traffic light cycles with timer persistence
+ * - Real-time camera streaming with WebSocket connections
+ * - Duration tracking and logging
+ * - State persistence across page reloads
+ * - ESP32 connection monitoring and error handling
+ */
+
 import { handleFormSubmit } from "./formHandler.js";
 import { openInfoModal, closeInfoModal } from "./infoModal.js";
 
-// Add null checks to prevent errors when elements don't exist
-const startButton = document.getElementById("start-traffic-light");
+// ================================================================
+// CONSTANTS AND CONFIGURATION
+// ================================================================
+
+const WEBSOCKET_RECONNECT_DELAY = 3000;
+const CAMERA_CONNECTION_TIMEOUT = 5000;
+const AUTO_MODE_RESUME_DELAY = 3000;
+
+const WEEKDAY_MAPPING = {
+  1: "mon", 2: "tue", 3: "wed", 4: "thu", 
+  5: "fri", 6: "sat", 7: "sun"
+};
+
+// ================================================================
+// DOM ELEMENT REFERENCES
+// ================================================================
+
+// Essential control elements
+const cam1Btn = document.getElementById("cam1-button");
+const cam2Btn = document.getElementById("cam2-button");
+const autoModeBtn = document.getElementById("auto-mode-button");
+const manualModeBtn = document.getElementById("manual-mode-button");
+
+// Duration and scheduling elements
 const weekDays = document.getElementById("week-days");
+const currentDuration = document.getElementById("current-duration");
+const durationInput = document.getElementById("duration-input");
+const saveDurationBtn = document.getElementById("save-duration-btn");
+const durationResult = document.getElementById("duration-result");
+
+// Form elements
 const weekDayDurationEdit = document.getElementById("weekday-duration-edit");
 const weekDayDurationAdd = document.getElementById("weekday-duration-add");
 const durationFormAdd = document.getElementById("add-weekday-form");
 const durationFormEdit = document.getElementById("edit-weekday-form");
 const weekDayAdd = document.getElementById("weekday-add");
 const weekDayEdit = document.getElementById("weekday-edit");
-const currentDuration = document.getElementById("current-duration");
-const cam1Btn = document.getElementById("cam1-button");
-const cam2Btn = document.getElementById("cam2-button");
+
+// Status elements (legacy - may not exist in current UI)
 const cam1BtnStatus = document.getElementById("cam1-button-status");
 const cam2BtnStatus = document.getElementById("cam2-button-status");
-const autoModeBtn = document.getElementById("auto-mode-button");
-const manualModeBtn = document.getElementById("manual-mode-button");
-const durationInput = document.getElementById("duration-input");
-const saveDurationBtn = document.getElementById("save-duration-btn");
-const durationResult = document.getElementById("duration-result");
+const startButton = document.getElementById("start-traffic-light");
 
-// Check if essential elements exist
-if (!cam1Btn || !cam2Btn) {
-  console.error('Required camera control buttons not found');
+// Validation: Check critical elements
+if (!cam1Btn || !cam2Btn || !autoModeBtn) {
+  console.error('Critical control elements not found - camera buttons or auto mode button missing');
 }
 
-// Track selected weekday for duration input
+// ================================================================
+// GLOBAL STATE MANAGEMENT
+// ================================================================
+
+// Current system state
 let selectedWeekday = 1; // Default to Monday
-
-const currentWeekDay = (new Date).getDay(); 
-
 let durations = [];
+const currentWeekDay = (new Date).getDay();
 
-let convert = {
-  1: "mon",
-  2: "tue",
-  3: "wed",
-  4: "thu",
-  5: "fri",
-  6: "sat",
-  7: "sun",
-}
-
+// Camera connection state
 const cams = {
-  cam1: {
-    ip: "",  
-    ws: null,
-    connected: false
-  },
-  cam2: {
-    ip: "",   
-    ws: null,
-    connected: false
-  }
+  cam1: { ip: "", ws: null, connected: false },
+  cam2: { ip: "", ws: null, connected: false }
 };
 
+// LED state tracking for duration logging
 let ledStateTimers = {
-  cam1: {
-    color: null,
-    startTime: null,
-    duration: 0
-  },
-  cam2: {
-    color: null,
-    startTime: null,
-    duration: 0
-  }
+  cam1: { color: null, startTime: null, duration: 0 },
+  cam2: { color: null, startTime: null, duration: 0 }
 };
 
+// Manual mode duration tracking intervals
 let manualDurationIntervals = {};
 
+// Auto mode state
+let isAutoModeRunning = false;
+let autoModeController = null;
+
+// ================================================================
+// UTILITY FUNCTIONS
+// ================================================================
+
+/**
+ * Find duration for a specific weekday
+ * @param {number} weekDay - Day of week (1-7)
+ * @returns {number|undefined} Duration in seconds
+ */
+function findDuration(weekDay) {
+  console.log(`Finding duration for weekday: ${weekDay}`);
+  let durationOfDay;
+  
+  durations.forEach(duration => {
+    if (duration["week_day"] == weekDay) {
+      durationOfDay = duration["duration"];
+      console.log(`Found duration: ${duration["duration"]} seconds`);
+    }
+  });
+  
+  console.log(`Final duration: ${durationOfDay}`);
+  return durationOfDay;
+}
+
+/**
+ * Async delay function for countdown timers
+ * @param {number} num - Number to return after delay
+ * @returns {Promise<number>} Delayed number
+ */
+async function count(num) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(num);
+    }, 1000);
+  });
+}
+
+/**
+ * Open error modal with message
+ * @param {string} message - Error message to display
+ */
+// function openErrorModal(message) {
+//   openInfoModal("Error", message, "error");
+// }
+
+/**
+ * Open success modal with message
+ * @param {string} message - Success message to display
+ */
+// function openSuccessModal(message) {
+//   openInfoModal("Success", message, "success");
+// }
+
+// ================================================================
+// DURATION TRACKING SYSTEM
+// ================================================================
+
+/**
+ * Start tracking LED state duration for logging purposes
+ * @param {string} camName - Camera name (cam1 or cam2)
+ * @param {string} color - LED color (red or green)
+ */
 function startDurationTracking(camName, color) {
   // Stop previous tracking for this camera
   if (ledStateTimers[camName].startTime) {
@@ -90,12 +171,16 @@ function startDurationTracking(camName, color) {
   console.log(`Started tracking ${camName} ${color} at ${new Date().toLocaleTimeString()}`);
 }
 
+/**
+ * Stop tracking LED state duration and log to database
+ * @param {string} camName - Camera name (cam1 or cam2)
+ */
 function stopDurationTracking(camName) {
   if (ledStateTimers[camName].startTime) {
     const endTime = Date.now();
     const totalDuration = Math.floor((endTime - ledStateTimers[camName].startTime) / 1000);
     
-    // Log the duration to your database
+    // Log the duration to database
     logLightChange(camName, ledStateTimers[camName].color, 'manual', totalDuration);
     
     console.log(`${camName} ${ledStateTimers[camName].color} was on for ${totalDuration} seconds`);
@@ -115,6 +200,10 @@ function stopDurationTracking(camName) {
   }
 }
 
+/**
+ * Update duration display for manual mode tracking
+ * @param {string} camName - Camera name (cam1 or cam2)
+ */
 function updateDurationDisplay(camName) {
   // Clear existing interval for this camera
   if (manualDurationIntervals[camName]) {
@@ -148,15 +237,16 @@ function getCurrentDuration(camName) {
 // Add missing logLightChange function
 async function logLightChange(cameraId, lightState, modeType, duration = null) {
   try {
+    console.log(cameraId, lightState, modeType, duration);
     const response = await fetch('../admin/log-traffic.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({
-        camera_id: cameraId,
-        light_state: lightState,
-        mode_type: modeType,
-        duration_seconds: duration
+        camera_name: cameraId,
+        light_color: lightState,
+        mode: modeType,
+        duration: duration
       })
     });
     
@@ -194,6 +284,14 @@ function openSuccessModal(message) {
     }, 3000);
 }
 
+// ================================================================
+// WEBSOCKET AND CAMERA MANAGEMENT
+// ================================================================
+
+/**
+ * Initialize WebSocket connection for camera
+ * @param {string} camName - Camera name (cam1 or cam2)
+ */
 function connectWebSocket(camName) {
   const cam = cams[camName];
   
@@ -313,27 +411,6 @@ function sendLED(camName, cmd) {
     openErrorModal(`${camName} is not connected. Please check the camera connection.`);
   }
 }
-// async function logLightChange(cameraId, lightState, modeType, duration = null) {
-//     try {
-//         const response = await fetch('../admin/log-traffic.php', {
-//             method: 'POST',
-//             headers: { 'Content-Type': 'application/json' },
-//             credentials: 'include',
-//             body: JSON.stringify({
-//                 camera_id: cameraId,
-//                 light_state: lightState,
-//                 mode_type: modeType,
-//                 duration_seconds: duration
-//             })
-//         });
-        
-//         if (!response.ok) {
-//             console.error('Failed to log traffic change');
-//         }
-//     } catch (error) {
-//         console.error('Log error:', error);
-//     }
-// }
 
 function updateStatus(camName, online) {
   const camImage = document.getElementById(camName);
@@ -370,7 +447,16 @@ function updateStatus(camName, online) {
   }
 }
 
-// LED State Management Functions
+// ================================================================
+// STATE PERSISTENCE SYSTEM
+// ================================================================
+
+/**
+ * Save LED state to localStorage
+ * @param {string} camName - Camera name
+ * @param {string} color - LED color
+ * @param {boolean} isOn - Whether LED is on
+ */
 function saveLEDState(camName, color, isOn) {
   const state = {
     color: color,
@@ -380,6 +466,11 @@ function saveLEDState(camName, color, isOn) {
   localStorage.setItem(`ledState_${camName}`, JSON.stringify(state));
 }
 
+/**
+ * Load LED state from localStorage
+ * @param {string} camName - Camera name
+ * @returns {Object|null} Saved LED state or null
+ */
 function loadLEDState(camName) {
   try {
     const saved = localStorage.getItem(`ledState_${camName}`);
@@ -390,12 +481,18 @@ function loadLEDState(camName) {
   }
 }
 
+/**
+ * Clear all LED states from localStorage
+ */
 function clearLEDStates() {
   localStorage.removeItem('ledState_cam1');
   localStorage.removeItem('ledState_cam2');
 }
 
-// Auto Mode State Management
+/**
+ * Save auto mode state to localStorage
+ * @param {boolean} isRunning - Whether auto mode is running
+ */
 function saveAutoModeState(isRunning) {
   localStorage.setItem('autoModeRunning', JSON.stringify({
     isRunning: isRunning,
@@ -538,18 +635,18 @@ function updateLEDButton(camName, color, isOn, saveState = true) {
 
 
 
-function findDuration(weekDay) {
-  let durationOfDay;
-  console.log(weekDay)
-  durations.forEach(duration => {
-    if(duration["week_day"] == weekDay) {
-      durationOfDay = duration["duration"];
-      console.log(duration["duration"]);
-    }
-  })
-  console.log(durationOfDay)
-  return durationOfDay;
-}
+// function findDuration(weekDay) {
+//   let durationOfDay;
+//   console.log(weekDay)
+//   durations.forEach(duration => {
+//     if(duration["week_day"] == weekDay) {
+//       durationOfDay = duration["duration"];
+//       console.log(duration["duration"]);
+//     }
+//   })
+//   console.log(durationOfDay)
+//   return durationOfDay;
+// }
 
 function activateForm(id) {
   document.querySelectorAll(".weekday-form").forEach(form => {
@@ -674,7 +771,13 @@ async function checkLed(camName, ip, color, mode) {
   }
 }
 
-cam1Btn.addEventListener("click", async() => {
+// ================================================================
+// EVENT LISTENERS
+// ================================================================
+
+// CAM1 Button Event Listener
+if (cam1Btn) {
+  cam1Btn.addEventListener("click", async() => {
   // Check if cameras are connected before proceeding
   if (!cams.cam1.connected || !cams.cam2.connected) {
     openErrorModal("Both cameras must be connected to control traffic lights");
@@ -741,9 +844,12 @@ cam1Btn.addEventListener("click", async() => {
     if (cam1BtnStatus) cam1BtnStatus.innerText = "Red Light";
     if (cam2BtnStatus) cam2BtnStatus.innerText = "Green Light";
   }
-})
+  });
+}
 
-cam2Btn.addEventListener("click", async() => {
+// CAM2 Button Event Listener
+if (cam2Btn) {
+  cam2Btn.addEventListener("click", async() => {
   // Check if cameras are connected before proceeding
   if (!cams.cam1.connected || !cams.cam2.connected) {
     openErrorModal("Both cameras must be connected to control traffic lights");
@@ -809,25 +915,23 @@ cam2Btn.addEventListener("click", async() => {
     if (cam1BtnStatus) cam1BtnStatus.innerText = "Green Light";
     if (cam2BtnStatus) cam2BtnStatus.innerText = "Red Light";
   }
-})
-
-async function count(num) {
-  return new Promise((res) => {
-    setInterval(() => {
-      res(num);
-  }, 1000)})
+  });
 }
 
+// Form submission handler
 handleFormSubmit("change-ip-form",
-    (data)=>(openSuccessModal(data.message)),
-    (error) => (openErrorModal(error.message)),
+  (data) => (openSuccessModal(data.message)),
+  (error) => (openErrorModal(error.message)),
 );
 
 
-// Automatic
-let isAutoModeRunning = false;
-let autoModeController = null;
+// ================================================================
+// AUTO MODE SYSTEM
+// ================================================================
 
+/**
+ * Start automatic traffic light mode with timer persistence
+ */
 async function startAutoMode() {
   // Check if cameras are connected before starting auto mode
   if (!cams.cam1.connected || !cams.cam2.connected) {
@@ -1226,15 +1330,144 @@ async function continueAutoModePhase2() {
   }
 }
 
-autoModeBtn.addEventListener("click", async () => {
-  if (isAutoModeRunning) {
-    stopAutoMode();
-  } else {
-    startAutoMode();
-  }
-})
+// Auto Mode Button Event Listener
+if (autoModeBtn) {
+  autoModeBtn.addEventListener("click", async () => {
+    if (!isAutoModeRunning) {
+      console.log("Starting auto mode...");
+      await startAutoMode();
+    } else {
+      console.log("Stopping auto mode...");
+      stopAutoMode();
+    }
+  });
+}
 
-document.addEventListener("DOMContentLoaded", ()=> {
+// ================================================================
+// LOGS AND STATISTICS MANAGEMENT
+// ================================================================
+
+/**
+ * Load recent logs for dashboard display
+ */
+async function loadRecentLogs() {
+  try {
+    const response = await fetch('../admin/get-logs-traffic.php?limit=5');
+    const data = await response.json();
+    
+    if (data.success && data.logs) {
+      displayRecentLogs(data.logs);
+    }
+  } catch (error) {
+    console.error('Failed to load recent logs:', error);
+    const container = document.getElementById('recent-logs-container');
+    if (container) {
+      container.innerHTML = '<div class="text-muted small">Failed to load recent logs</div>';
+    }
+  }
+}
+
+/**
+ * Display recent logs in the dashboard
+ * @param {Array} logs - Array of recent log entries
+ */
+function displayRecentLogs(logs) {
+  const container = document.getElementById('recent-logs-container');
+  if (!container) return;
+  
+  if (logs.length === 0) {
+    container.innerHTML = '<div class="text-muted small">No recent logs</div>';
+    return;
+  }
+  
+  container.innerHTML = logs.map(log => `
+    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+      <div class="flex-grow-1">
+        <div class="d-flex align-items-center">
+          <span class="badge bg-${log.camera_id === 'cam1' ? 'primary' : 'secondary'} me-2">
+            ${log.camera_name}
+          </span>
+          <span class="badge bg-${log.light_state.toLowerCase() === 'green' ? 'success' : 'danger'} me-2">
+            ${log.light_state}
+          </span>
+          <span class="badge bg-${log.mode_type.toLowerCase() === 'auto' ? 'info' : 'warning'}">
+            ${log.mode_type}
+          </span>
+        </div>
+        <div class="small text-muted mt-1">
+          ${log.created_at_formatted} • ${log.duration_formatted}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/**
+ * Load dashboard statistics
+ */
+async function loadDashboardStats() {
+  try {
+    const response = await fetch('../admin/get-logs-stats.php');
+    const data = await response.json();
+    
+    if (data.success && data.stats) {
+      updateDashboardStats(data.stats);
+    }
+  } catch (error) {
+    console.error('Failed to load dashboard stats:', error);
+  }
+}
+
+/**
+ * Update dashboard statistics display
+ * @param {Object} stats - Statistics object
+ */
+function updateDashboardStats(stats) {
+  // Update stat counters
+  const totalTodayEl = document.getElementById('total-logs-today');
+  const autoTodayEl = document.getElementById('auto-mode-today');
+  const manualTodayEl = document.getElementById('manual-mode-today');
+  const avgDurationEl = document.getElementById('avg-duration-today');
+  
+  if (totalTodayEl) totalTodayEl.textContent = stats.today_logs || '0';
+  
+  // Calculate today's auto/manual counts (approximation based on total stats)
+  const autoRatio = stats.auto_mode_logs / (stats.total_logs || 1);
+  const manualRatio = stats.manual_mode_logs / (stats.total_logs || 1);
+  
+  if (autoTodayEl) {
+    autoTodayEl.textContent = Math.round((stats.today_logs || 0) * autoRatio);
+  }
+  
+  if (manualTodayEl) {
+    manualTodayEl.textContent = Math.round((stats.today_logs || 0) * manualRatio);
+  }
+  
+  if (avgDurationEl && stats.average_duration) {
+    const avgAuto = stats.average_duration.auto || 0;
+    const avgManual = stats.average_duration.manual || 0;
+    const overallAvg = (avgAuto + avgManual) / 2;
+    avgDurationEl.textContent = overallAvg > 0 ? Math.round(overallAvg) + 's' : 'N/A';
+  }
+}
+
+/**
+ * Refresh dashboard data
+ */
+function refreshDashboard() {
+  loadRecentLogs();
+  loadDashboardStats();
+}
+
+// ================================================================
+// INITIALIZATION AND STARTUP
+// ================================================================
+
+/**
+ * Initialize the application on page load
+ */
+document.addEventListener("DOMContentLoaded", () => {
+  console.log('Traffic Light Control System Initializing...');
   fetch("../user/get-ip.php")
     .then(res => {
       if (!res.ok) {
@@ -1311,4 +1544,14 @@ document.addEventListener("DOMContentLoaded", ()=> {
     document.getElementById("cam1-count").style.display = 'none';
     document.getElementById("cam2-count").style.display = 'none';
   }
+  
+  // Load dashboard logs and statistics
+  setTimeout(() => {
+    refreshDashboard();
+    
+    // Set up periodic refresh for dashboard (every 60 seconds)
+    setInterval(refreshDashboard, 60000);
+  }, 2000); // Wait 2 seconds for initial setup
+  
+  console.log('Traffic Light Control System Initialized Successfully');
 })

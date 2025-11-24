@@ -161,6 +161,81 @@ if(!$isLoggedIn) {
           </form>
         </div>
       </div>
+      <div class="control__card">
+        <div>
+          <h3>Recent Activity</h3>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Last 5 traffic logs</span>
+            <a href="<?= BASE_URL ?>/pages/logs.php" class="btn btn-sm btn-outline-primary">
+              <i class="fas fa-list me-1"></i>View All
+            </a>
+          </div>
+          <div id="recent-logs-container">
+            <div class="text-center py-3">
+              <div class="spinner-border spinner-border-sm text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <div class="mt-2 small text-muted">Loading recent logs...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Stats Row -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body text-center">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fs-4 fw-bold" id="total-logs-today">-</div>
+              <div class="small">Today's Logs</div>
+            </div>
+            <i class="fas fa-calendar-day fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-success text-white">
+        <div class="card-body text-center">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fs-4 fw-bold" id="auto-mode-today">-</div>
+              <div class="small">Auto Mode</div>
+            </div>
+            <i class="fas fa-robot fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body text-center">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fs-4 fw-bold" id="manual-mode-today">-</div>
+              <div class="small">Manual Mode</div>
+            </div>
+            <i class="fas fa-hand-pointer fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-info text-white">
+        <div class="card-body text-center">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fs-4 fw-bold" id="avg-duration-today">-</div>
+              <div class="small">Avg Duration</div>
+            </div>
+            <i class="fas fa-clock fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </main>
