@@ -28,6 +28,9 @@ if($result && $result->num_rows > 0) {
     if(password_verify($password, $row["password"])) {
         $_SESSION["username"] = $row["username"];
         $_SESSION["user_id"] = $row["id"];
+        $_SESSION["user_role"] = $row["role"];
+        $_SESSION["user_email"] = $row["email"];
+        $_SESSION["user_name"] = $row["first_name"];
 
         $ip_check = $conn->prepare("SELECT * FROM ip_addresses WHERE admin_id = ?");
         $ip_check->bind_param("i", $row["created_by"]);

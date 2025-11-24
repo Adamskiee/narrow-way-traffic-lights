@@ -3,6 +3,10 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
 require_once "../includes/config.php";
+require_once "../includes/privilege-middleware.php";
+
+// Check admin privileges
+check_admin_access();
 
 try {
     $input = json_decode(file_get_contents("php://input"), true);

@@ -15,6 +15,103 @@ import { handleFormSubmit } from "./formHandler.js";
 import { openInfoModal, closeInfoModal } from "./infoModal.js";
 
 // ================================================================
+// PRIVILEGE ACCESS CONTROL
+// ================================================================
+
+// Get user role from global variables set by PHP
+const USER_ROLE = window.userRole || 'operator';
+const IS_ADMIN = window.isAdmin || false;
+const CAN_CONTROL_CAMERAS = window.canControlCameras || false;
+
+// Privilege check functions
+function requireAdmin(action = 'perform this action') {
+    if (!IS_ADMIN) {
+        showPrivilegeError(`Admin privileges required to ${action}`);
+        return false;
+    }
+    return true;
+}
+
+function requireCameraAccess(action = 'control cameras') {
+    if (!CAN_CONTROL_CAMERAS) {
+        showPrivilegeError(`Camera access required to ${action}`);
+        return false;
+    }
+    return true;
+}
+
+function showPrivilegeError(message) {
+    // Create and show privilege error modal/alert
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-warning alert-dismissible fade show privilege-alert';
+    alert.innerHTML = `
+        <i class="fas fa-lock me-2"></i>
+        <strong>Access Denied:</strong> ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Insert at top of main container
+    const container = document.querySelector('.container');
+    container.insertBefore(alert, container.firstChild);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.remove();
+        }
+    }, 5000);
+}
+
+function initializePrivilegeRestrictions() {
+    console.log(`User Role: ${USER_ROLE}, Admin: ${IS_ADMIN}, Camera Access: ${CAN_CONTROL_CAMERAS}`);
+    
+    // Apply visual restrictions based on role
+    if (USER_ROLE === 'operator') {
+        // Add operator styling to camera controls
+        const camControls = document.querySelectorAll('.led-control');
+        camControls.forEach(control => {
+            control.closest('.col').classList.add('cam-controls-operator');
+        });
+        
+        // Disable admin-only features
+        disableAdminFeatures();
+    }
+}
+
+function disableAdminFeatures() {
+    // Disable automatic mode button for operators
+    if (autoModeBtn && !IS_ADMIN) {
+        autoModeBtn.disabled = true;
+        autoModeBtn.classList.add('disabled');
+        autoModeBtn.title = 'Admin privileges required';
+    }
+    
+    // Disable duration scheduling controls
+    const weekDayButtons = document.querySelectorAll('#week-days button');
+    weekDayButtons.forEach(btn => {
+        if (!IS_ADMIN) {
+            btn.disabled = true;
+            btn.classList.add('disabled');
+        }
+    });
+    
+    // Disable IP management forms
+    const ipForm = document.getElementById('change-ip-form');
+    if (ipForm && !IS_ADMIN) {
+        const inputs = ipForm.querySelectorAll('input, button');
+        inputs.forEach(input => {
+            input.disabled = true;
+        });
+    }
+    
+    // Disable duration input controls
+    if (durationInput && saveDurationBtn && !IS_ADMIN) {
+        durationInput.disabled = true;
+        saveDurationBtn.disabled = true;
+    }
+}
+
+// ================================================================
 // CONSTANTS AND CONFIGURATION
 // ================================================================
 
@@ -777,6 +874,11 @@ async function checkLed(camName, ip, color, mode) {
 // CAM1 Button Event Listener
 if (cam1Btn) {
   cam1Btn.addEventListener("click", async() => {
+  // Check camera access privileges first
+  if (!requireCameraAccess('control camera 1')) {
+    return;
+  }
+  
   // Check if cameras are connected before proceeding
   if (!cams.cam1.connected || !cams.cam2.connected) {
     openErrorModal("Both cameras must be connected to control traffic lights");
@@ -849,6 +951,11 @@ if (cam1Btn) {
 // CAM2 Button Event Listener
 if (cam2Btn) {
   cam2Btn.addEventListener("click", async() => {
+  // Check camera access privileges first
+  if (!requireCameraAccess('control camera 2')) {
+    return;
+  }
+  
   // Check if cameras are connected before proceeding
   if (!cams.cam1.connected || !cams.cam2.connected) {
     openErrorModal("Both cameras must be connected to control traffic lights");
@@ -1332,6 +1439,11 @@ async function continueAutoModePhase2() {
 // Auto Mode Button Event Listener
 if (autoModeBtn) {
   autoModeBtn.addEventListener("click", async () => {
+    // Check admin privileges for automatic mode
+    if (!requireAdmin('use automatic mode')) {
+      return;
+    }
+    
     if (!isAutoModeRunning) {
       console.log("Starting auto mode...");
       await startAutoMode();
@@ -1467,6 +1579,9 @@ function refreshDashboard() {
  */
 document.addEventListener("DOMContentLoaded", () => {
   console.log('Traffic Light Control System Initializing...');
+  
+  // Initialize privilege restrictions first
+  initializePrivilegeRestrictions();
   fetch("../user/get-ip.php")
     .then(res => {
       if (!res.ok) {

@@ -5,17 +5,33 @@ if(!$isLoggedIn) {
   header("Location: ". BASE_URL ."/index.php");
   exit();
 }
+
+// Get user role for frontend
+$userRole = get_user_role();
+$isAdmin = is_admin();
+$canControlDuration = can_access_feature('duration_control');
+$canChangeIP = can_access_feature('ip_management');
+$canControlCameras = can_access_feature('camera_control');
 ?>
 <main class="container-fluid" style="padding-top: 70px;">
   <?php include BASE_PATH . "/components/infoModal.php" ?>
   <div class="px-2 container">
     <!-- Automatic Mode Control -->
+    <?php if ($isAdmin): ?>
     <div class="text-center py-3">
       <button id="auto-mode-button" class="btn btn-primary btn-lg px-4">
         <i class="fas fa-play me-2"></i>Start Automatic Mode
       </button>
       <p class="text-muted mt-2 mb-0">Control both cameras automatically based on duration schedule</p>
     </div>
+    <?php else: ?>
+    <div class="text-center py-3">
+      <div class="alert alert-info" role="alert">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Operator Mode:</strong> You can control camera streams. Automatic mode requires admin privileges.
+      </div>
+    </div>
+    <?php endif; ?>
     
     <div class="row row-cols-1 row-cols-sm-2 py-4 g-3">
       <div class="col">
@@ -70,9 +86,10 @@ if(!$isLoggedIn) {
           </div>
         </div>
       </div>
-      <div class="control__card">
+      <div class="control__card <?= !$isAdmin ? 'restricted-access' : '' ?>">
         <div class="d-flex flex-column" style="gap: 5px;">
-          <h3>Duration Schedule</h3>
+          <h3>Duration Schedule <?= !$isAdmin ? '<span class="badge bg-warning text-dark ms-2">Admin Only</span>' : '' ?></h3>
+          <?php if ($isAdmin): ?>
           <div id="week-days" class="d-flex justify-content-between flex-wrap" style="gap: 5px;">
             <button class="btn flex-fill btn-secondary active" data-week="1">Mon</button>
             <button class="btn flex-fill btn-secondary" data-week="2">Tue</button>
@@ -82,6 +99,11 @@ if(!$isLoggedIn) {
             <button class="btn flex-fill btn-secondary" data-week="6">Sat</button>
             <button class="btn flex-fill btn-secondary" data-week="7">Sun</button>
           </div>
+          <?php else: ?>
+          <div class="alert alert-warning" role="alert">
+            <i class="fas fa-lock me-2"></i>Duration scheduling requires admin privileges.
+          </div>
+          <?php endif; ?>
           
           <!-- Always visible duration input form -->
           <div class="mt-3">
@@ -115,10 +137,17 @@ if(!$isLoggedIn) {
           </form>
         </div>
       </div>
-      <div class="control__card">
+      <div class="control__card <?= !$isAdmin ? 'restricted-access' : '' ?>">
         <div class="container-fluid">
-          <h3>Change IP Address</h3>
+          <h3>Change IP Address <?= !$isAdmin ? '<span class="badge bg-warning text-dark ms-2">Admin Only</span>' : '' ?></h3>
+          <?php if ($isAdmin): ?>
           <form action="<?= BASE_URL ?>/admin/change-ip.php" method="post" id="change-ip-form" novalidate class="needs-validation">
+          <?php else: ?>
+          <div class="alert alert-warning" role="alert">
+            <i class="fas fa-lock me-2"></i>IP address management requires admin privileges.
+          </div>
+          <form action="<?= BASE_URL ?>/admin/change-ip.php" method="post" id="change-ip-form" novalidate class="needs-validation" style="display: none;">
+          <?php endif; ?>
             <input type="hidden" name="user_id" value="<?= $_SESSION["user_id"] ?>">
             <div class="mb-3">
               <div class="input-group">
@@ -146,6 +175,14 @@ if(!$isLoggedIn) {
     </div>
   </div>
 </main>
+
+<!-- Pass user role data to JavaScript -->
+<script>
+  window.userRole = '<?= $userRole ?>';
+  window.isAdmin = <?= $isAdmin ? 'true' : 'false' ?>;
+  window.canControlCameras = <?= $canControlCameras ? 'true' : 'false' ?>;
+</script>
+
 <script type="module" src="<?= BASE_URL ?>/assets/js/forms/setupIpForm.js"></script>
 <script type="module" src="<?= BASE_URL ?>/assets/js/control.js"></script>
 <?php include BASE_PATH . "/includes/footer.php"; ?>

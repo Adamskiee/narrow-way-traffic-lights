@@ -13157,6 +13157,199 @@ section::after {
   display: none;
 }
 
+.restricted-access {
+  position: relative;
+  opacity: 0.7;
+}
+.restricted-access::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 193, 7, 0.1);
+  border: 2px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  z-index: 1;
+  pointer-events: none;
+}
+.restricted-access::after {
+  content: "\f023";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #ffc107;
+  font-size: 1.2rem;
+  z-index: 2;
+  pointer-events: none;
+}
+.restricted-access input, .restricted-access button, .restricted-access select, .restricted-access textarea {
+  pointer-events: none;
+  opacity: 0.6;
+}
+.restricted-access .btn {
+  cursor: not-allowed;
+}
+.restricted-access .btn:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.badge.bg-warning.text-dark {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.alert-warning {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  color: #856404;
+  border-radius: 8px;
+}
+.alert-warning .fas {
+  color: #ffc107;
+}
+
+.alert-info {
+  background: rgba(13, 202, 240, 0.1);
+  border: 1px solid rgba(13, 202, 240, 0.3);
+  color: #055160;
+  border-radius: 8px;
+}
+.alert-info .fas {
+  color: #0dcaf0;
+}
+
+.cam-controls-operator .led-control {
+  border: 2px solid rgba(40, 167, 69, 0.5);
+  border-radius: 8px;
+  padding: 0.25rem;
+  background: rgba(40, 167, 69, 0.1);
+}
+.cam-controls-operator .led-control::before {
+  content: "Operator Access";
+  position: absolute;
+  top: -8px;
+  left: 10px;
+  background: var(--bs-dark);
+  color: #28a745;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.admin-feature {
+  position: relative;
+}
+.admin-feature::before {
+  content: "Admin Feature";
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  background: var(--bs-red);
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  z-index: 10;
+}
+
+.privilege-alert {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1060;
+  min-width: 300px;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  animation: slideInAlert 0.3s ease-out;
+}
+@keyframes slideInAlert {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.btn.disabled,
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.btn.disabled:hover,
+.btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.cam-controls-operator {
+  position: relative;
+}
+.cam-controls-operator .led-control {
+  position: relative;
+  border: 2px solid rgba(40, 167, 69, 0.3);
+  border-radius: 12px;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.05) 0%, rgba(40, 167, 69, 0.1) 100%);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+}
+.cam-controls-operator .led-control::before {
+  content: "Operator Access";
+  position: absolute;
+  top: -12px;
+  left: 10px;
+  background: var(--bs-success);
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+.cam-controls-operator .led-control::after {
+  content: "\f007";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  color: var(--bs-success);
+  font-size: 0.8rem;
+}
+
+.user-role {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.user-role.role-admin {
+  color: #ffc107;
+}
+.user-role.role-admin .fa-crown {
+  color: #ffc107;
+}
+.user-role.role-operator {
+  color: #28a745;
+}
+.user-role.role-operator .fa-user-cog {
+  color: #28a745;
+}
+
 html {
   scroll-behavior: smooth;
 }

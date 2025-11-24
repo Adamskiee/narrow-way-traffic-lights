@@ -44,24 +44,28 @@ $isLoggedIn = isset($_SESSION["user_id"]);
                             <span>Control</span>
                         </a>
                     </li>
+                    <?php if (($_SESSION['user_role'] ?? 'operator') === 'admin'): ?>
                     <li class="nav-item">
                         <a class="nav-link <?= $current === 'user.php' ? 'active' : '' ?>" href="<?=BASE_URL?>/pages/user.php">
                             <i class="fas fa-users nav-icon"></i>
                             <span>Users</span>
                         </a>
                     </li>
+                    <?php endif; ?>
                     <li class="nav-item">
                         <a class="nav-link <?= $current === 'logs.php' ? 'active' : '' ?>" href="<?=BASE_URL?>/pages/logs.php">
                             <i class="fas fa-clipboard-list nav-icon"></i>
                             <span>Logs</span>
                         </a>
                     </li>
+                    <?php if (($_SESSION['user_role'] ?? 'operator') === 'admin'): ?>
                     <li class="nav-item">
                         <a class="nav-link <?= $current === 'settings.php' ? 'active' : '' ?>" href="<?=BASE_URL?>/pages/settings.php">
                             <i class="fas fa-cog nav-icon"></i>
                             <span>Settings</span>
                         </a>
                     </li>
+                    <?php endif; ?>
                 </ul>
 
                 <!-- User Menu -->
@@ -71,8 +75,15 @@ $isLoggedIn = isset($_SESSION["user_id"]);
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="user-details">
-                            <span class="user-name"><?= $_SESSION['username'] ?? 'Admin' ?></span>
-                            <span class="user-role">Administrator</span>
+                            <span class="user-name"><?= $_SESSION['username'] ?? 'User' ?></span>
+                            <span class="user-role role-<?= strtolower($_SESSION['user_role'] ?? 'operator') ?>">
+                                <?= ucfirst($_SESSION['user_role'] ?? 'Operator') ?>
+                                <?php if (($_SESSION['user_role'] ?? 'operator') === 'admin'): ?>
+                                    <i class="fas fa-crown ms-1"></i>
+                                <?php else: ?>
+                                    <i class="fas fa-user-cog ms-1"></i>
+                                <?php endif; ?>
+                            </span>
                         </div>
                     </div>
                     <a class="btn btn-logout" href="?logout">
