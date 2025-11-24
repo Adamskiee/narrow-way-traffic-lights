@@ -71,7 +71,7 @@ include './includes/header.php';
     <section id="about">
         <div class="row row-cols-1 row-cols-lg-2 min-vh-100 about__container" >
             <div class="col d-flex justify-content-lg-center justify-content-start flex-column about__content ">
-                <h2 class="header-color">About <span>Us</span></h2>
+                <h2 class="header-color" id="title">About <span>Us</span></h2>
                 <p id="description">
                     We are a team of aspiring innovators committed to building smarter, safer, and more efficient traffic systems. Our goal is to develop technology that doesn't just monitor traffic—it understands it. By combining modern software development, real-time data processing, and forward-thinking design, we aim to reduce congestion, improve road safety, and help communities move better.
                     <br>
@@ -81,23 +81,31 @@ include './includes/header.php';
             <div class="col card__container">
                 <div class="about__card col" id="tosino-card">
                     <img src="assets/images/tosino.png" alt="" class="img-fluid rounded-circle object-fit-cover card__img">
-                    <h3 class="card__name">Tosino,  <br><span>Adriele Matthew</span></h3>
-                    <p class="card__description">Developer</p>
+                    <div>
+                        <h3 class="card__name">Tosino,  <br><span>Adriele Matthew</span></h3>
+                        <p class="card__role">Developer</p>
+                    </div>
                 </div>
                 <div class="about__card col" id="rose-card">
                     <img src="assets/images/rose.jpg" alt="" class="img-fluid rounded-circle object-fit-cover card__img">
-                    <h3 class="card__name">Rose,  <br><span>Jeric</span></h3>
-                    <p class="card__description">Developer</p>
+                    <div>
+                        <h3 class="card__name">Rose,  <br><span>Jeric</span></h3>
+                        <p class="card__role">Developer</p>
+                    </div>
                 </div>
                 <div class="about__card col" id="maligalig-card">
                     <img src="assets/images/maligalig.jpg" alt="" class="img-fluid rounded-circle object-fit-cover card__img">
-                    <h3 class="card__name">Maligalig,  <br><span>Ian</span></h3>
-                    <p class="card__description">Developer</p>
+                    <div>
+                        <h3 class="card__name">Maligalig,  <br><span>Ian</span></h3>
+                        <p class="card__role">Developer</p>
+                    </div>
                 </div>
                 <div class="about__card col" id="magsino-card">
                     <img src="assets/images/magsino.png" alt="" class="img-fluid rounded-circle object-fit-cover card__img">
-                    <h3 class="card__name">Magsino,  <br><span>Marc Russel</span></h3>
-                    <p class="card__description">Developer</p>
+                    <div>
+                        <h3 class="card__name">Magsino,  <br><span>Marc Russel</span></h3>
+                        <p class="card__role">Developer</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,7 +114,7 @@ include './includes/header.php';
         <div class="row row-cols-1 row-cols-lg-2 min-vh-100 " style="padding-top: 57px;">
             <div class="col d-flex justify-content-center  flex-column px-lg-5">
                 <div>
-                    <h3 class="header-color">Get in <span>Touch</span></h3>
+                    <h2 class="header-color">Get in <span>Touch</span></h3>
                     <p>
                         Whether you have suggestions, questions, or feedback, we're always open to connect. <br>
                         Send us a message and we'll get back to you shortly.

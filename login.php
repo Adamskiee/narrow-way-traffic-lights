@@ -5,10 +5,10 @@ include "./includes/header.php";
  ?>
 
 <main>
-    <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 70px)">
-        <div class="mw-100 border p-5 rounded" style="width: 500px;">
+    <div class="login-container container-fluid d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 70px)">
+        <div class="mw-100  p-5 rounded login-form-container" style="width: 500px;">
             <span id="result" class = "text-danger mb-3"></span>
-            <form action="<?= BASE_URL ?>/includes/login-process.php" method="post" class="validate-form" id="loginForm" class="">
+            <form action="<?= BASE_URL ?>/includes/login-process.php" method="post" class="validate-form" id="loginForm">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <input
@@ -35,7 +35,7 @@ include "./includes/header.php";
                 </div>
                 <button
                     type="submit"
-                    class="btn btn-primary"
+                    class="btn btn-secondary-custom"
                 >
                     Submit
                 </button>

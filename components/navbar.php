@@ -49,7 +49,7 @@ $isLoggedIn = isset($_SESSION["user_id"]);
           <a class="nav-link" href="#contact">Contact Us</a>
         </li>
       </ul>
-        <a class="btn btn-success" href="<?= BASE_URL?>/login.php">Login</a>
+        <a class="btn btn-login-outline" href="<?= BASE_URL?>/login.php">Login</a>
     <?php endif; ?>
     </div>
   </div>
