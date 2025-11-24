@@ -313,17 +313,30 @@ include './includes/header.php';
             </div>
         </div>
     </section>
-    <section id="about">
-        <div class="row row-cols-1 row-cols-lg-2 min-vh-100 about__container" >
+    <section id="about" class="about-section-enhanced">
+        <div class="about-background-pattern"></div>
+        <div class="container">
+            <div class="row row-cols-1 row-cols-lg-2 min-vh-100 about__container" >
             <div class="col d-flex justify-content-lg-center justify-content-start flex-column about__content ">
-                <h2 class="header-color" id="title">About <span>Us</span></h2>
-                <p id="description">
+                <div class="content-section">
+                    <div class="title-decoration"></div>
+                    <h2 class="header-color" id="title">About <span>Us</span></h2>
+                    <p id="description" class="enhanced-description">
                     We are a team of aspiring innovators committed to building smarter, safer, and more efficient traffic systems. Our goal is to develop technology that doesn't just monitor traffic—it understands it. By combining modern software development, real-time data processing, and forward-thinking design, we aim to reduce congestion, improve road safety, and help communities move better.
                     <br>
-                    We believe that traffic solutions should be intuitive, adaptive, and built for the future. Whether it’s automated monitoring, intelligent alerts, or data-driven decision support, we’re focused on creating a system that makes urban mobility smoother for everyone.
-                </p>
+                    We believe that traffic solutions should be intuitive, adaptive, and built for the future. Whether it's automated monitoring, intelligent alerts, or data-driven decision support, we're focused on creating a system that makes urban mobility smoother for everyone.
+                    </p>
+                </div>
             </div>
-            <div class="col card__container">
+            <div class="col">
+                <div class="team-section-wrapper">
+                    <div class="team-header-section">
+                        <div class="team-badge">
+                            <i class="fas fa-users"></i>
+                            <span>Development Team</span>
+                        </div>
+                    </div>
+                    <div class="card__container enhanced-grid">
                 <div class="about__card col" id="tosino-card">
                     <img src="assets/images/tosino.png" alt="" class="img-fluid rounded-circle object-fit-cover card__img">
                     <div>
@@ -335,132 +348,221 @@ include './includes/header.php';
                     <img src="assets/images/rose.jpg" alt="" class="img-fluid rounded-circle object-fit-cover card__img">
                     <div>
                         <h3 class="card__name">Rose,  <br><span>Jeric</span></h3>
-                        <p class="card__role">Developer</p>
+                        <p class="card__role">Designer</p>
                     </div>
                 </div>
                 <div class="about__card col" id="maligalig-card">
                     <img src="assets/images/maligalig.jpg" alt="" class="img-fluid rounded-circle object-fit-cover card__img">
                     <div>
                         <h3 class="card__name">Maligalig,  <br><span>Ian</span></h3>
-                        <p class="card__role">Developer</p>
+                        <p class="card__role">Asst. Project Manager</p>
                     </div>
                 </div>
                 <div class="about__card col" id="magsino-card">
                     <img src="assets/images/magsino.png" alt="" class="img-fluid rounded-circle object-fit-cover card__img">
                     <div>
                         <h3 class="card__name">Magsino,  <br><span>Marc Russel</span></h3>
-                        <p class="card__role">Developer</p>
+                        <p class="card__role">Project Manager</p>
+                    </div>
+                </div>
                     </div>
                 </div>
             </div>
         </div>
+        </div>
     </section>
-    <section id="contact">
-        <div class="row row-cols-1 row-cols-lg-2 min-vh-100 " style="padding-top: 57px;">
-            <div class="col d-flex justify-content-center  flex-column px-lg-5">
-                <div>
-                    <h2 class="header-color">Get in <span>Touch</span></h3>
-                    <p>
-                        Whether you have suggestions, questions, or feedback, we're always open to connect. <br>
-                        Send us a message and we'll get back to you shortly.
-                    </p>
-                </div>
-                <div class="d-flex justify-content-between pt-2">
-                    <div class="contact__profile text-center">
-                        <img 
-                        src="assets/images/tosino.png" 
-                        class="profile__img object-fit-cover img-fluid rounded-circle" 
-                        alt=""
-                        data-bs-toggle="popover" 
-                        data-bs-placement="bottom"
-                        data-bs-content="
-                            <div class='social-links'>
-                                <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/github.svg' height='25' width='25' /></a><br>
-                                <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/facebook.svg' height='25' width='25' /></a><br>
-                                <a href='https://linkedin.com/in/adriele' target='_blank' class='social-link'><img src='assets/images/linkedln.svg' height='25' width='25' /></a><br>
-                            </div>
-                        "
-                        data-bs-html="true">
-                        <h4>Adriele</h4>
+    <section id="contact" class="contact-section-enhanced">
+        <div class="contact-background-pattern"></div>
+        <div class="contact-glow-effects">
+            <div class="glow-orb glow-orb-1"></div>
+            <div class="glow-orb glow-orb-2"></div>
+            <div class="glow-orb glow-orb-3"></div>
+        </div>
+        
+        <div class="container">
+            <div class="row row-cols-1 row-cols-lg-2 min-vh-100 align-items-center" style="padding-top: 57px;">
+                <div class="col d-flex justify-content-center flex-column px-lg-5">
+                    <div class="contact-intro-section">
+                        <div class="contact-header-badge">
+                            <i class="fas fa-envelope"></i>
+                            <span>Contact Us</span>
+                        </div>
+                        <h2 class="header-color contact-title">Get in <span>Touch</span></h2>
+                        <p class="contact-description">
+                            Whether you have suggestions, questions, or feedback, we're always open to connect. <br>
+                            Send us a message and we'll get back to you shortly.
+                        </p>
                     </div>
-                    <div class="contact__profile text-center">
-                        <img src="assets/images/maligalig.jpg" class="profile__img object-fit-cover img-fluid rounded-circle" alt=""data-bs-toggle="popover" 
-                        data-bs-placement="bottom"
-                        data-bs-content="
-                            <div class='social-links'>
-                                <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/github.svg' height='25' width='25' /></a><br>
-                                <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/facebook.svg' height='25' width='25' /></a><br>
-                                <a href='https://linkedin.com/in/adriele' target='_blank' class='social-link'><img src='assets/images/linkedln.svg' height='25' width='25' /></a><br>
+                    
+                    <div class="team-contacts-section">
+                        <div class="team-contacts-header">
+                            <h3>Our Team</h3>
+                            <p>Connect with our developers</p>
+                        </div>
+                        <div class="team-profiles-grid">
+                            <div class="contact__profile">
+                                <div class="profile-image-wrapper">
+                                    <img 
+                                    src="assets/images/tosino.png" 
+                                    class="profile__img object-fit-cover img-fluid rounded-circle" 
+                                    alt="Adriele Profile"
+                                    data-bs-toggle="popover" 
+                                    data-bs-placement="bottom"
+                                    data-bs-content="
+                                        <div class='social-links'>
+                                            <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/github.svg' height='25' width='25' /></a><br>
+                                            <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/facebook.svg' height='25' width='25' /></a><br>
+                                            <a href='https://linkedin.com/in/adriele' target='_blank' class='social-link'><img src='assets/images/linkedln.svg' height='25' width='25' /></a><br>
+                                        </div>
+                                    "
+                                    data-bs-html="true">
+                                    <div class="profile-glow"></div>
+                                </div>
+                                <div class="profile-info">
+                                    <h4>Adriele</h4>
+                                    <span class="profile-role">Developer</span>
+                                </div>
                             </div>
-                        "
-                        data-bs-html="true">
-                        <h4>Ian</h4>
-                    </div>
-                    <div class="contact__profile text-center">
-                        <img src="assets/images/rose.jpg" class="profile__img object-fit-cover img-fluid rounded-circle" alt=""data-bs-toggle="popover" 
-                        data-bs-placement="bottom"
-                        data-bs-content="
-                            <div class='social-links'>
-                                <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/github.svg' height='25' width='25' /></a><br>
-                                <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/facebook.svg' height='25' width='25' /></a><br>
-                                <a href='https://linkedin.com/in/adriele' target='_blank' class='social-link'><img src='assets/images/linkedln.svg' height='25' width='25' /></a><br>
+                            <div class="contact__profile">
+                                <div class="profile-image-wrapper">
+                                    <img src="assets/images/maligalig.jpg" class="profile__img object-fit-cover img-fluid rounded-circle" alt="Ian Profile" data-bs-toggle="popover" 
+                                    data-bs-placement="bottom"
+                                    data-bs-content="
+                                        <div class='social-links'>
+                                            <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/github.svg' height='25' width='25' /></a><br>
+                                            <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/facebook.svg' height='25' width='25' /></a><br>
+                                            <a href='https://linkedin.com/in/adriele' target='_blank' class='social-link'><img src='assets/images/linkedln.svg' height='25' width='25' /></a><br>
+                                        </div>
+                                    "
+                                    data-bs-html="true">
+                                    <div class="profile-glow"></div>
+                                </div>
+                                <div class="profile-info">
+                                    <h4>Ian</h4>
+                                    <span class="profile-role">Asst. Project Manager</span>
+                                </div>
                             </div>
-                        "
-                        data-bs-html="true">
-                        <h4>Jeric</h4>
-                    </div>
-                    <div class="contact__profile text-center">
-                        <img src="assets/images/magsino.png" class="profile__img object-fit-cover img-fluid rounded-circle" alt=""data-bs-toggle="popover" 
-                        data-bs-placement="bottom"
-                        data-bs-content="
-                            <div class='social-links'>
-                                <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/github.svg' height='25' width='25' /></a><br>
-                                <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/facebook.svg' height='25' width='25' /></a><br>
-                                <a href='https://linkedin.com/in/adriele' target='_blank' class='social-link'><img src='assets/images/linkedln.svg' height='25' width='25' /></a><br>
+                            <div class="contact__profile">
+                                <div class="profile-image-wrapper">
+                                    <img src="assets/images/rose.jpg" class="profile__img object-fit-cover img-fluid rounded-circle" alt="Jeric Profile" data-bs-toggle="popover" 
+                                    data-bs-placement="bottom"
+                                    data-bs-content="
+                                        <div class='social-links'>
+                                            <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/github.svg' height='25' width='25' /></a><br>
+                                            <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/facebook.svg' height='25' width='25' /></a><br>
+                                            <a href='https://linkedin.com/in/adriele' target='_blank' class='social-link'><img src='assets/images/linkedln.svg' height='25' width='25' /></a><br>
+                                        </div>
+                                    "
+                                    data-bs-html="true">
+                                    <div class="profile-glow"></div>
+                                </div>
+                                <div class="profile-info">
+                                    <h4>Jeric</h4>
+                                    <span class="profile-role">Designer</span>
+                                </div>
                             </div>
-                        "
-                        data-bs-html="true">
-                        <h4>Marc</h4>
+                            <div class="contact__profile">
+                                <div class="profile-image-wrapper">
+                                    <img src="assets/images/magsino.png" class="profile__img object-fit-cover img-fluid rounded-circle" alt="Marc Profile" data-bs-toggle="popover" 
+                                    data-bs-placement="bottom"
+                                    data-bs-content="
+                                        <div class='social-links'>
+                                            <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/github.svg' height='25' width='25' /></a><br>
+                                            <a href='https://github.com/adriele' target='_blank' class='social-link'><img src='assets/images/facebook.svg' height='25' width='25' /></a><br>
+                                            <a href='https://linkedin.com/in/adriele' target='_blank' class='social-link'><img src='assets/images/linkedln.svg' height='25' width='25' /></a><br>
+                                        </div>
+                                    "
+                                    data-bs-html="true">
+                                    <div class="profile-glow"></div>
+                                </div>
+                                <div class="profile-info">
+                                    <h4>Marc</h4>
+                                    <span class="profile-role">Project Manager</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
             </div>
-            <div class="col d-flex justify-content-center  flex-column">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input
-                        type="text"
-                        class="form-control contact__input"
-                        name="name"
-                        id="name"
-                        placeholder="e.g. Juan"
-                    />
+                <div class="col d-flex justify-content-center flex-column">
+                    <div class="contact-form-container">
+                        <div class="contact-form-header">
+                            <h3>Send us a Message</h3>
+                            <p>We'll get back to you within 24 hours</p>
+                        </div>
+                        
+                        <form class="contact-form">
+                            <div class="form-group-enhanced mb-3">
+                                <div class="input-wrapper">
+                                    <label for="name" class="form-label">Full Name</label>
+                                    <input
+                                        type="text"
+                                        class="form-control contact__input"
+                                        name="name"
+                                        id="name"
+                                        placeholder="Enter your full name"
+                                        required
+                                    />
+                                    <div class="input-glow"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-enhanced mb-3">
+                                <div class="input-wrapper">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input
+                                        type="email"
+                                        class="form-control contact__input"
+                                        name="email"
+                                        id="email"
+                                        placeholder="your.email@example.com"
+                                        required
+                                    />
+                                    <div class="input-glow"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-enhanced mb-3">
+                                <div class="input-wrapper">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input
+                                        type="tel"
+                                        class="form-control contact__input"
+                                        name="phone"
+                                        id="phone"
+                                        placeholder="09123456789"
+                                    />
+                                    <div class="input-glow"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-enhanced mb-4">
+                                <div class="input-wrapper">
+                                    <label for="message" class="form-label">Message</label>
+                                    <textarea 
+                                        class="form-control contact__input" 
+                                        name="message" 
+                                        id="message" 
+                                        rows="4" 
+                                        placeholder="Tell us about your project or ask any questions..."
+                                        required
+                                    ></textarea>
+                                    <div class="input-glow"></div>
+                                </div>
+                            </div>
+                            
+            <div class="form-submit-section">
+                <button type="submit" class="btn btn-contact-submit">
+                    <span class="btn-text">Send Message</span>
+                    <i class="fas fa-paper-plane btn-icon"></i>
+                    <div class="btn-glow"></div>
+                </button>                                <div class="form-note">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Your information is secure and will not be shared</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input
-                        type="email"
-                        class="form-control contact__input"
-                        name="email"
-                        id="email"
-                        placeholder="e.g. juan@gmail.com"
-                    />
-                </div>
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Phone</label>
-                    <input
-                        type="text"
-                        class="form-control contact__input"
-                        name="phone"
-                        id="phone"
-                        placeholder="e.g. juan@gmail.com"
-                    />
-                </div>
-                <div class="mb-3">
-                    <label for="message" class="form-label">Message</label>
-                    <textarea class="form-control contact__input" name="message" id="message" rows="3" placeholder="Message..."></textarea>
-                </div>
-                <button type="submit">Submit</button>
-            </div>
         </div>
     </section>
 </main>
