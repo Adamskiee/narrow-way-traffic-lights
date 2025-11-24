@@ -12153,8 +12153,10 @@ textarea.form-control-lg {
 body {
   background: var(--bs-bg-brand);
   background-attachment: fixed;
-  min-height: 100vh;
   color: white;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
 }
 
 .contact__input {
@@ -12202,4 +12204,39 @@ body {
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
   background-color: rgba(255, 255, 255, 0.05);
+}
+
+.control__card-container {
+  display: grid;
+  grid-template-columns: 1.5fr 3fr 2fr;
+  gap: 1rem;
+}
+@media (max-width: 991px) {
+  .control__card-container {
+    grid-template-columns: 1.5fr 3fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+@media (max-width: 368px) {
+  .control__card-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 991px) {
+  .control__card:last-child {
+    grid-column: 1/span 2;
+  }
+}
+@media (max-width: 368px) {
+  .control__card:last-child {
+    grid-column: 1/span 1;
+  }
+}
+
+.control__card {
+  background-color: var(--bs-bg-medium-gray);
+  border-radius: 10px;
+  padding: 1rem;
 }/*# sourceMappingURL=custom.css.map */

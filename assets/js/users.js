@@ -45,7 +45,7 @@ function openDeleteModal(id) {
         <input type="hidden" name="user-id" value="${id}">
         <p>Are you sure to delete?</p>
         `,
-        footer: `<button type="submit">Delete</button>
+        footer: `<button type="submit" class="btn btn-danger">Delete</button>
         `
     });
 }
@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
                     <td>${user["created_at"] ?? ""}</td>
                     <td>
                         <button class="btn btn-danger delete-btn" data-id="${user.id}">Delete</button>
-                        <button class="btn btn-tertiary edit-btn" data-id="${user.id}">Edit</button>
+                        <button class="btn btn-secondary edit-btn" data-id="${user.id}">Edit</button>
                     </td>
                 </tr>
                 `
