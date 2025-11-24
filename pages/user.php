@@ -1,33 +1,133 @@
 <?php
-$page_title = 'User management page';
+$page_title = 'User Management';
 include '../includes/header.php';
+
+// Check if user is logged in and redirect if not
+if(!$isLoggedIn) {
+    header("Location: ". BASE_URL ."/index.php");
+    exit();
+}
 ?>
-<main class="container-fluid">
-    <div class="">
-        <div class="mb-4">
-            <h2> User Management  </h2>
+
+<main class="container-fluid py-4">
+    <!-- Alert Container -->
+    <div id="alert-container"></div>
+    
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h3 mb-0">
+                <i class="fas fa-users text-primary me-2"></i>
+                User Management
+            </h1>
+            <p class="text-muted mb-0">Manage system users and their permissions</p>
         </div>
-        <div class="">
-            <div class="mb-2">
-                <button id="add-user-btn" class="btn btn-primary">Add User</button>
+        <div class="col-auto">
+            <div class="btn-group" role="group">
+                <button id="add-user-btn" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-2"></i>Add User
+                </button>
+                <button class="btn btn-outline-primary" id="refresh-users" title="Refresh Users">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="btn btn-outline-success" id="export-users" title="Export to CSV">
+                    <i class="fas fa-download me-1"></i>Export
+                </button>
             </div>
-            <?php include BASE_PATH . "/components/modal.php" ?>
-            <?php include BASE_PATH . "/components/infoModal.php" ?>
+        </div>
+    </div>
+    
+    <!-- Include Modal Components -->
+    <?php include BASE_PATH . "/components/modal.php" ?>
+    <?php include BASE_PATH . "/components/infoModal.php" ?>
+    
+    <!-- Users Table Card -->
+    <div class="card-dark">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-table me-2"></i>System Users
+            </h5>
+            <div id="users-count" class="text-muted small">
+                Loading...
+            </div>
+        </div>
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-dark">
-                    <thead>
+                <table class="table table-dark table-hover mb-0">
+                    <thead class="">
                         <tr>
-                            <td>Username</td>
-                            <td>First Name</td>
-                            <td>Last Name</td>
-                            <td>Email</td>
-                            <td>Phone #</td>
-                            <td>Created At</td>
-                            <td>Action</td>
+                            <th scope="col">
+                                <i class="fas fa-user me-1"></i>Username
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-id-card me-1"></i>First Name
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-id-card me-1"></i>Last Name
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-envelope me-1"></i>Email
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-phone me-1"></i>Phone #
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-calendar me-1"></i>Created At
+                            </th>
+                            <th scope="col" class="text-center">
+                                <i class="fas fa-ellipsis-h me-1"></i>Actions
+                            </th>
                         </tr>
                     </thead>
-                    <tbody id="user-table-body"></tbody>
+                    <tbody id="user-table-body">
+                        <!-- Users will be loaded here via JavaScript -->
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <div class="mt-2">Loading users...</div>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card-dark text-center">
+                <div class="card-body">
+                    <div class="text-primary">
+                        <i class="fas fa-users fa-2x mb-2"></i>
+                    </div>
+                    <h5 class="card-title">Total Users</h5>
+                    <p class="card-text fs-4 fw-bold" id="total-users-count">-</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-dark text-center">
+                <div class="card-body">
+                    <div class="text-success">
+                        <i class="fas fa-user-check fa-2x mb-2"></i>
+                    </div>
+                    <h5 class="card-title">Active Users</h5>
+                    <p class="card-text fs-4 fw-bold" id="active-users-count">-</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-dark text-center">
+                <div class="card-body">
+                    <div class="text-info">
+                        <i class="fas fa-user-plus fa-2x mb-2"></i>
+                    </div>
+                    <h5 class="card-title">Recent Users</h5>
+                    <p class="card-text fs-4 fw-bold" id="recent-users-count">-</p>
+                </div>
             </div>
         </div>
     </div>

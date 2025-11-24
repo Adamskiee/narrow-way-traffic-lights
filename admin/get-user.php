@@ -5,7 +5,7 @@ require_once "../includes/config.php";
 try {
     $id = $_GET["id"];
 
-    $stmt = $conn->prepare("SELECT first_name, last_name, email, phone_number, username, password FROM users WHERE id = ?");
+    $stmt = $conn->prepare("SELECT first_name, last_name, email, phone_number, username, password, created_at FROM users WHERE id = ?");
     $stmt->bind_param("s", $id);
     $stmt->execute();
 
