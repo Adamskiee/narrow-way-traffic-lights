@@ -740,9 +740,10 @@ function activateForm(id) {
   document.getElementById(id).classList.remove("hidden");
 }
 
+if(weekDays) {
 
-weekDays.querySelectorAll("button[data-week]").forEach(btn => {
-  btn.addEventListener("click", (e) => {
+  weekDays.querySelectorAll("button[data-week]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
       // Remove active class from all buttons
       weekDays.querySelectorAll("button[data-week]").forEach(b => b.classList.remove("active"));
       // Add active class to clicked button
@@ -762,7 +763,8 @@ weekDays.querySelectorAll("button[data-week]").forEach(btn => {
         durationResult.innerHTML = "";
       }
     })
-})
+  })
+}
 
 // Handle duration save button
 if (saveDurationBtn && durationInput) {
