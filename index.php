@@ -353,14 +353,14 @@ include './includes/header.php';
                     <img src="assets/images/tosino.png" alt="" class="img-fluid rounded-circle object-fit-cover card__img">
                     <div>
                         <h3 class="card__name">Tosino,  <br><span>Adriele Matthew</span></h3>
-                        <p class="card__role">Developer</p>
+                        <p class="card__role">Full Stack Developer</p>
                     </div>
                 </div>
                 <div class="about__card col" id="rose-card">
                     <img src="assets/images/rose.jpg" alt="" class="img-fluid rounded-circle object-fit-cover card__img">
                     <div>
                         <h3 class="card__name">Rose,  <br><span>Jeric</span></h3>
-                        <p class="card__role">Designer</p>
+                        <p class="card__role">UI/UX Designer</p>
                     </div>
                 </div>
                 <div class="about__card col" id="maligalig-card">
@@ -438,7 +438,7 @@ include './includes/header.php';
                                 </div>
                                 <div class="profile-info">
                                     <h4>Adriele</h4>
-                                    <span class="profile-role">Developer</span>
+                                    <span class="profile-role">Full Stack Developer</span>
                                 </div>
                             </div>
                             <div class="contact__profile">
@@ -476,7 +476,7 @@ include './includes/header.php';
                                 </div>
                                 <div class="profile-info">
                                     <h4>Jeric</h4>
-                                    <span class="profile-role">Designer</span>
+                                    <span class="profile-role">UI/UX Designer</span>
                                 </div>
                             </div>
                             <div class="contact__profile">
