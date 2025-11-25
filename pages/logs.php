@@ -19,7 +19,6 @@ if(!$isLoggedIn) {
         <i class="fas fa-list-alt text-primary me-2"></i>
         Traffic Light Logs
       </h1>
-      <p class="text-muted mb-0">Monitor and manage traffic light activity logs</p>
     </div>
     <div class="col-auto">
       <div class="btn-group" role="group">
@@ -150,8 +149,8 @@ if(!$isLoggedIn) {
 
   <!-- Statistics Cards -->
   <div class="row mt-4">
-    <div class="col-md-3">
-      <div class="card-dark text-center">
+    <div class="col-md-3 mb-5">
+      <div class="card-dark py-5 text-center">
         <div class="card-body">
           <div class="text-primary">
             <i class="fas fa-chart-line fa-2x mb-2"></i>
@@ -161,8 +160,8 @@ if(!$isLoggedIn) {
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card-dark text-center">
+    <div class="col-md-3 mb-5">
+      <div class="card-dark py-5 text-center">
         <div class="card-body">
           <div class="text-success">
             <i class="fas fa-robot fa-2x mb-2"></i>
@@ -172,8 +171,8 @@ if(!$isLoggedIn) {
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card-dark text-center">
+    <div class="col-md-3 mb-5">
+      <div class="card-dark py-5 text-center">
         <div class="card-body">
           <div class="text-warning">
             <i class="fas fa-hand-pointer fa-2x mb-2"></i>
@@ -183,8 +182,8 @@ if(!$isLoggedIn) {
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card-dark text-center">
+    <div class="col-md-3 mb-5">
+      <div class="card-dark py-5 text-center">
         <div class="card-body">
           <div class="text-info">
             <i class="fas fa-calendar-day fa-2x mb-2"></i>

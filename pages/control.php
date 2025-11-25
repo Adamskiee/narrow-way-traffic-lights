@@ -22,7 +22,6 @@ $canControlCameras = can_access_feature('camera_control');
       <button id="auto-mode-button" class="btn btn-primary btn-lg px-4">
         <i class="fas fa-play me-2"></i>Start Automatic Mode
       </button>
-      <p class="text-muted mt-2 mb-0">Control both cameras automatically based on duration schedule</p>
     </div>
     <?php else: ?>
     <div class="text-center py-3">

@@ -271,7 +271,7 @@ function displayLogs(logs) {
             <td class="text-center">
                 ${log.duration_formatted}
             </td>
-            <td class="text-muted small">
+            <td class="small">
                 ${log.created_at_formatted}
             </td>
             <td>

@@ -20,7 +20,6 @@ if(!$isLoggedIn) {
                 <i class="fas fa-users text-primary me-2"></i>
                 User Management
             </h1>
-            <p class="text-muted mb-0">Manage system users and their permissions</p>
         </div>
         <div class="col-auto">
             <div class="btn-group" role="group">
@@ -97,8 +96,8 @@ if(!$isLoggedIn) {
 
     <!-- Statistics Cards -->
     <div class="row mt-4">
-        <div class="col-md-4">
-            <div class="card-dark text-center">
+        <div class="col-md-4 mb-5">
+            <div class="py-5 card-dark text-center">
                 <div class="card-body">
                     <div class="text-primary">
                         <i class="fas fa-users fa-2x mb-2"></i>
@@ -108,8 +107,8 @@ if(!$isLoggedIn) {
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card-dark text-center">
+        <div class="col-md-4 mb-5">
+            <div class="card-dark py-5 text-center">
                 <div class="card-body">
                     <div class="text-success">
                         <i class="fas fa-user-check fa-2x mb-2"></i>
@@ -119,8 +118,8 @@ if(!$isLoggedIn) {
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card-dark text-center">
+        <div class="col-md-4 mb-5">
+            <div class="card-dark py-5 text-center">
                 <div class="card-body">
                     <div class="text-info">
                         <i class="fas fa-user-plus fa-2x mb-2"></i>

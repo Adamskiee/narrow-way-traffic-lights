@@ -60,20 +60,8 @@ include "../includes/header.php";
         </div>
     </div>
     <div class="py-4 mw-100 container" style="width: 500px">
-        <h3>Change password</h3>
-        <button type="button" class="btn btn-danger" id="change-password-btn">Change Password</button>
+        <button type="button" class="btn btn-danger-custom" id="change-password-btn">Change Password</button>
         <?php include BASE_PATH . "/components/modal.php" ?>
-        <!-- <div>
-            <form action="<?= BASE_URL ?>/user/change-password.php" class="validate-form" id="change-password-form" method="post">
-                <input type="text" name="username" value="<?= $_SESSION["username"] ?>" disabled>
-                <input type="password" name="current_password" placeholder="Current Password" required> 
-                <input type="password" name="new_password" placeholder="New Password" required>
-                <input type="password" name="confirm_new_password" placeholder="Confirm Password" required>
-                <button type="submit">Change password</button>  
-                <hr>
-                <span id="result"></span>
-            </form>
-        </div> -->
     </div>
     <?php include BASE_PATH . "/components/infoModal.php" ?>
 </main>
