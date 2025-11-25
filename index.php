@@ -4,7 +4,7 @@ $page_title = 'Landing page';
 include './includes/header.php';
 ?>
 
-<main class="container">
+<main class="container" style="padding-top: 70px;">
     <section class="hero-section position-relative overflow-hidden section-animated">
         <div class="hero-background">
             <!-- Animated background elements -->
@@ -141,7 +141,7 @@ include './includes/header.php';
                     <i class="fas fa-graduation-cap text-primary me-3"></i>
                     How It <span>Works</span>
                 </h2>
-                <p class="text-muted fs-5">Get started with FlowSync in three simple steps</p>
+                <p class="fs-5">Get started with FlowSync in three simple steps</p>
             </div>
 
             <!-- Tutorial Steps -->
@@ -160,7 +160,7 @@ include './includes/header.php';
                                 <div class="row g-0">
                                     <div class="col-md-6">
                                         <div class="step-image-container">
-                                            <img src="assets/images/tutorial-step1.png" 
+                                            <img src="assets/images/registration.webp" 
                                                 class="img-fluid step-image" 
                                                 alt="Account Setup"
                                                 loading="lazy">
@@ -223,7 +223,7 @@ include './includes/header.php';
                                     </div>
                                     <div class="col-md-6 order-0 order-md-1">
                                         <div class="step-image-container">
-                                            <img src="assets/images/tutorial-step2.png" 
+                                            <img src="assets/images/access.webp" 
                                                 class="img-fluid step-image" 
                                                 alt="Login Process"
                                                 loading="lazy">
@@ -258,7 +258,7 @@ include './includes/header.php';
                                 <div class="row g-0">
                                     <div class="col-md-6">
                                         <div class="step-image-container">
-                                            <img src="assets/images/tutorial-step3.png" 
+                                            <img src="assets/images/traffic-light-operations.avif" 
                                                 class="img-fluid step-image" 
                                                 alt="Traffic Control"
                                                 loading="lazy">
