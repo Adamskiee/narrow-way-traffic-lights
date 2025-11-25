@@ -44,6 +44,32 @@
 .bg-light-gray{background-color: var(--bs-bg-light-gray) !important;}
 .bg-brand{background-color: var(--bs-bg-brand) !important;}
 
+html {
+    scroll-snap-type: y mandatory;
+}
+
+/* Or specific offsets for each section */
+#hero {
+    // scroll-margin-top: 0px;
+    scroll-snap-align: start;
+}
+
+#tutorial {
+    // scroll-margin-top: 120px; /* More space for tutorial */
+    scroll-margin-top: 20px;
+    scroll-snap-align: start;
+}
+
+#about {
+    scroll-snap-align: start;
+    scroll-margin-top: 70px;
+}
+
+#contact {
+    scroll-snap-align: end;
+    scroll-margin-top: -20px; /* Extra space for contact */
+}
+
 // Enhanced About Section (preserving existing card effects)
 .about-section-enhanced {
     position: relative;
@@ -366,8 +392,8 @@
     }
 }
 .about__container {
-    padding-top: 56px;
     position: relative;
+    padding-bottom: 5rem;
     z-index: 2;
 }
 
@@ -522,8 +548,6 @@ body {
 .contact-section-enhanced {
     position: relative;
     overflow: hidden;
-    padding: 4rem 0;
-    min-height: 100vh;
     background: linear-gradient(135deg, 
         rgba(var(--bs-dark-rgb), 0.95) 0%, 
         rgba(var(--bs-dark-rgb), 0.98) 50%,

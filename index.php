@@ -5,7 +5,7 @@ include './includes/header.php';
 ?>
 
 <main class="container" style="padding-top: 70px;">
-    <section class="hero-section position-relative overflow-hidden section-animated">
+    <section class="hero-section position-relative overflow-hidden section-animated" id="hero">
         <div class="hero-background">
             <!-- Animated background elements -->
             <div class="traffic-light-bg"></div>
@@ -138,8 +138,7 @@ include './includes/header.php';
             <!-- Section Header -->
             <div class="tutorial-header text-center mb-5">
                 <h2 class="header-color mb-3">
-                    <i class="fas fa-graduation-cap text-primary me-3"></i>
-                    How It <span>Works</span>
+                    Tutorial
                 </h2>
                 <p class="fs-5">Get started with FlowSync in three simple steps</p>
             </div>
@@ -398,7 +397,7 @@ include './includes/header.php';
         </div>
         
         <div class="container">
-            <div class="row row-cols-1 row-cols-lg-2 min-vh-100 align-items-center" style="padding-top: 57px;">
+            <div class="row row-cols-1 row-cols-lg-2 min-vh-100 align-items-center">
                 <div class="col d-flex justify-content-center flex-column px-lg-5">
                     <div class="contact-intro-section">
                         <div class="contact-header-badge">

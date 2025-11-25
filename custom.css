@@ -12035,6 +12035,30 @@ textarea.form-control-lg {
   background-color: var(--bs-bg-brand) !important;
 }
 
+html {
+  scroll-snap-type: y mandatory;
+}
+
+/* Or specific offsets for each section */
+#hero {
+  scroll-snap-align: start;
+}
+
+#tutorial {
+  scroll-margin-top: 20px;
+  scroll-snap-align: start;
+}
+
+#about {
+  scroll-snap-align: start;
+  scroll-margin-top: 70px;
+}
+
+#contact {
+  scroll-snap-align: end;
+  scroll-margin-top: -20px; /* Extra space for contact */
+}
+
 .about-section-enhanced {
   position: relative;
   background: linear-gradient(135deg, rgba(9, 10, 11, 0.97) 0%, rgba(22, 22, 22, 0.95) 100%);
@@ -12329,8 +12353,8 @@ textarea.form-control-lg {
 }
 
 .about__container {
-  padding-top: 56px;
   position: relative;
+  padding-bottom: 5rem;
   z-index: 2;
 }
 
@@ -12485,8 +12509,6 @@ body {
 .contact-section-enhanced {
   position: relative;
   overflow: hidden;
-  padding: 4rem 0;
-  min-height: 100vh;
   background: linear-gradient(135deg, rgba(var(--bs-dark-rgb), 0.95) 0%, rgba(var(--bs-dark-rgb), 0.98) 50%, rgba(var(--bs-dark-rgb), 0.95) 100%);
 }
 .contact-section-enhanced::before {

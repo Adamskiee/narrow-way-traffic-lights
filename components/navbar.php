@@ -96,7 +96,7 @@ $isLoggedIn = isset($_SESSION["user_id"]);
                 <!-- Guest Navigation -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link <?= $current === 'index.php' ? 'active' : '' ?>" href="<?=BASE_URL?>/index.php">
+                        <a class="nav-link <?= $current === 'index.php' ? 'active' : '' ?>" href="#hero">
                             <i class="fas fa-home nav-icon"></i>
                             <span>Home</span>
                         </a>
