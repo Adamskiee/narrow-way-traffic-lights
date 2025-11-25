@@ -4868,3 +4868,196 @@ input[type="date"].form-control {
     }
 }
 
+// ...existing code...
+
+// Enhanced Login Result Styling
+#result {
+  display: block;
+  padding: 0;
+  margin: 0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: translateY(-10px);
+  max-height: 0;
+  overflow: hidden;
+  
+  // Show state when content is present
+  &:not(:empty) {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 60px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    animation: slideInResult 0.4s ease-out;
+  }
+  
+  // Error state (default)
+  &.text-danger {
+    background: rgba(var(--bs-red-rgb), 0.1);
+    border: 2px solid rgba(var(--bs-red-rgb), 0.3);
+    color: var(--bs-red);
+    box-shadow: 0 4px 15px rgba(var(--bs-red-rgb), 0.2);
+    
+    &::before {
+      content: "⚠️ ";
+      font-size: 1rem;
+      margin-right: 0.5rem;
+    }
+  }
+  
+  // Success state
+  &.text-success {
+    background: rgba(var(--bs-green-rgb), 0.1);
+    border: 2px solid rgba(var(--bs-green-rgb), 0.3);
+    color: var(--bs-green);
+    box-shadow: 0 4px 15px rgba(var(--bs-green-rgb), 0.2);
+    
+    &::before {
+      content: "✓ ";
+      font-size: 1rem;
+      margin-right: 0.5rem;
+      color: var(--bs-green);
+    }
+  }
+  
+  // Warning state
+  &.text-warning {
+    background: rgba(var(--bs-warning-rgb), 0.1);
+    border: 2px solid rgba(var(--bs-warning-rgb), 0.3);
+    color: var(--bs-warning);
+    box-shadow: 0 4px 15px rgba(var(--bs-warning-rgb), 0.2);
+    
+    &::before {
+      content: "⚡ ";
+      font-size: 1rem;
+      margin-right: 0.5rem;
+    }
+  }
+  
+  // Info state
+  &.text-info {
+    background: rgba(var(--bs-info-rgb), 0.1);
+    border: 2px solid rgba(var(--bs-info-rgb), 0.3);
+    color: var(--bs-info);
+    box-shadow: 0 4px 15px rgba(var(--bs-info-rgb), 0.2);
+    
+    &::before {
+      content: "ℹ️ ";
+      font-size: 1rem;
+      margin-right: 0.5rem;
+    }
+  }
+  
+  // Hover effect for interactive feedback
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(var(--bs-red-rgb), 0.3);
+  }
+  
+  // Enhanced glassmorphism effect
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+  // Auto-hide animation
+  &.auto-hide {
+    animation: slideOutResult 0.4s ease-out 3s forwards;
+  }
+}
+
+// Login form container adjustments for result spacing
+.login-form-container {
+  // Ensure proper spacing for result message
+  #result + .login-form {
+    margin-top: 0;
+  }
+}
+
+// Keyframe animations for smooth result transitions
+@keyframes slideInResult {
+  from {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.95);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 60px;
+  }
+}
+
+@keyframes slideOutResult {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 60px;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.95);
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+// Pulse animation for emphasis
+@keyframes pulseResult {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(var(--bs-red-rgb), 0.2);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(var(--bs-red-rgb), 0.4);
+  }
+}
+
+// Enhanced login form styling to work with results
+.login-form {
+  .form-control {
+    &.is-invalid + ~ #result.text-danger {
+      animation: pulseResult 0.6s ease-in-out;
+    }
+  }
+}
+
+// Mobile responsive adjustments
+@media (max-width: 768px) {
+  #result {
+    font-size: 0.85rem;
+    padding: 0.875rem 1rem;
+    margin-bottom: 1.25rem;
+    
+    &::before {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// Dark theme specific adjustments
+@media (prefers-color-scheme: dark) {
+  #result {
+    &.text-danger {
+      background: rgba(var(--bs-red-rgb), 0.15);
+      border-color: rgba(var(--bs-red-rgb), 0.4);
+    }
+    
+    &.text-success {
+      background: rgba(var(--bs-green-rgb), 0.15);
+      border-color: rgba(var(--bs-green-rgb), 0.4);
+    }
+    
+    &.text-warning {
+      background: rgba(var(--bs-warning-rgb), 0.15);
+      border-color: rgba(var(--bs-warning-rgb), 0.4);
+    }
+    
+    &.text-info {
+      background: rgba(var(--bs-info-rgb), 0.15);
+      border-color: rgba(var(--bs-info-rgb), 0.4);
+    }
+  }
+}
