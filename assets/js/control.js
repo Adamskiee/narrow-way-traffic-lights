@@ -65,28 +65,23 @@ function showPrivilegeError(message) {
 function initializePrivilegeRestrictions() {
     console.log(`User Role: ${USER_ROLE}, Admin: ${IS_ADMIN}, Camera Access: ${CAN_CONTROL_CAMERAS}`);
     
-    // Apply visual restrictions based on role
     if (USER_ROLE === 'operator') {
-        // Add operator styling to camera controls
         const camControls = document.querySelectorAll('.led-control');
         camControls.forEach(control => {
             control.closest('.col').classList.add('cam-controls-operator');
         });
         
-        // Disable admin-only features
         disableAdminFeatures();
     }
 }
 
 function disableAdminFeatures() {
-    // Disable automatic mode button for operators
     if (autoModeBtn && !IS_ADMIN) {
         autoModeBtn.disabled = true;
         autoModeBtn.classList.add('disabled');
         autoModeBtn.title = 'Admin privileges required';
     }
     
-    // Disable duration scheduling controls
     const weekDayButtons = document.querySelectorAll('#week-days button');
     weekDayButtons.forEach(btn => {
         if (!IS_ADMIN) {
@@ -95,7 +90,6 @@ function disableAdminFeatures() {
         }
     });
     
-    // Disable IP management forms
     const ipForm = document.getElementById('change-ip-form');
     if (ipForm && !IS_ADMIN) {
         const inputs = ipForm.querySelectorAll('input, button');
@@ -104,7 +98,6 @@ function disableAdminFeatures() {
         });
     }
     
-    // Disable duration input controls
     if (durationInput && saveDurationBtn && !IS_ADMIN) {
         durationInput.disabled = true;
         saveDurationBtn.disabled = true;
@@ -391,7 +384,6 @@ function openSuccessModal(message) {
 function connectWebSocket(camName) {
   const cam = cams[camName];
   
-  // Check if IP is available
   if (!cam.ip) {
     console.error(`No IP address configured for ${camName}`);
     document.getElementById(`${camName}-error-icon`).style.display = 'block';
@@ -414,11 +406,8 @@ function connectWebSocket(camName) {
     cam.connected = true;
     updateStatus(camName, true);
     document.getElementById(camName).src = "http://" + cam.ip + "/stream";
-    // document.getElementById("cam2").src = "http://" + cams.cam2.ip + "/stream";
     
-    // Initialize LEDs after a short delay to ensure ESP32 is ready
     setTimeout(() => {
-      // Try to restore saved LED state
       const savedState = loadLEDState(camName);
       
       if (savedState && savedState.isOn) {
@@ -833,12 +822,13 @@ if (saveDurationBtn && durationInput) {
   });
 }
 
+
 async function checkLed(camName, ip, color, mode) {
   try {
     const res = await fetch(`http://${ip}/check-${color}`, {
       method: "GET", 
       headers:{'Content-Type': 'application/json'},
-      timeout: 5000 // 5 second timeout
+      timeout: 5000 // 5 second timeoutp
     });
     
     if (!res.ok) {
@@ -850,7 +840,6 @@ async function checkLed(camName, ip, color, mode) {
 
     if(!result.state) {
       console.warn(`${camName} ${color} LED is not working`);
-      // Only show error modal in strict auto mode, not background checks
       if (mode === 'auto') {
         openErrorModal(`${color} LED is not working`);
       }
@@ -874,23 +863,24 @@ async function checkLed(camName, ip, color, mode) {
 // CAM1 Button Event Listener
 if (cam1Btn) {
   cam1Btn.addEventListener("click", async() => {
-  // Check camera access privileges first
+  
   if (!requireCameraAccess('control camera 1')) {
     return;
   }
   
-  // Check if cameras are connected before proceeding
   if (!cams.cam1.connected || !cams.cam2.connected) {
     openErrorModal("Both cameras must be connected to control traffic lights");
     return;
   }
   
-  // Buttons are disabled during auto mode, so this shouldn't execute
   if (isAutoModeRunning) {
     return;
   }
   
   const color = cam1Btn.dataset.color;
+  let cam1Check;
+  let cam2Check;
+  let failures = 0;
   if(color === "green") {
     
     stopDurationTracking('cam1');
@@ -898,19 +888,47 @@ if (cam1Btn) {
 
     sendLED('cam1', 'green_on');
     sendLED('cam2', 'red_on');
+    try {
+      cam2Check = await checkLed("cam2", cams.cam2.ip, "red", "manual");
+      if (!cam2Check) {
+        failures++;
+        openErrorModal("Camera 2 Red LED is not working");
+        console.warn("CAM2 red LED check failed");
+      }
+    } catch (error) {
+      if (error.name === 'TypeError' || error.message.includes('fetch')) {
+        failures++;
+        openErrorModal("Camera 2 connection failure");
+        console.error("CAM2 critical connection failure:", error);
+      }
+    }
+
+    try {
+      cam1Check = await checkLed("cam1", cams.cam1.ip, "green", "manual");
+      if (!cam1Check) {
+        failures++;
+        openErrorModal("Camera 1 Green LED is not working");
+        console.warn("CAM1 green LED check failed");
+      }
+    } catch (error) {
+      if (error.name === 'TypeError' || error.message.includes('fetch')) {
+        failures++;
+        openErrorModal("Camera 1 connection failure");
+        console.error("CAM1 critical connection failure:", error);
+      }
+    }
     
-    // Check LEDs in background without blocking operation
-    checkLed("cam2", cams.cam2.ip, "red", "manual");
-    checkLed("cam1", cams.cam1.ip, "green", "manual");
+    if(failures >= 2 ) {
+      openErrorModal("Both camera failed");
+      return;
+    }
 
     startDurationTracking('cam1', 'green');
     startDurationTracking('cam2', 'red');
 
-    // Update button states
     updateLEDButton('cam1', 'green', true);
     updateLEDButton('cam2', 'red', true);
     
-    // Hide countdown in manual mode
     document.getElementById("cam1-count").style.display = 'none';
     document.getElementById("cam2-count").style.display = 'none';
     
@@ -925,18 +943,47 @@ if (cam1Btn) {
     sendLED('cam1', 'red_on');
     sendLED('cam2', 'green_on');
 
-    // Check LEDs in background without blocking operation
-    checkLed("cam1", cams.cam1.ip, "red", "manual");
-    checkLed("cam2", cams.cam2.ip, "green", "manual");
+    try {
+      cam2Check = await checkLed("cam2", cams.cam2.ip, "green", "manual");
+      if (!cam2Check) {
+        failures++;
+        openErrorModal("Camera 2 Green LED is not working");
+        console.warn("CAM2 green LED check failed");
+      }
+    } catch (error) {
+      if (error.name === 'TypeError' || error.message.includes('fetch')) {
+        failures++;
+        openErrorModal("Camera 2 connection failure");
+        console.error("CAM2 critical connection failure:", error);
+      }
+    }
+
+    try {
+      cam1Check = await checkLed("cam1", cams.cam1.ip, "red", "manual");
+      if (!cam1Check) {
+        failures++;
+        openErrorModal("Camera 1 Red LED is not working");
+        console.warn("CAM1 red LED check failed");
+      }
+    } catch (error) {
+      if (error.name === 'TypeError' || error.message.includes('fetch')) {
+        failures++;
+        openErrorModal("Camera 1 connection failure");
+        console.error("CAM1 critical connection failure:", error);
+      }
+    }
+
+    if(failures >= 2 ) {
+      openErrorModal("Both camera failed");
+      return;
+    }
 
     startDurationTracking('cam1', 'red');
     startDurationTracking('cam2', 'green');
 
-    // Update button states
     updateLEDButton('cam1', 'red', true);
     updateLEDButton('cam2', 'green', true);
     
-    // Hide countdown in manual mode
     document.getElementById("cam1-count").style.display = 'none';
     document.getElementById("cam2-count").style.display = 'none';
     
@@ -945,6 +992,8 @@ if (cam1Btn) {
     if (cam1BtnStatus) cam1BtnStatus.innerText = "Red Light";
     if (cam2BtnStatus) cam2BtnStatus.innerText = "Green Light";
   }
+
+  
   });
 }
 
@@ -968,6 +1017,9 @@ if (cam2Btn) {
   }
   
   const color = cam2Btn.dataset.color;
+  let cam1Check;
+  let cam2Check;
+  let failures = 0;
   if(color === "green") {
     stopDurationTracking('cam1');
     stopDurationTracking('cam2');
@@ -976,8 +1028,41 @@ if (cam2Btn) {
     sendLED('cam1', 'red_on');
     
     // Check LEDs in background without blocking operation
-    checkLed("cam2", cams.cam2.ip, "green", "manual");
-    checkLed("cam1", cams.cam1.ip, "red", "manual");
+    try {
+      cam2Check = await checkLed("cam2", cams.cam2.ip, "green", "manual");
+      if (!cam2Check) {
+        openErrorModal("Camera 2 Green LED is not working");
+        console.warn("CAM2 green LED check failed");
+        failures++;
+      }
+    } catch (error) {
+      if (error.name === 'TypeError' || error.message.includes('fetch')) {
+        openErrorModal("Camera 2 connection failure");
+        console.error("CAM2 critical connection failure:", error);
+        failures++;
+      }
+    }
+
+    try {
+      cam1Check = await checkLed("cam1", cams.cam1.ip, "red", "manual");
+      if (!cam1Check) {
+        openErrorModal("Camera 1 Red LED is not working");
+        
+        console.warn("CAM1 red LED check failed");
+        failures++;
+      }
+    } catch (error) {
+      if (error.name === 'TypeError' || error.message.includes('fetch')) {
+        openErrorModal("Camera 1 connection failure");
+        console.error("CAM1 critical connection failure:", error);
+        failures++;
+      }
+    }
+
+    if(failures >= 2) {
+      openErrorModal("Both camera failed");
+      return;
+    }
 
     startDurationTracking('cam1', 'red');
     startDurationTracking('cam2', 'green');
@@ -985,7 +1070,7 @@ if (cam2Btn) {
     // Update button states
     updateLEDButton('cam1', 'red', true);
     updateLEDButton('cam2', 'green', true);
-    
+
     // Hide countdown in manual mode
     document.getElementById("cam1-count").style.display = 'none';
     document.getElementById("cam2-count").style.display = 'none';
@@ -1002,8 +1087,41 @@ if (cam2Btn) {
     sendLED('cam1', 'green_on');
 
     // Check LEDs in background without blocking operation
-    checkLed("cam2", cams.cam2.ip, "red", "manual");
-    checkLed("cam1", cams.cam1.ip, "green", "manual");
+
+    try {
+      cam2Check = await checkLed("cam2", cams.cam2.ip, "red", "manual");
+      if (!cam2Check) {
+        openErrorModal("Camera 2 Red LED is not working");
+        console.warn("CAM2 red LED check failed");;
+        failures++
+      }
+    } catch (error) {
+      if (error.name === 'TypeError' || error.message.includes('fetch')) {
+        openErrorModal("Camera 2 connection failure");
+        console.error("CAM2 critical connection failure:", error);
+        failures++;
+      }
+    }
+
+    try {
+      cam1Check = await checkLed("cam1", cams.cam1.ip, "green", "manual");
+      if (!cam1Check) {
+        openErrorModal("Camera 1 Green LED is not working");
+        console.warn("CAM1 green LED check failed");
+        failures++;
+      }
+    } catch (error) {
+      if (error.name === 'TypeError' || error.message.includes('fetch')) {
+        openErrorModal("Camera 1 connection failure");
+        console.error("CAM2 critical connection failure:", error);
+        failures++;
+      }
+    }
+
+    if(failures >= 2) {
+      openErrorModal("Both camera failed");
+      return;
+    }
 
     startDurationTracking('cam2', 'red');
     startDurationTracking('cam1', 'green');
@@ -1091,11 +1209,14 @@ async function startAutoMode() {
       try {
         const cam1Check = await checkLed("cam1", cams.cam1.ip, "green", "background");
         if (!cam1Check) {
+          openErrorModal("Camera 1 Green LED is not working");
           criticalFailures++;
+          
           console.warn("CAM1 green LED check failed");
         }
       } catch (error) {
         if (error.name === 'TypeError' || error.message.includes('fetch')) {
+          openErrorModal("Camera 1 connection failure");
           criticalFailures++;
           console.error("CAM1 critical connection failure:", error);
         }
@@ -1104,11 +1225,13 @@ async function startAutoMode() {
       try {
         const cam2Check = await checkLed("cam2", cams.cam2.ip, "red", "background");
         if (!cam2Check) {
+          openErrorModal("Camera 2 Red LED is not working");
           criticalFailures++;
           console.warn("CAM2 red LED check failed");
         }
       } catch (error) {
         if (error.name === 'TypeError' || error.message.includes('fetch')) {
+          openErrorModal("Camera 2 connection failure");
           criticalFailures++;
           console.error("CAM2 critical connection failure:", error);
         }
@@ -1159,12 +1282,14 @@ async function startAutoMode() {
       try {
         const cam1Check2 = await checkLed("cam1", cams.cam1.ip, "red", "background");
         if (!cam1Check2) {
+          openErrorModal("Camera 1 Red LED is not working");
           criticalFailures2++;
           console.warn("CAM1 red LED check failed in second phase");
         }
       } catch (error) {
         if (error.name === 'TypeError' || error.message.includes('fetch')) {
           criticalFailures2++;
+          openErrorModal("Camera 1 connection failure");
           console.error("CAM1 critical connection failure in second phase:", error);
         }
       }
@@ -1172,11 +1297,13 @@ async function startAutoMode() {
       try {
         const cam2Check2 = await checkLed("cam2", cams.cam2.ip, "green", "background");
         if (!cam2Check2) {
+          openErrorModal("Camera 2 Green LED is not working");
           criticalFailures2++;
           console.warn("CAM2 green LED check failed in second phase");
         }
       } catch (error) {
         if (error.name === 'TypeError' || error.message.includes('fetch')) {
+          openErrorModal("Camera 2 connection failure");
           criticalFailures2++;
           console.error("CAM2 critical connection failure in second phase:", error);
         }
@@ -1580,33 +1707,33 @@ function refreshDashboard() {
 document.addEventListener("DOMContentLoaded", () => {
   console.log('Traffic Light Control System Initializing...');
   
-  // Initialize privilege restrictions first
   initializePrivilegeRestrictions();
+  
   fetch("../user/get-ip.php")
-    .then(res => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return res.json();
-    })
-    .then(data => {
-      const {ip_address_1, ip_address_2} = data["ip_addresses"] || {};
-      
-      if (!ip_address_1 || !ip_address_2) {
-        openErrorModal("Camera IP addresses are not configured. Please set up IP addresses first.");
-        return;
-      }
-      
-      cams.cam1.ip = ip_address_1;
-      cams.cam2.ip = ip_address_2;
-      
-      connectWebSocket("cam1");
-      connectWebSocket("cam2");
-    })
-    .catch(err => {
-      console.error("Failed to fetch camera IP addresses:", err);
-      openErrorModal("Failed to load camera configuration. Please refresh the page.");
-    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        const {ip_address_1, ip_address_2} = data["ip_addresses"] || {};
+        
+        if (!ip_address_1 || !ip_address_2) {
+          openErrorModal("Camera IP addresses are not configured. Please set up IP addresses first.");
+          return;
+        }
+        
+        cams.cam1.ip = ip_address_1;
+        cams.cam2.ip = ip_address_2;
+        
+        connectWebSocket("cam1");
+        connectWebSocket("cam2");
+      })
+      .catch(err => {
+        console.error("Failed to fetch camera IP addresses:", err);
+        openErrorModal("Failed to load camera configuration. Please refresh the page.");
+      })
   
   fetch("../user/get_durations.php")
     .then(res => res.json())
