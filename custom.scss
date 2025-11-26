@@ -50,12 +50,11 @@ html {
 
 /* Or specific offsets for each section */
 #hero {
-    // scroll-margin-top: 0px;
+    scroll-margin-top: 70px;
     scroll-snap-align: start;
 }
 
 #tutorial {
-    // scroll-margin-top: 120px; /* More space for tutorial */
     scroll-margin-top: 20px;
     scroll-snap-align: start;
 }
@@ -67,7 +66,7 @@ html {
 
 #contact {
     scroll-snap-align: end;
-    scroll-margin-top: -20px; /* Extra space for contact */
+    scroll-margin-top: 70px;
 }
 
 // Enhanced About Section (preserving existing card effects)
@@ -5062,13 +5061,13 @@ input[type="date"].form-control {
 }
 
 // Enhanced login form styling to work with results
-.login-form {
-  .form-control {
-    &.is-invalid + ~ #result.text-danger {
-      animation: pulseResult 0.6s ease-in-out;
-    }
-  }
-}
+// .login-form {
+//   .form-control {
+//     &.is-invalid + ~ #result.text-danger {
+//       animation: pulseResult 0.6s ease-in-out;
+//     }
+//   }
+// }
 
 // Mobile responsive adjustments
 @media (max-width: 768px) {

@@ -12041,6 +12041,7 @@ html {
 
 /* Or specific offsets for each section */
 #hero {
+  scroll-margin-top: 70px;
   scroll-snap-align: start;
 }
 
@@ -12056,7 +12057,7 @@ html {
 
 #contact {
   scroll-snap-align: end;
-  scroll-margin-top: -20px; /* Extra space for contact */
+  scroll-margin-top: 70px;
 }
 
 .about-section-enhanced {
