@@ -1,0 +1,321 @@
+
+// Enhanced About Section (preserving existing card effects)
+.about-section-enhanced {
+    position: relative;
+    background: linear-gradient(135deg, rgba(9, 10, 11, 0.97) 0%, rgba(22, 22, 22, 0.95) 100%);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 15% 25%, rgba(66, 220, 52, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 85% 75%, rgba(255, 40, 40, 0.03) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 1;
+        transition: opacity 0.6s ease-in-out;
+    }
+    
+    &:hover::before {
+        opacity: 1.2;
+    }
+}
+
+.about-background-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.02;
+    background-image: 
+        linear-gradient(30deg, #444 12%, transparent 12.5%, transparent 87%, #444 87.5%, #444),
+        linear-gradient(150deg, #444 12%, transparent 12.5%, transparent 87%, #444 87.5%, #444),
+        linear-gradient(30deg, #444 12%, transparent 12.5%, transparent 87%, #444 87.5%, #444),
+        linear-gradient(150deg, #444 12%, transparent 12.5%, transparent 87%, #444 87.5%, #444);
+    background-size: 80px 140px;
+    background-position: 0 0, 0 0, 40px 70px, 40px 70px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.content-section {
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out 0.2s forwards;
+    
+    .title-decoration {
+        width: 50px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--bs-green), var(--bs-red));
+        border-radius: 2px;
+        margin-bottom: 1rem;
+        animation: shimmer 3s ease-in-out infinite;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        &:hover {
+            width: 80px;
+            transform: translateX(10px);
+        }
+    }
+    
+    .enhanced-description {
+        position: relative;
+        background: rgba(255, 255, 255, 0.02);
+        padding: 2rem;
+        border-radius: 12px;
+        border-left: 3px solid var(--bs-green);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.7;
+        font-size: 1.05rem;
+        margin-top: 1.5rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateX(-20px);
+        opacity: 0;
+        animation: slideInLeft 0.8s ease-out 0.4s forwards;
+        
+        &:hover {
+            transform: translateX(5px);
+            border-left-color: var(--bs-red);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(66, 220, 52, 0.3), transparent);
+            transition: all 0.3s ease;
+        }
+        
+        &:hover::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 40, 40, 0.5), transparent);
+        }
+    }
+}
+
+.team-section-wrapper {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeInUp 0.8s ease-out 0.6s forwards;
+    
+    .team-header-section {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-top: 2rem;
+        
+        .team-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(66, 220, 52, 0.08);
+            border: 1px solid rgba(66, 220, 52, 0.2);
+            border-radius: 25px;
+            color: var(--bs-green);
+            font-weight: 600;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            
+            &:hover {
+                background: rgba(66, 220, 52, 0.12);
+                border-color: rgba(66, 220, 52, 0.3);
+                transform: translateY(-2px);
+            }
+            
+            i {
+                font-size: 1rem;
+            }
+        }
+    }
+}
+
+.enhanced-grid {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: grid;
+    grid-template: 1fr 1fr / 1fr 1fr;
+    gap: 2rem;
+    padding: 1rem;
+    
+    .about__card {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        &:nth-child(1) { animation: cardFadeIn 0.6s ease-out 0.8s forwards; }
+        &:nth-child(2) { animation: cardFadeIn 0.6s ease-out 1.0s forwards; }
+        &:nth-child(3) { animation: cardFadeIn 0.6s ease-out 1.2s forwards; }
+        &:nth-child(4) { animation: cardFadeIn 0.6s ease-out 1.4s forwards; }
+    }
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: rgba(66, 220, 52, 0.02);
+        border-radius: 20px;
+        pointer-events: none;
+        z-index: -1;
+        transition: all 0.4s ease;
+    }
+    
+    &:hover::before {
+        background: rgba(66, 220, 52, 0.04);
+        transform: scale(1.02);
+    }
+}
+
+
+.card__container {
+    display: grid;
+    grid-template: 1fr 1fr / 1fr 1fr;
+    gap: 2rem;
+    padding: 0;
+    
+    &:not(.enhanced-grid) {
+        padding-top: 6rem;
+        padding-bottom: 6rem;
+    }
+    
+    // Mobile: horizontal scroll
+    @media (max-width: 991px) {
+        padding-top: 50px;
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        gap: 1rem;
+        padding-inline: 1rem;
+        -webkit-overflow-scrolling: touch; 
+        
+        scrollbar-width: none; 
+        -ms-overflow-style: none; 
+        
+        &::-webkit-scrollbar {
+            display: none; 
+        }
+    }
+}
+.about__card {
+    background-color: var(--bs-bg-medium-gray);
+    box-shadow: var(--bs-shadow-green);
+    border-bottom: 3px solid var(--bs-green);
+    border-right: 3px solid var(--bs-green);
+    border-left: 3px solid var(--bs-green);
+    border-radius: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    align-items: center;
+    justify-content: center;
+    padding-block: 1rem;
+    
+    .card__img {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card__name, .card__role {
+        transition: all 0.3s ease;
+    }
+    
+    &:hover {
+        .card__img {
+            transform: scale(1.05);
+        }
+        
+        .card__name {
+            transform: translateY(-2px);
+        }
+        
+        .card__role {
+            transform: translateY(-1px);
+        }
+    }
+
+
+    // Mobile: make cards fill viewport width and snap
+    @media (max-width: 991px) {
+        flex: 0 0 calc(100vw - 4rem); 
+        max-width: calc(100vw - 4rem);
+        scroll-snap-align: center;
+        margin-right: 1rem;
+        
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+    
+    // Tablet: show 2 cards at once
+    @media (min-width: 576px) and (max-width: 991px) {
+        flex: 0 0 calc(50vw - 3rem);
+        max-width: calc(50vw - 3rem);
+    }
+}
+.about__container {
+    position: relative;
+    padding-bottom: 5rem;
+    z-index: 2;
+}
+
+
+.about__card.active, .about__card:hover {
+    box-shadow: var(--bs-shadow-red);
+    border-bottom-color: var(--bs-red);
+    border-right-color: var(--bs-red);
+    border-left-color: var(--bs-red);
+}
+.about__card .card__img {
+    height: 100px;
+    width: 100px;
+    background-color: white;
+}
+.about__card .card__name {
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 0;
+}
+.card__role {
+    font-size: 20px;
+    text-align: center;
+}
+.about__card.active .card__name {
+    display: none;
+}
+.about__card.active .card__role{
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--bs-red)
+}
+
+.about-section-enhanced {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}

@@ -1,0 +1,440 @@
+// About 
+
+@keyframes shimmer {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scaleX(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scaleX(1.1);
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// @keyframes slideInLeft {
+//     0% {
+//         opacity: 0;
+//         transform: translateX(-20px);
+//     }
+//     100% {
+//         opacity: 1;
+//         transform: translateX(0);
+//     }
+// }
+
+@keyframes cardFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+// Contact section
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 0.1;
+    }
+    33% {
+        transform: translate(20px, -20px) rotate(120deg);
+        opacity: 0.15;
+    }
+    66% {
+        transform: translate(-20px, 10px) rotate(240deg);
+        opacity: 0.08;
+    }
+}
+
+.section-transition {
+    position: relative;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, 
+        rgba(var(--bs-dark-rgb), 0.95) 0%, 
+        rgba(var(--bs-dark-rgb), 0.98) 50%,
+        rgba(var(--bs-dark-rgb), 0.95) 100%);
+    overflow: hidden;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 50% 50%, rgba(var(--bs-red-rgb), 0.05) 0%, transparent 70%);
+        animation: pulse 4s ease-in-out infinite;
+    }
+    
+    .transition-line {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(var(--bs-red-rgb), 0.3) 20%,
+            rgba(var(--bs-green-rgb), 0.5) 50%,
+            rgba(var(--bs-red-rgb), 0.3) 80%,
+            transparent 100%);
+        transform: translateY(-50%);
+        
+        &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 100%);
+            transform: translateY(-50%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+    }
+    
+
+}
+
+// Section animation classes
+.section-animated {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s ease-out;
+    
+    &.in-view {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    // Staggered animations for child elements
+    .step-content-card,
+    .about__card,
+    .contact__profile,
+    .hero-content > *,
+    .hero-visual > * {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease-out;
+        
+        &.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    // Delay animations for staggered effect
+    .step-content-card:nth-child(1),
+    .about__card:nth-child(1),
+    .contact__profile:nth-child(1) {
+        transition-delay: 0.1s;
+    }
+    
+    .step-content-card:nth-child(2),
+    .about__card:nth-child(2),
+    .contact__profile:nth-child(2) {
+        transition-delay: 0.2s;
+    }
+    
+    .step-content-card:nth-child(3),
+    .about__card:nth-child(3),
+    .contact__profile:nth-child(3) {
+        transition-delay: 0.3s;
+    }
+    
+    .step-content-card:nth-child(4),
+    .about__card:nth-child(4),
+    .contact__profile:nth-child(4) {
+        transition-delay: 0.4s;
+    }
+}
+
+// Hero section specific animations
+.hero-section.section-animated {
+    .hero-content {
+        .hero-badge { transition-delay: 0.1s; }
+        .hero-title { transition-delay: 0.2s; }
+        .hero-description { transition-delay: 0.3s; }
+        .hero-features { transition-delay: 0.4s; }
+        .hero-actions { transition-delay: 0.5s; }
+        .hero-stats { transition-delay: 0.6s; }
+    }
+    
+    .hero-visual {
+        .traffic-light-container { transition-delay: 0.2s; }
+        .floating-card:nth-child(1) { transition-delay: 0.4s; }
+        .floating-card:nth-child(2) { transition-delay: 0.5s; }
+        .floating-card:nth-child(3) { transition-delay: 0.6s; }
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+// Pulse animation for transition effects
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%) translateY(-50%);
+    }
+    100% {
+        transform: translateX(100%) translateY(-50%);
+    }
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+}
+
+@keyframes inputFocus {
+    0% {
+        transform: translateY(0);
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+    50% {
+        transform: translateY(-3px);
+        box-shadow: 0 0 0 0.1rem rgba(220, 53, 69, 0.25);
+    }
+    100% {
+        transform: translateY(-2px);
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+}
+
+@keyframes selectFocus {
+    0% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+    50% {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 0 0 0.1rem rgba(220, 53, 69, 0.25);
+    }
+    100% {
+        transform: translateY(-2px) scale(1);
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+}
+
+@keyframes spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 100px;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 100px;
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+@keyframes backgroundMove {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(5%, -3%) rotate(1deg); }
+    50% { transform: translate(-3%, 5%) rotate(-1deg); }
+    75% { transform: translate(-5%, -5%) rotate(0.5deg); }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes redPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+@keyframes greenPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+@keyframes floatCard {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(1deg); }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+@keyframes backgroundMove {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(5%, -3%) rotate(1deg); }
+    50% { transform: translate(-3%, 5%) rotate(-1deg); }
+    75% { transform: translate(-5%, -5%) rotate(0.5deg); }
+}
+
+@keyframes slideInResult {
+  from {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.95);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 60px;
+  }
+}
+
+@keyframes slideOutResult {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 60px;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.95);
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+// Pulse animation for emphasis
+@keyframes pulseResult {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(var(--bs-red-rgb), 0.2);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(var(--bs-red-rgb), 0.4);
+  }
+}

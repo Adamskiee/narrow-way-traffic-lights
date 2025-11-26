@@ -1,0 +1,188 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-VariableFont_opsz\,wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; 
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-VariableFont_opsz\,wght.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap; 
+}
+
+
+
+.text-red {color: var(--bs-red) !important;}
+.text-green {color: var(--bs-green) !important;}
+
+.bg-green{background-color: var(--bs-bg-green) !important;}
+.bg-medium-gray{background-color: var(--bs-bg-medium-gray) !important;}
+.bg-dark-gray{background-color: var(--bs-bg-dark-gray) !important;}
+.bg-light-gray{background-color: var(--bs-bg-light-gray) !important;}
+.bg-brand{background-color: var(--bs-bg-brand) !important;}
+
+html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+}
+
+/* Or specific offsets for each section */
+#hero {
+    scroll-margin-top: 70px;
+    scroll-snap-align: start;
+}
+
+#tutorial {
+    scroll-margin-top: 20px;
+    scroll-snap-align: start;
+}
+
+#about {
+    scroll-snap-align: start;
+    scroll-margin-top: 70px;
+}
+
+#contact {
+    scroll-snap-align: end;
+    scroll-margin-top: 70px;
+}
+
+
+h2 {
+    font-size: 3rem;
+}
+.header-color {
+    font-size: 3rem;
+    color: var(--bs-red);
+    font-weight: bold;
+}
+.header-color > span {
+    color: var(--bs-green);
+}
+
+
+body {
+    background: var(--bs-bg-brand);
+    background-attachment: fixed;
+    color: white;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+section {
+    position: relative;
+    z-index: 1;
+    
+    &:not(:last-child) {
+        margin-bottom: 0;
+    }
+    
+    // Add subtle shadows for depth
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(255, 255, 255, 0.1) 50%, 
+            transparent 100%);
+        z-index: 2;
+    }
+}
+
+.btn.disabled,
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    
+    &:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.btn-danger-custom {
+    background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%);
+    border: 2px solid #dc3545;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        background: linear-gradient(135deg, var(--bs-red) 0%, #cc1f1f 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+}
+
+.btn-danger-custom {
+    background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%);
+    border: 2px solid #dc3545;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        background: linear-gradient(135deg, var(--bs-red) 0%, #cc1f1f 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+}
+
+.modal-content {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    
+    .modal-header {
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.1) 0%, 
+            rgba(255, 255, 255, 0.05) 100%
+        );
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px 20px 0 0;
+        
+        .modal-title {
+            color: white;
+            font-weight: 600;
+            
+            i {
+                color: var(--bs-red);
+                margin-right: 0.5rem;
+            }
+        }
+        
+        .btn-close {
+            filter: invert(1);
+            opacity: 0.8;
+            
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+    
+    .modal-body {
+        color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .modal-footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
