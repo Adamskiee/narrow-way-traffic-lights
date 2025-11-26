@@ -240,7 +240,7 @@ function displayLogs(logs) {
     if (logs.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center py-4 text-muted">
+                <td colspan="8" class="text-center py-4 ">
                     <i class="fas fa-inbox fa-2x mb-2"></i>
                     <div>No logs found</div>
                     <small>Try adjusting your filters or check back later</small>
@@ -278,10 +278,10 @@ function displayLogs(logs) {
                 <div>
                     <strong>${log.username}</strong>
                     <br>
-                    <small class="text-muted">${log.user_full_name}</small>
+                    <small class="">${log.user_full_name}</small>
                 </div>
             </td>
-            <td class="text-muted small">
+            <td class="small">
                 ${log.user_email}
             </td>
             <td>
@@ -525,7 +525,7 @@ function showLogDetailsModal(logData) {
         const modalBody = `
             <div class="row g-3">
                 <div class="col-md-6">
-                    <div class="card border-0 bg-light">
+                    <div class="card-dark border-0">
                         <div class="card-body">
                             <h6 class="card-title">
                                 <i class="fas fa-video text-primary me-2"></i>Camera
@@ -535,7 +535,7 @@ function showLogDetailsModal(logData) {
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card border-0 bg-light">
+                    <div class="card-dark border-0">
                         <div class="card-body">
                             <h6 class="card-title">
                                 <i class="fas fa-circle text-${logData.light_state.toLowerCase() === 'green' ? 'success' : 'danger'} me-2"></i>Light State
@@ -549,7 +549,7 @@ function showLogDetailsModal(logData) {
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card border-0 bg-light">
+                    <div class="card-dark border-0">
                         <div class="card-body">
                             <h6 class="card-title">
                                 <i class="fas fa-cog text-info me-2"></i>Mode
@@ -564,7 +564,7 @@ function showLogDetailsModal(logData) {
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card border-0 bg-light">
+                    <div class="card-dark border-0">
                         <div class="card-body">
                             <h6 class="card-title">
                                 <i class="fas fa-clock text-warning me-2"></i>Duration
@@ -574,7 +574,7 @@ function showLogDetailsModal(logData) {
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="card border-0 bg-light">
+                    <div class="card-dark border-0">
                         <div class="card-body">
                             <h6 class="card-title">
                                 <i class="fas fa-calendar-alt text-secondary me-2"></i>Timestamp
@@ -584,7 +584,7 @@ function showLogDetailsModal(logData) {
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card border-0 bg-light">
+                    <div class="card-dark border-0">
                         <div class="card-body">
                             <h6 class="card-title">
                                 <i class="fas fa-user text-primary me-2"></i>User
@@ -594,7 +594,7 @@ function showLogDetailsModal(logData) {
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card border-0 bg-light">
+                    <div class="card-dark border-0">
                         <div class="card-body">
                             <h6 class="card-title">
                                 <i class="fas fa-envelope text-info me-2"></i>Email
@@ -685,7 +685,7 @@ async function deleteLog(logId) {
                 </div>
                 <h5 class="mb-3">Confirm Deletion</h5>
                 <p class="mb-0">Are you sure you want to delete ${logInfo}?</p>
-                <p class="text-muted small mb-0">This action cannot be undone.</p>
+                <p class=" small mb-0">This action cannot be undone.</p>
             </div>
         `;
         

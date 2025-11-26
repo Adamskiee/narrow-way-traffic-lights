@@ -237,7 +237,7 @@ function loadUsers() {
         if (data.users.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="7" class="text-center py-4 text-muted">
+                    <td colspan="7" class="text-center py-4 ">
                         <i class="fas fa-users fa-2x mb-2"></i>
                         <div>No users found</div>
                         <small>Click "Add User" to create the first user</small>
@@ -263,12 +263,12 @@ function loadUsers() {
                     <td>
                         <div>
                             ${user["email"] || '-'}
-                            ${user["email"] ? '<br><small class="text-muted">Verified</small>' : ''}
+                            ${user["email"] ? '<br><small class="">Verified</small>' : ''}
                         </div>
                     </td>
                     <td>${user["phone_number"] || '-'}</td>
                     <td>
-                        <small class="text-muted">
+                        <small class="">
                             ${new Date(user["created_at"]).toLocaleDateString()}
                         </small>
                     </td>
@@ -514,7 +514,7 @@ function exportUsers() {
                     <div class="text-center">
                         <i class="fas fa-download text-success fa-3x mb-3"></i>
                         <p class="mb-0">Users have been exported successfully!</p>
-                        <small class="text-muted">File: users_export_${new Date().toISOString().split('T')[0]}.csv</small>
+                        <small class="">File: users_export_${new Date().toISOString().split('T')[0]}.csv</small>
                     </div>
                 `,
                 footer: `<button type="button" class="btn btn-success" onclick="closeInfoModal()">Close</button>`
@@ -549,7 +549,7 @@ function openViewModal(id) {
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card border-0 bg-light">
+                        <div class="card-dark border-0">
                             <div class="card-body">
                                 <h6 class="card-title">
                                     <i class="fas fa-user text-primary me-2"></i>Username
@@ -559,7 +559,7 @@ function openViewModal(id) {
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card border-0 bg-light">
+                        <div class="card-dark border-0">
                             <div class="card-body">
                                 <h6 class="card-title">
                                     <i class="fas fa-id-card text-info me-2"></i>Full Name
@@ -569,7 +569,7 @@ function openViewModal(id) {
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card border-0 bg-light">
+                        <div class="card-dark border-0">
                             <div class="card-body">
                                 <h6 class="card-title">
                                     <i class="fas fa-envelope text-success me-2"></i>Email
@@ -579,7 +579,7 @@ function openViewModal(id) {
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card border-0 bg-light">
+                        <div class="card-dark border-0">
                             <div class="card-body">
                                 <h6 class="card-title">
                                     <i class="fas fa-phone text-warning me-2"></i>Phone Number
@@ -589,7 +589,7 @@ function openViewModal(id) {
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="card border-0 bg-light">
+                        <div class="card-dark border-0">
                             <div class="card-body">
                                 <h6 class="card-title">
                                     <i class="fas fa-calendar text-secondary me-2"></i>Account Created
