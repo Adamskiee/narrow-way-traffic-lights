@@ -9,12 +9,18 @@ define("BASE_PATH", realpath(__DIR__ . '/..'));
 define( "BASE_URL", "http://localhost/narrow-way-traffic-lights");
 
 
-// require BASE_PATH ."/includes/vendor/autoload.php";
+require BASE_PATH ."/vendor/autoload.php";
 require BASE_PATH ."/includes/auth.php";
 require BASE_PATH ."/includes/helpers.php";
 
-// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-// $dotenv->load();
+
+// Load environment variables
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+
+function get_env_var($key, $default = null) {
+    return $_ENV[$key] ?? $default;
+}
 
 // $conn = new mysqli($_ENV["DATABASE_HOSTNAME"], $_ENV["DATABASE_USERNAME"], $_ENV["DATABASE_PASSWORD"], $_ENV["DATABASE_NAME"]);
 

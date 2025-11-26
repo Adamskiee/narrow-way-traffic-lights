@@ -42,3 +42,15 @@ Content-Type: application/json
 {
     "user_id": 5
 }
+
+###
+
+POST http://localhost/narrow-way-traffic-lights/includes/contact.php
+Content-Type: application/json
+
+{
+    "name": "Adam",
+    "email": "23-61030@g.batstate-u.edu.ph",
+    "message": "Hello",
+    "phone": "091234566783"
+}

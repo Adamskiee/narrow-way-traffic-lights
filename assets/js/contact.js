@@ -1,11 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     
-    // Initialize popovers with custom options (SINGLE initialization)
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
     
     popoverTriggerList.forEach(popoverTriggerEl => {
         new bootstrap.Popover(popoverTriggerEl, {
-            trigger: 'click', // Changed to click for profile pics
+            trigger: 'click', 
             delay: { show: 100, hide: 100 },
             animation: true,
             html: true,
@@ -14,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
     
-    // Close popovers when clicking elsewhere
     document.addEventListener('click', function (e) {
         if (!e.target.closest('[data-bs-toggle="popover"]')) {
             const popovers = document.querySelectorAll('[data-bs-toggle="popover"]');
@@ -25,12 +23,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     
-    // Enhanced contact form functionality
-    const contactForm = document.querySelector('.contact-form');
+    const contactForm = document.getElementById('contact-form');
     const inputs = document.querySelectorAll('.contact__input');
     const submitBtn = document.querySelector('.btn-contact-submit');
     
-    // Add focus and blur effects for inputs
     inputs.forEach(input => {
         input.addEventListener('focus', function() {
             this.closest('.input-wrapper').classList.add('focused');
@@ -39,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
         input.addEventListener('blur', function() {
             this.closest('.input-wrapper').classList.remove('focused');
             
-            // Add validation visual feedback
             if (this.value.trim() !== '') {
                 this.classList.add('has-content');
             } else {
@@ -47,13 +42,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
         
-        // Real-time validation
         input.addEventListener('input', function() {
             validateField(this);
         });
     });
     
-    // Form validation function
     function validateField(field) {
         const value = field.value.trim();
         const fieldType = field.type;
@@ -78,12 +71,10 @@ document.addEventListener('DOMContentLoaded', function () {
         return isValid;
     }
     
-    // Form submission with animation
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+        contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Validate all fields
             let isFormValid = true;
             const requiredFields = contactForm.querySelectorAll('[required]');
             
@@ -94,39 +85,36 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             
             if (isFormValid) {
-                // Animate submit button
                 submitBtn.classList.add('loading');
                 submitBtn.disabled = true;
                 
                 const originalText = submitBtn.querySelector('.btn-text').textContent;
                 submitBtn.querySelector('.btn-text').textContent = 'Sending...';
                 submitBtn.querySelector('.btn-icon').className = 'fas fa-spinner fa-spin';
-                
-                // Simulate form submission (replace with actual form submission logic)
-                setTimeout(() => {
-                    // Success animation
-                    submitBtn.querySelector('.btn-text').textContent = 'Message Sent!';
-                    submitBtn.querySelector('.btn-icon').className = 'fas fa-check';
-                    submitBtn.style.background = 'linear-gradient(135deg, var(--bs-green) 0%, #27ae60 100%)';
-                    
-                    // Reset form after delay
+
+                const isSend = await sendMessage(e.target);
+                if(isSend) {
                     setTimeout(() => {
-                        contactForm.reset();
-                        submitBtn.classList.remove('loading');
-                        submitBtn.disabled = false;
-                        submitBtn.querySelector('.btn-text').textContent = originalText;
-                        submitBtn.querySelector('.btn-icon').className = 'fas fa-paper-plane';
-                        submitBtn.style.background = '';
+                        submitBtn.querySelector('.btn-text').textContent = 'Message Sent!';
+                        submitBtn.querySelector('.btn-icon').className = 'fas fa-check';
+                        submitBtn.style.background = 'linear-gradient(135deg, var(--bs-green) 0%, #27ae60 100%)';
                         
-                        // Remove validation classes
-                        inputs.forEach(input => {
-                            input.classList.remove('is-valid', 'is-invalid', 'has-content');
-                            input.closest('.input-wrapper').classList.remove('focused');
-                        });
-                    }, 2000);
-                }, 1500);
+                        setTimeout(() => {
+                            contactForm.reset();
+                            submitBtn.classList.remove('loading');
+                            submitBtn.disabled = false;
+                            submitBtn.querySelector('.btn-text').textContent = originalText;
+                            submitBtn.querySelector('.btn-icon').className = 'fas fa-paper-plane';
+                            submitBtn.style.background = '';
+                            
+                            inputs.forEach(input => {
+                                input.classList.remove('is-valid', 'is-invalid', 'has-content');
+                                input.closest('.input-wrapper').classList.remove('focused');
+                            });
+                        }, 2000);
+                    }, 1500);
+                }
             } else {
-                // Shake animation for invalid form
                 contactForm.classList.add('shake');
                 setTimeout(() => {
                     contactForm.classList.remove('shake');
@@ -135,13 +123,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
     
-    // Profile hover effects
     const profiles = document.querySelectorAll('.contact__profile');
     profiles.forEach(profile => {
         profile.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-8px) scale(1.02)';
             
-            // Add glow effect to profile image
             const glowElement = this.querySelector('.profile-glow');
             if (glowElement) {
                 glowElement.style.opacity = '0.4';
@@ -152,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
         profile.addEventListener('mouseleave', function() {
             this.style.transform = 'translateY(0) scale(1)';
             
-            // Remove glow effect
             const glowElement = this.querySelector('.profile-glow');
             if (glowElement) {
                 glowElement.style.opacity = '0';
@@ -160,4 +145,23 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+    async function sendMessage() {
+        const formData = new FormData(contactForm);
+        const payload = Object.fromEntries(formData.entries());
+    
+        try {
+          const response = await fetch(contactForm.action, {
+            method: contactForm.method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+    
+          const data = await response.json();
+          if (data.success) return true;
+          else return false;
+        } catch (err) {
+            console.error(err)
+          return false;
+        }
+    }
 });

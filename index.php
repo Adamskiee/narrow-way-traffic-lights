@@ -507,7 +507,7 @@ include './includes/header.php';
                             <p>We'll get back to you within 24 hours</p>
                         </div>
                         
-                        <form class="contact-form">
+                        <form class="contact-form" action="<?= BASE_URL ?>/includes/contact.php" method="post" id="contact-form">
                             <div class="form-group-enhanced mb-3">
                                 <div class="input-wrapper">
                                     <label for="name" class="form-label">Full Name</label>
