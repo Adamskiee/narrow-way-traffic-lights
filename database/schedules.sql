@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 19, 2025 at 08:21 AM
+-- Generation Time: Nov 26, 2025 at 09:51 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -46,10 +46,13 @@ INSERT INTO `schedules` (`id`, `admin_id`, `week_day`, `duration`) VALUES
 (5, 10, 5, 30),
 (6, 10, 6, 30),
 (7, 10, 7, 30),
-(8, 2, 1, 31),
+(8, 2, 1, 32),
 (9, 2, 2, 32),
 (10, 2, 4, 40),
-(29, 2, 6, 12);
+(29, 2, 6, 13),
+(32, 2, 3, 12),
+(35, 2, 7, 25),
+(36, 2, 5, 11);
 
 --
 -- Indexes for dumped tables
@@ -69,7 +72,7 @@ ALTER TABLE `schedules`
 -- AUTO_INCREMENT for table `schedules`
 --
 ALTER TABLE `schedules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
