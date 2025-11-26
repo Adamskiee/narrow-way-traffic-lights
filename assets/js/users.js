@@ -663,15 +663,10 @@ function setupAddUserButton() {
         addUserBtn.addEventListener("click", () => {
             const modalForm = document.querySelector(".modalForm");
             
-            // Clear any existing form handlers
-            modalForm.onsubmit = null;
-            modalForm.removeAttribute('data-form-handler');
-            
             modalForm.action = "../admin/add-user.php";
             modalForm.method = "post";
             modalForm.id = "user-add";
             
-            // Set up form handler only once
             handleFormSubmit(
                 "user-add", 
                 (data) => {
@@ -684,8 +679,9 @@ function setupAddUserButton() {
         });
     }
 }
+// if(document.getElementById("user-add")) {
+// }
 
 // Make functions globally available for onclick handlers
 window.loadUsers = loadUsers;
 window.exportUsers = exportUsers;
-

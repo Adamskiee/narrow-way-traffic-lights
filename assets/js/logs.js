@@ -450,7 +450,22 @@ async function exportLogs() {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
         
-        showSuccess('Logs exported successfully');
+        // Show success message
+        openInfoModal({
+            title: "Export Successful",
+            body: `
+                <div class="text-center">
+                    <i class="fas fa-download text-success fa-3x mb-3"></i>
+                    <p class="mb-0">Users have been exported successfully!</p>
+                    <small class="">File: users_export_${new Date().toISOString().split('T')[0]}.csv</small>
+                </div>
+            `,
+            footer: `<button type="button" class="btn btn-success" onclick="closeInfoModal()">Close</button>`
+        });
+
+        setTimeout(() => {
+            closeInfoModal();
+        }, 2000);
         
     } catch (error) {
         console.error('Export error:', error);
