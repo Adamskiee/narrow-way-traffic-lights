@@ -36,9 +36,7 @@ if(!$isLoggedIn) {
         </div>
     </div>
     
-    <!-- Include Modal Components -->
-    <?php include BASE_PATH . "/components/modal.php" ?>
-    <?php include BASE_PATH . "/components/infoModal.php" ?>
+
     
     <!-- Users Table Card -->
     <div class="card-dark">
@@ -130,6 +128,10 @@ if(!$isLoggedIn) {
             </div>
         </div>
     </div>
+    
+    <!-- Modal components -->
+    <?php include BASE_PATH . "/components/modal.php" ?>
+    <?php include BASE_PATH . "/components/infoModal.php" ?>
 </main>
 
 <script type="module" src="<?= BASE_URL ?>/assets/js/users.js"></script>

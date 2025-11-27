@@ -1,6 +1,7 @@
 const description = document.getElementById("description");
 const cards = document.querySelectorAll(".about__card");
 const title = document.getElementById("title");
+
 let descriptions = 
     {
         "tosino-card": {
@@ -31,7 +32,3 @@ cards.forEach(card => {
         card.classList.add("active");
     })
 })
-
-const toggleActive = (cardId) => {
-
-}

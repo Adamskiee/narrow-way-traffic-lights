@@ -35,7 +35,6 @@ function generatePassword(length = 16) {
 function openDeleteModal(id) {
     const modalForm = document.querySelector(".modalForm");
 
-    // Clear any existing form handlers
     modalForm.onsubmit = null;
     modalForm.removeAttribute('data-form-handler');
     
@@ -61,6 +60,7 @@ function openDeleteModal(id) {
         `
     });
 }
+
 function openEditModal(id) {
     fetch(`../admin/get-user.php?id=${id}`)
     .then(res => res.json())
@@ -68,7 +68,6 @@ function openEditModal(id) {
         const user = data.user;
         const modalForm = document.querySelector(".modalForm");
 
-        // Clear any existing form handlers
         modalForm.onsubmit = null;
         modalForm.removeAttribute('data-form-handler');
         
@@ -160,20 +159,19 @@ function openSuccessModal(message) {
         footer: `<button type="button" class="btn btn-success" id="closeSuccessModal">Close</button>`
     });
 
-    // Add event listener for close button
     setTimeout(() => {
         const closeBtn = document.getElementById('closeSuccessModal');
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
                 closeInfoModal();
-                loadUsers(); // Reload users instead of full page
+                loadUsers();
             });
         }
     }, 100);
     
     setTimeout(() => {
         closeInfoModal();
-        loadUsers(); // Reload users instead of full page
+        loadUsers();
     }, 1500);
 }
 
@@ -191,7 +189,6 @@ function openErrorModal(message) {
         footer: `<button type="button" class="btn btn-danger" id="closeErrorModal">Close</button>`
     });
 
-    // Add event listener for close button
     setTimeout(() => {
         const closeBtn = document.getElementById('closeErrorModal');
         if (closeBtn) {
@@ -206,7 +203,6 @@ function openErrorModal(message) {
     }, 3000);
 }
 
-// Global state for users
 let currentUsers = [];
 
 /**
@@ -232,7 +228,7 @@ function loadUsers() {
     .then(res => res.json())
     .then(data => {
         currentUsers = data.users;
-        tbody.innerHTML = ''; // Clear loading state
+        tbody.innerHTML = ''; 
         
         if (data.users.length === 0) {
             tbody.innerHTML = `
@@ -290,12 +286,10 @@ function loadUsers() {
             tbody.innerHTML += row;
         });
         
-        // Update users count
         if (usersCountEl) {
             usersCountEl.textContent = `${data.users.length} user${data.users.length !== 1 ? 's' : ''}`;
         }
         
-        // Update statistics
         updateUserStatistics(data.users);
         
         attachEvents();
@@ -329,7 +323,6 @@ function updateUserStatistics(users) {
     }
     
     if (activeUsersEl) {
-        // For now, assume all users are active. This could be enhanced with an 'active' field
         activeUsersEl.textContent = users.length;
     }
     
@@ -346,26 +339,6 @@ function updateUserStatistics(users) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadUsers();
-    
-    // Set up refresh button
-    const refreshBtn = document.getElementById('refresh-users');
-    if (refreshBtn && !refreshBtn.hasAttribute('data-listener-attached')) {
-        refreshBtn.setAttribute('data-listener-attached', 'true');
-        refreshBtn.addEventListener('click', loadUsers);
-    }
-    
-    // Set up export button
-    const exportBtn = document.getElementById('export-users');
-    if (exportBtn && !exportBtn.hasAttribute('data-listener-attached')) {
-        exportBtn.setAttribute('data-listener-attached', 'true');
-        exportBtn.addEventListener('click', exportUsers);
-    }
-    
-    // Set up add user button
-    setupAddUserButton();
-});
 
 function openAddModal() {
     openModal({
@@ -445,7 +418,6 @@ function openAddModal() {
         `
     });
     
-    // Add event listener for generate password button
     setTimeout(() => {
         const generateBtn = document.getElementById("generate-btn");
         if (generateBtn && !generateBtn.hasAttribute('data-listener-attached')) {
@@ -476,10 +448,8 @@ function exportUsers() {
     }
     
     try {
-        // Create CSV headers
         const headers = ['Username', 'First Name', 'Last Name', 'Email', 'Phone Number', 'Created At'];
         
-        // Create CSV rows
         const rows = currentUsers.map(user => [
             user.username || '',
             user.first_name || '',
@@ -489,12 +459,10 @@ function exportUsers() {
             new Date(user.created_at).toLocaleDateString()
         ]);
         
-        // Combine headers and rows
         const csvContent = [headers, ...rows]
             .map(row => row.map(field => `"${field}"`).join(','))
             .join('\n');
         
-        // Create and download file
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         
@@ -507,7 +475,6 @@ function exportUsers() {
             link.click();
             document.body.removeChild(link);
             
-            // Show success message
             openInfoModal({
                 title: "Export Successful",
                 body: `
@@ -610,7 +577,6 @@ function openViewModal(id) {
             `
         });
         
-        // Add event listeners after modal is shown
         setTimeout(() => {
             const closeBtn = document.getElementById('closeViewModal');
             const editBtn = document.getElementById('editFromView');
@@ -632,18 +598,15 @@ function openViewModal(id) {
                 });
             }
             
-            // Fix the close button (X) in modal header
             if (modalCloseBtn) {
                 modalCloseBtn.addEventListener('click', () => {
                     closeInfoModal();
                 });
             }
             
-            // Also handle modal backdrop click and escape key
             const infoModal = document.getElementById('infoModal');
             if (infoModal) {
                 infoModal.addEventListener('hidden.bs.modal', () => {
-                    // Ensure our closeInfoModal function is called when modal is closed by any means
                     closeInfoModal();
                 });
             }
@@ -655,7 +618,6 @@ function openViewModal(id) {
     });
 }
 
-// Prevent multiple event listeners on add user button
 function setupAddUserButton() {
     const addUserBtn = document.getElementById("add-user-btn");
     if (addUserBtn && !addUserBtn.hasAttribute('data-listener-attached')) {
@@ -679,8 +641,25 @@ function setupAddUserButton() {
         });
     }
 }
-// if(document.getElementById("user-add")) {
-// }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadUsers();
+    
+    const refreshBtn = document.getElementById('refresh-users');
+    if (refreshBtn && !refreshBtn.hasAttribute('data-listener-attached')) {
+        refreshBtn.setAttribute('data-listener-attached', 'true');
+        refreshBtn.addEventListener('click', loadUsers);
+    }
+    
+    const exportBtn = document.getElementById('export-users');
+    if (exportBtn && !exportBtn.hasAttribute('data-listener-attached')) {
+        exportBtn.setAttribute('data-listener-attached', 'true');
+        exportBtn.addEventListener('click', exportUsers);
+    }
+    
+    setupAddUserButton();
+});
 
 // Make functions globally available for onclick handlers
 window.loadUsers = loadUsers;

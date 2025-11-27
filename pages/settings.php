@@ -60,11 +60,11 @@ include "../includes/header.php";
         </div>
     </div>
     <div class="py-4 mw-100 container" style="width: 500px">
-        <button type="button" class="btn btn-danger-custom" id="change-password-btn">Change Password</button>
-        <?php include BASE_PATH . "/components/modal.php" ?>
+        <button type="button" class="btn btn-danger" id="change-password-btn">Change Password</button>
     </div>
+    <!-- Modal components -->
+    <?php include BASE_PATH . "/components/modal.php" ?>
     <?php include BASE_PATH . "/components/infoModal.php" ?>
 </main>
-<script type="module" src="<?= BASE_URL ?>/assets/js/forms/changePasswordForm.js"></script>
-<script src="<?= BASE_URL ?>/assets/js/settings.js"></script>
+<script type="module" src="<?= BASE_URL ?>/assets/js/settings.js"></script>
 <?php include BASE_PATH . "/includes/footer.php"; ?>

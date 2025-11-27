@@ -127,7 +127,7 @@ if(!$isLoggedIn) {
             </tr>
           </thead>
           <tbody id="logs-table-body">
-            <!-- Logs will be populated here -->
+            <!-- Logs content -->
             <tr>
               <td colspan="8" class="text-center py-4">
                 <div class="spinner-border text-primary" role="status">
@@ -142,7 +142,7 @@ if(!$isLoggedIn) {
     </div>
     <div class="card-footer">
       <div id="pagination-container">
-        <!-- Pagination will be populated here -->
+        <!-- Pagination content -->
       </div>
     </div>
   </div>
@@ -207,7 +207,7 @@ if(!$isLoggedIn) {
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="logDetailsContent">
-        <!-- Log details content will be populated here -->
+        <!-- Log details content -->
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -216,7 +216,7 @@ if(!$isLoggedIn) {
   </div>
 </div>
 
-<!-- Include info modal component -->
+<!-- Modal components -->
 <?php include BASE_PATH . "/components/infoModal.php"; ?>
 
 <script type="module">

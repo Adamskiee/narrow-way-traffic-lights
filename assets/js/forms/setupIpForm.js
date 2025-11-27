@@ -31,17 +31,6 @@ export async function checkESP(num) {
 handleFormSubmit("insert-ip-form",
     (data)=>(window.location.href = data.redirect),
     (error) => (result.innerText = error.message),
-    // async (data) => {
-    //     const valid = [];
-    //     for (let i = 1; i <= 2; i++) {
-    //         const validIP = await checkESP(i);
-    //         if(!validIP) {
-    //             valid.push(false);
-    //         }            
-    //     }
-    //     valid.forEach(v => {if(!v) return false;})
-    //     return true;
-    // }
 );
 
 
@@ -50,9 +39,3 @@ handleFormSubmit("insert-ip-form",
 document.getElementById("connect-cam-1").addEventListener("click", ()=>checkESP(1));
 
 document.getElementById("connect-cam-2").addEventListener("click", ()=>checkESP(2));
-
-// weekDays.querySelectorAll("button[data-week]").forEach(btn => {
-//     btn.addEventListener("click", (e) => {
-
-//     })
-// })

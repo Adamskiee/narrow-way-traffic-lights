@@ -1,4 +1,3 @@
-// About
 @media (max-width: 768px) {
     .about-section-enhanced {
         padding: 2rem 0;
@@ -121,7 +120,7 @@
     
     .hero-visual {
         .floating-card {
-            display: none; // Hide on mobile for cleaner look
+            display: none; 
         }
         
         .traffic-light-container .status-card {
@@ -132,8 +131,6 @@
         }
     }
 }
-
-// Navbar
 
 @media (max-width: 991px) {
     .navbar-glassmorphism {
@@ -187,7 +184,6 @@
     }
 }
 
-// Navbar scroll behavior
 @media (min-width: 992px) {
     .navbar-glassmorphism {
         .nav-link span {

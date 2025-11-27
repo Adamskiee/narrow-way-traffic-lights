@@ -12,7 +12,7 @@
     position: relative;
     overflow: hidden;
     
-    // Animated background elements
+    
     &::before {
         content: '';
         position: absolute;
@@ -32,7 +32,7 @@
         z-index: 1;
     }
     
-    // Traffic light pattern overlay
+    
     &::after {
         content: '';
         position: absolute;
@@ -65,7 +65,7 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
     
-    // Glowing border effect
+    
     &::before {
         content: '';
         position: absolute;
@@ -97,7 +97,7 @@
         }
     }
     
-    // Logo/Brand area
+    
     .login-brand {
         text-align: center;
         margin-bottom: 2.5rem;
@@ -149,7 +149,7 @@
         }
     }
     
-    // Form styling
+    
     .login-form {
         .form-group {
             margin-bottom: 1.5rem;
@@ -165,7 +165,7 @@
             letter-spacing: 0.5px;
         }
         
-        // Remember me checkbox
+        
         .form-check {
             margin: 1.5rem 0;
             
@@ -190,7 +190,7 @@
             }
         }
         
-        // Submit button
+        
         .btn-login {
             width: 100%;
             background: linear-gradient(135deg, var(--bs-red) 0%, #cc1f1f 100%);
@@ -238,7 +238,7 @@
         }
     }
     
-    // Additional links
+    
     .login-links {
         text-align: center;
         
@@ -274,7 +274,7 @@
   max-height: 0;
   overflow: hidden;
   
-  // Show state when content is present
+  
   &:not(:empty) {
     opacity: 1;
     transform: translateY(0);
@@ -284,7 +284,7 @@
     animation: slideInResult 0.4s ease-out;
   }
   
-  // Error state (default)
+  
   &.text-danger {
     background: rgba(var(--bs-red-rgb), 0.1);
     border: 2px solid rgba(var(--bs-red-rgb), 0.3);
@@ -298,7 +298,7 @@
     }
   }
   
-  // Success state
+  
   &.text-success {
     background: rgba(var(--bs-green-rgb), 0.1);
     border: 2px solid rgba(var(--bs-green-rgb), 0.3);
@@ -313,7 +313,7 @@
     }
   }
   
-  // Warning state
+  
   &.text-warning {
     background: rgba(var(--bs-warning-rgb), 0.1);
     border: 2px solid rgba(var(--bs-warning-rgb), 0.3);
@@ -327,7 +327,7 @@
     }
   }
   
-  // Info state
+  
   &.text-info {
     background: rgba(var(--bs-info-rgb), 0.1);
     border: 2px solid rgba(var(--bs-info-rgb), 0.3);
@@ -341,25 +341,25 @@
     }
   }
   
-  // Hover effect for interactive feedback
+  
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(var(--bs-red-rgb), 0.3);
   }
   
-  // Enhanced glassmorphism effect
+  
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   
-  // Auto-hide animation
+  
   &.auto-hide {
     animation: slideOutResult 0.4s ease-out 3s forwards;
   }
 }
 
-// Login form container adjustments for result spacing
+result spacing
 .login-form-container {
-  // Ensure proper spacing for result message
+  
   #result + .login-form {
     margin-top: 0;
   }

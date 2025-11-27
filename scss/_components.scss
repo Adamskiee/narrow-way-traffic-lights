@@ -1,85 +1,63 @@
-.hero-btn, .btn-primary-custom {
+.btn-primary {
     background: linear-gradient(135deg, var(--bs-red) 0%, #cc1f1f 100%);
-    border: 2px solid var(--bs-red);
+    border: none;
     color: white;
-    padding: 0.875rem 2rem;
-    font-weight: 600;
-    font-size: 1.1rem;
-    border-radius: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(255, 40, 40, 0.3);
-    
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, var(--bs-green) 0%, #36b82a 100%);
-        transition: left 0.3s ease;
-        z-index: 1;
-    }
-    
-    &:hover::before {
-        left: 0;
-    }
-    
-    &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(255, 40, 40, 0.4);
-        border-color: var(--bs-green);
-    }
-    
-    span {
-        position: relative;
-        z-index: 2;
-    }
-}
-
-.btn-secondary-custom, #contact button[type="submit"] {
-    background: linear-gradient(135deg, var(--bs-bg-medium-gray) 0%, var(--bs-bg-dark-gray) 100%);
-    border: 2px solid var(--bs-green);
-    color: var(--bs-green);
     padding: 0.75rem 1.5rem;
-    font-weight: 500;
     border-radius: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 600;
     transition: all 0.3s ease;
-    position: relative;
-    
-    &::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        background: rgba(66, 220, 52, 0.1);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        transition: all 0.3s ease;
-    }
     
     &:hover {
-        background: linear-gradient(135deg, var(--bs-green) 0%, #36b82a 100%);
-        color: white;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(66, 220, 52, 0.3);
-        
-        &::after {
-            width: 100%;
-            height: 100%;
-        }
+        box-shadow: 0 10px 30px rgba(255, 40, 40, 0.4);
     }
 }
 
-.form-control, .form-select, .form-textarea {
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        background: rgba(66, 220, 52, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(66, 220, 52, 0.3);
+    }
+}
+
+.btn.disabled,
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    
+    &:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%);
+    border: 2px solid #dc3545;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        background: linear-gradient(135deg, var(--bs-red) 0%, #cc1f1f 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+}
+
+.form-control, .form-textarea, .form-select {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(15px);
     border: 2px solid rgba(255, 255, 255, 0.12);
@@ -93,21 +71,18 @@
         0 4px 15px rgba(0, 0, 0, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     
-    // Placeholder styling
     &::placeholder {
         color: rgba(255, 255, 255, 0.5);
         font-weight: 400;
         transition: color 0.3s ease;
     }
     
-    // Hover state
     &:hover:not(:disabled) {
         background: rgba(255, 255, 255, 0.12);
         border-color: rgba(255, 255, 255, 0.2);
         transform: translateY(-1px);
     }
     
-    // Focus state with enhanced animation
     &:focus {
         color: white !important;
         outline: none;
@@ -124,7 +99,6 @@
         }
     }
     
-    // Valid state
     &:valid:not(:placeholder-shown) {
         border-color: var(--bs-green);
         background: rgba(66, 220, 52, 0.05);
@@ -134,7 +108,6 @@
         }
     }
     
-    // Invalid state
     &:invalid:not(:placeholder-shown) {
         border-color: var(--bs-red);
         background: rgba(255, 40, 40, 0.05);
@@ -144,7 +117,6 @@
         }
     }
     
-    // Disabled state
     &:disabled {
         background: rgba(255, 255, 255, 0.02);
         border-color: rgba(255, 255, 255, 0.05);
@@ -157,7 +129,6 @@
     }
 }
 
-// Enhanced Select Specific Styling
 .form-select {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
@@ -166,18 +137,15 @@
     padding-right: 2.5rem;
     cursor: pointer;
     
-    // Hover state
     &:hover:not(:disabled) {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23dc3545' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
     }
     
-    // Focus state with red arrow
     &:focus {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23dc3545' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
         animation: selectFocus 0.3s ease-out;
     }
     
-    // Enhanced Options Dark Mode Styling
     option {
         background: var(--bs-bg-dark-gray);
         color: #ffffff;
@@ -200,7 +168,6 @@
     }
 }
 
-// Date Input Specific Styling with Enhanced Icons
 input[type="date"].form-control {
     position: relative;
     color: #ffffff;
@@ -234,7 +201,6 @@ input[type="date"].form-control {
     }
 }
 
-// Enhanced Form Labels
 .form-label {
     color: rgba(255, 255, 255, 0.9);
     font-weight: 600;
@@ -244,7 +210,6 @@ input[type="date"].form-control {
     letter-spacing: 0.5px;
 }
 
-// Enhanced Checkbox and Switch Styling
 .form-check-input {
     background: rgba(255, 255, 255, 0.08);
     border: 2px solid rgba(255, 255, 255, 0.2);
@@ -267,7 +232,6 @@ input[type="date"].form-control {
     font-weight: 500;
 }
 
-// Input Group Styling
 .input-group {
     position: relative;
     
@@ -283,7 +247,6 @@ input[type="date"].form-control {
     }
 }
 
-// Loading State for Inputs
 .form-control.loading,
 .form-select.loading {
     background: rgba(255, 255, 255, 0.05);
@@ -306,7 +269,6 @@ input[type="date"].form-control {
     }
 }
 
-// Form Text Enhancement
 .form-text {
     font-size: 0.85rem;
     margin-top: 5px;
@@ -348,7 +310,6 @@ input[type="date"].form-control {
     }
 }
 
-// Enhanced Table Dark Mode
 .table-dark {
     --bs-table-bg: rgba(9, 10, 11, 0.8);
     --bs-table-color: #ffffff;
@@ -377,7 +338,6 @@ input[type="date"].form-control {
     }
 }
 
-// Enhanced Dark Mode Pagination
 .pagination {
     --bs-pagination-padding-x: 0.75rem;
     --bs-pagination-padding-y: 0.5rem;
@@ -414,7 +374,6 @@ input[type="date"].form-control {
             position: relative;
             overflow: hidden;
             
-            // Hover effects
             &:hover {
                 background: rgba(220, 53, 69, 0.15);
                 border-color: rgba(220, 53, 69, 0.4);
@@ -423,7 +382,6 @@ input[type="date"].form-control {
                 box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
             }
             
-            // Focus effects
             &:focus {
                 background: rgba(220, 53, 69, 0.2);
                 border-color: var(--bs-red);
@@ -433,7 +391,6 @@ input[type="date"].form-control {
             }
         }
         
-        // Active page styling
         &.active .page-link {
             background: linear-gradient(135deg, var(--bs-red) 0%, #cc1f1f 100%);
             border-color: var(--bs-red);
@@ -453,7 +410,6 @@ input[type="date"].form-control {
             }
         }
         
-        // Disabled state styling
         &.disabled .page-link {
             background: rgba(255, 255, 255, 0.02);
             border-color: rgba(255, 255, 255, 0.05);
@@ -469,7 +425,6 @@ input[type="date"].form-control {
             }
         }
         
-        // First/Last page buttons
         &:first-child .page-link,
         &:last-child .page-link {
             font-weight: 600;
@@ -484,7 +439,6 @@ input[type="date"].form-control {
     }
 }
 
-// Pagination Info Text
 .pagination-info {
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
@@ -496,7 +450,6 @@ input[type="date"].form-control {
     }
 }
 
-// Pagination Container Styling
 #pagination-container {
     display: flex;
     align-items: center;
@@ -510,5 +463,49 @@ input[type="date"].form-control {
         flex-direction: column;
         gap: 0.75rem;
         text-align: center;
+    }
+}
+
+.modal-content {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    
+    .modal-header {
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.1) 0%, 
+            rgba(255, 255, 255, 0.05) 100%
+        );
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px 20px 0 0;
+        
+        .modal-title {
+            color: white;
+            font-weight: 600;
+            
+            i {
+                color: var(--bs-red);
+                margin-right: 0.5rem;
+            }
+        }
+        
+        .btn-close {
+            filter: invert(1);
+            opacity: 0.8;
+            
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+    
+    .modal-body {
+        color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .modal-footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 }

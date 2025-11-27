@@ -1,9 +1,6 @@
-// Navbar Enhancement Script
 document.addEventListener('DOMContentLoaded', function() {
     const navbar = document.querySelector('.navbar-glassmorphism');
-    const navbarToggler = document.querySelector('.custom-toggler');
     
-    // Navbar scroll behavior
     let lastScrollTop = 0;
     
     window.addEventListener('scroll', function() {
@@ -16,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
             navbar.classList.remove('scrolled');
         }
         
-        // Compact navbar on scroll (desktop only)
         if (window.innerWidth >= 992) {
             if (scrollTop > 100) {
                 navbar.classList.add('navbar-compact');
@@ -28,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
         lastScrollTop = scrollTop;
     });
     
-    // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -42,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Mobile menu auto-close on link click
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
     navLinks.forEach(link => {
         link.addEventListener('click', function() {

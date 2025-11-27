@@ -32,7 +32,6 @@
     position: relative;
     overflow: hidden;
     
-    // Background pattern
     &::before {
         content: '';
         position: absolute;
@@ -71,7 +70,6 @@
     }
 }
 
-// Step Number Styling
 .step-number {
     width: 80px;
     height: 80px;
@@ -121,7 +119,6 @@
     margin-top: 1rem;
 }
 
-// Step Content Card
 .step-content-card {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
@@ -157,7 +154,6 @@
     }
 }
 
-// Step Image Container
 .step-image-container {
     position: relative;
     height: 100%;
@@ -215,7 +211,6 @@
         height: 200px;
     }
 
-    /* For responsive heights */
     @media (min-width: 768px) {
         .step-image-container {
             min-height: 350px;
@@ -229,7 +224,6 @@
     }
 }
 
-// Step Text Content
 .step-text {
     padding: 2rem;
     
@@ -256,7 +250,6 @@
     }
 }
 
-// Step Features
 .step-features {
     .feature-item {
         color: rgba(255, 255, 255, 0.9);
@@ -292,7 +285,6 @@
     }
 }
 
-// Tutorial Navigation
 .tutorial-navigation {
     .step-indicators {
         display: flex;
@@ -347,7 +339,6 @@
     }
 }
 
-// Animation for tutorial steps
 .tutorial-step {
     opacity: 0;
     transform: translateY(30px);

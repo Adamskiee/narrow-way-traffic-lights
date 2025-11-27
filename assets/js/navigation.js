@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Smooth scrolling for navigation links
     const navLinks = document.querySelectorAll('a[href^="#"]');
     
     navLinks.forEach(link => {
@@ -9,16 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetId = this.getAttribute('href');
             const targetSection = document.querySelector(targetId);
             
-            // Check if we're on the home page (index.php)
+            // Check if on the home page (index.php)
             const isHomePage = window.location.pathname.includes('index.php') || 
                               window.location.pathname.endsWith('/') ||
                               window.location.pathname.includes('narrow-way-traffic-lights') && !window.location.pathname.includes('.php');
             
             if (targetSection && isHomePage) {
-                // We're on home page, scroll to section
                 scrollToSection(targetSection, targetId);
             } else {
-                // We're on another page, redirect to home with hash
                 const baseUrl = getBaseUrl();
                 window.location.href = `${baseUrl}index.php${targetId}`;
             }
@@ -40,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Update active navigation link based on scroll position
     window.addEventListener('scroll', function() {
-        const scrollPosition = window.scrollY + 100; // Offset for navbar
+        const scrollPosition = window.scrollY + 100; 
         
         const sections = ['#hero', '#tutorial', '#about', '#contact'];
         
@@ -58,31 +55,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     function scrollToSection(targetSection, targetId) {
-        // Calculate offset for fixed navbar
         const navbarHeight = document.querySelector('.navbar')?.offsetHeight || 70;
         const targetPosition = targetSection.offsetTop - navbarHeight;
         
-        // Smooth scroll to target
         window.scrollTo({
             top: targetPosition,
             behavior: 'smooth'
         });
         
-        // Update active nav link
         updateActiveNavLink(targetId);
         
-        // Update URL hash without triggering scroll
         history.replaceState(null, null, targetId);
     }
     
     function updateActiveNavLink(targetId) {
-        // Remove active class from all nav links
         const allNavLinks = document.querySelectorAll('.nav-link');
         allNavLinks.forEach(link => {
             link.classList.remove('active');
         });
         
-        // Add active class to current nav link
         const activeLink = document.querySelector(`a[href="${targetId}"]`);
         if (activeLink) {
             activeLink.classList.add('active');
@@ -90,11 +81,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function getBaseUrl() {
-        // Get the base URL dynamically
         const path = window.location.pathname;
         const segments = path.split('/');
         
-        // Find the project directory (narrow-way-traffic-lights)
         const projectIndex = segments.findIndex(segment => segment === 'narrow-way-traffic-lights');
         
         if (projectIndex !== -1) {

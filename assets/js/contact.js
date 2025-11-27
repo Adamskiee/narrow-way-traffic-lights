@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    
+    // For profile images
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
     
     popoverTriggerList.forEach(popoverTriggerEl => {
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 isValid = emailRegex.test(value);
                 break;
             case 'tel':
-                const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+                const phoneRegex = /^(09|\+639)\d{9}$/;
                 isValid = value === '' || phoneRegex.test(value.replace(/\D/g, ''));
                 break;
             default:
@@ -122,29 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-    
-    const profiles = document.querySelectorAll('.contact__profile');
-    profiles.forEach(profile => {
-        profile.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-8px) scale(1.02)';
-            
-            const glowElement = this.querySelector('.profile-glow');
-            if (glowElement) {
-                glowElement.style.opacity = '0.4';
-                glowElement.style.transform = 'translate(-50%, -50%) scale(1.1)';
-            }
-        });
-        
-        profile.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-            
-            const glowElement = this.querySelector('.profile-glow');
-            if (glowElement) {
-                glowElement.style.opacity = '0';
-                glowElement.style.transform = 'translate(-50%, -50%) scale(1)';
-            }
-        });
-    });
+ 
     async function sendMessage() {
         const formData = new FormData(contactForm);
         const payload = Object.fromEntries(formData.entries());

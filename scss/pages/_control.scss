@@ -17,7 +17,7 @@
     }
     
     &::after {
-        content: '\f023'; // Font Awesome lock icon
+        content: '\f023'; 
         font-family: 'Font Awesome 5 Free';
         font-weight: 900;
         position: absolute;
@@ -29,7 +29,7 @@
         pointer-events: none;
     }
     
-    // Disable interactions for restricted elements
+    elements
     input, button, select, textarea {
         pointer-events: none;
         opacity: 0.6;
@@ -45,14 +45,14 @@
     }
 }
 
-// Role badge styling
+
 .badge.bg-warning.text-dark {
     font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.5px;
 }
 
-// Alert styling for privilege messages
+
 .alert-warning {
     background: rgba(255, 193, 7, 0.1);
     border: 1px solid rgba(255, 193, 7, 0.3);
@@ -75,7 +75,7 @@
     }
 }
 
-// Camera control specific permissions
+
 .cam-controls-operator {
     .led-control {
         border: 2px solid rgba(40, 167, 69, 0.5);
@@ -128,7 +128,7 @@
         }
         
         &::after {
-            content: '\f007'; // Font Awesome user icon
+            content: '\f007';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
             position: absolute;
@@ -173,7 +173,7 @@
     }
 }
 
-// LED Toggle Buttons
+
 .led-control {
     position: relative;
 }
@@ -193,7 +193,7 @@
     justify-content: center;
     gap: 0.5rem;
     
-    // Responsive design for LED buttons
+    
     @media (max-width: 768px) {
         min-width: 120px;
         padding: 0.65rem 0.85rem;
@@ -234,7 +234,7 @@
     box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.3);
 }
 
-// Disabled state for toggle buttons during auto mode
+auto mode
 .led-toggle-btn:disabled,
 .led-toggle-btn.disabled {
     opacity: 0.6;
@@ -261,7 +261,7 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     
-    // Responsive text sizing
+    
     @media (max-width: 768px) {
         font-size: 0.8rem;
         letter-spacing: 0.3px;
@@ -278,9 +278,9 @@
     }
 }
 
-// CAM 1 LED States
+
 .cam1-led[data-state="on"] {
-    // Default green state
+    
     background-color: var(--bs-bg-green);
     border-color: var(--bs-green);
     color: #fff;
@@ -291,7 +291,7 @@
         box-shadow: 0 0 8px rgba(66, 220, 52, 0.6), 0 0 0 2px rgba(66, 220, 52, 0.3);
     }
     
-    // Red state for CAM1
+    
     &.red-active {
         background-color: #8B0000;
         border-color: var(--bs-red);
@@ -311,9 +311,9 @@
     }
 }
 
-// CAM 2 LED States  
+
 .cam2-led[data-state="on"] {
-    // Default red state
+    
     background-color: #8B0000;
     border-color: var(--bs-red);
     color: #fff;
@@ -324,7 +324,7 @@
         box-shadow: 0 0 8px rgba(255, 40, 40, 0.6), 0 0 0 2px rgba(255, 40, 40, 0.3);
     }
     
-    // Green state for CAM2
+    
     &.green-active {
         background-color: var(--bs-bg-green);
         border-color: var(--bs-green);
@@ -344,7 +344,7 @@
     }
 }
 
-// Disconnected state for both cameras
+
 .led-toggle-btn.disconnected {
     background-color: #6c757d;
     border-color: #6c757d;
@@ -364,7 +364,7 @@
     }
 }
 
-// Control Page Dark Mode Styling
+
 .control__card {
     background: rgba(9, 10, 11, 0.85);
     backdrop-filter: blur(25px);
@@ -404,7 +404,7 @@
     }
 }
 
-// Week Days Button Styling
+
 #week-days {
     .btn {
         background: rgba(255, 255, 255, 0.08);
@@ -456,7 +456,7 @@
             }
         }
         
-        // Responsive text sizing
+        
         @media (max-width: 768px) {
             font-size: 0.8rem;
             padding: 0.4rem 0.6rem;
@@ -464,7 +464,7 @@
     }
 }
 
-// Duration Result Styling
+
 #duration-result {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
@@ -487,7 +487,7 @@
     }
 }
 
-// Badge Styling for Cam Counts
+
 .badge {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -516,74 +516,6 @@
     }
 }
 
-// IP Input Styling
-.ip-input {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(15px);
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    color: #ffffff;
-    font-family: 'Courier New', monospace;
-    
-    &:focus {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: var(--bs-red);
-        box-shadow: 
-            0 0 0 0.25rem rgba(220, 53, 69, 0.25),
-            0 8px 25px rgba(220, 53, 69, 0.15);
-        color: #ffffff;
-    }
-    
-    &::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-        font-family: inherit;
-    }
-}
-
-// Input Group Button Styling
-.input-group {
-    .btn {
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(255, 255, 255, 0.12);
-        color: rgba(255, 255, 255, 0.8);
-        font-weight: 600;
-        transition: all 0.3s ease;
-        
-        &:hover {
-            background: rgba(220, 53, 69, 0.15);
-            border-color: rgba(220, 53, 69, 0.4);
-            color: #ffffff;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
-        }
-        
-        &.btn-primary {
-            background: linear-gradient(135deg, var(--bs-red) 0%, #cc1f1f 100%);
-            border-color: var(--bs-red);
-            color: #ffffff;
-            
-            &:hover {
-                background: linear-gradient(135deg, #cc1f1f 0%, var(--bs-red) 100%);
-                border-color: var(--bs-red);
-                transform: translateY(-2px);
-                box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
-            }
-        }
-        
-        &.btn-secondary {
-            background: rgba(108, 117, 125, 0.2);
-            border-color: rgba(108, 117, 125, 0.3);
-            
-            &:hover {
-                background: rgba(108, 117, 125, 0.4);
-                border-color: rgba(108, 117, 125, 0.5);
-                color: #ffffff;
-            }
-        }
-    }
-}
-
-// Enhanced Control Page Action Buttons
 #auto-mode-button {
     background: linear-gradient(135deg, var(--bs-green) 0%, #36b82a 100%);
     border: 2px solid var(--bs-green);
@@ -603,7 +535,7 @@
     white-space: nowrap;
     min-width: 200px;
     
-    // Responsive design
+    
     @media (max-width: 768px) {
         padding: 0.8rem 1.5rem;
         font-size: 1rem;
@@ -628,7 +560,7 @@
         border-radius: 10px;
     }
     
-    // Animated background effect
+    
     &::before {
         content: '';
         position: absolute;
@@ -641,13 +573,13 @@
         z-index: 1;
     }
     
-    // Text overlay
+    
     span, .btn-text {
         position: relative;
         z-index: 2;
     }
     
-    // Hover effects
+    
     &:hover {
         color: #ffffff;
         border-color: var(--bs-red);
@@ -661,7 +593,7 @@
         }
     }
     
-    // Active state
+    
     &:active {
         transform: translateY(-1px);
         box-shadow: 
@@ -669,7 +601,7 @@
             0 0 25px rgba(66, 220, 52, 0.3);
     }
     
-    // Focus state
+    
     &:focus {
         outline: none;
         box-shadow: 
@@ -677,7 +609,7 @@
             0 8px 25px rgba(66, 220, 52, 0.4);
     }
     
-    // Disabled state
+    
     &:disabled,
     &.disabled {
         background: rgba(108, 117, 125, 0.3);
@@ -700,7 +632,7 @@
     }
 }
 
-// Control Page Button Container Responsive Design
+Design
 .d-flex.justify-content-between.align-items-center {
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -747,7 +679,7 @@
 
 
 
-// Change IP Address submit button
+
 #change-ip-form button[type="submit"] {
     background: linear-gradient(135deg, var(--bs-red) 0%, #cc1f1f 100%);
     border: 2px solid var(--bs-red);
@@ -767,7 +699,7 @@
     width: 100%;
     margin-top: 1rem;
     
-    // Animated background effect
+    
     &::before {
         content: '';
         position: absolute;
@@ -780,13 +712,13 @@
         z-index: 1;
     }
     
-    // Text overlay
+    
     span {
         position: relative;
         z-index: 2;
     }
     
-    // Hover effects
+    
     &:hover {
         color: #ffffff;
         border-color: var(--bs-green);
@@ -800,7 +732,7 @@
         }
     }
     
-    // Active state
+    
     &:active {
         transform: translateY(-1px);
         box-shadow: 
@@ -808,7 +740,7 @@
             0 0 25px rgba(220, 53, 69, 0.3);
     }
     
-    // Focus state
+    
     &:focus {
         outline: none;
         box-shadow: 
@@ -817,7 +749,7 @@
     }
 }
 
-// Save Duration Button in Input Group
+
 #save-duration-btn {
     background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
     border: 2px solid #17a2b8;
@@ -858,7 +790,7 @@
     }
 }
 
-// Connect buttons for IP inputs
+
 #connect-cam-1,
 #connect-cam-2 {
     background: rgba(255, 255, 255, 0.1);
@@ -906,7 +838,7 @@
     }
 }
 
-// Form Result Messages - Enhanced Styling
+
 #ip-result,
 #result_cam_1,
 #result_cam_2,
@@ -926,12 +858,12 @@
     align-items: center;
     transition: all 0.3s ease;
     
-    // Empty state styling
+    
     &:empty {
         display: none;
     }
     
-    // Success state
+    
     &.text-success,
     &.success {
         background: rgba(66, 220, 52, 0.15);
@@ -946,7 +878,7 @@
         }
     }
     
-    // Error/Danger state
+    
     &.text-danger,
     &.error {
         background: rgba(220, 53, 69, 0.15);
@@ -961,7 +893,7 @@
         }
     }
     
-    // Warning state
+    
     &.text-warning,
     &.warning {
         background: rgba(255, 193, 7, 0.15);
@@ -976,7 +908,7 @@
         }
     }
     
-    // Info state
+    
     &.text-info,
     &.info {
         background: rgba(13, 202, 240, 0.15);
@@ -992,7 +924,7 @@
     }
 }
 
-// Specific styling for IP result messages
+
 #result_cam_1,
 #result_cam_2 {
     font-family: 'Courier New', monospace;
@@ -1065,7 +997,7 @@
     margin-top: 1rem;
 }
 
-// Camera Error Icon Styling
+
 #cam1-error-icon,
 #cam2-error-icon {
     filter: grayscale(100%) brightness(0.5);
@@ -1095,7 +1027,7 @@
     }
 }
 
-// Privilege alert styling
+
 .privilege-alert {
     position: fixed;
     top: 80px;

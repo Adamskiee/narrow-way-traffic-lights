@@ -25,6 +25,7 @@ try {
 }catch(Error $e){
     echo json_encode([
         "success" => false,
+        "message" => "Update failed",
         "error" => "Database error: " . $e->getMessage()
     ]);
 }

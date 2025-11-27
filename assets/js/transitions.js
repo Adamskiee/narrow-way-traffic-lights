@@ -1,21 +1,16 @@
-// Section Transitions and Animations
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Intersection Observer for section animations
     const observerOptions = {
         root: null,
         rootMargin: '-100px 0px -100px 0px',
         threshold: 0.1
     };
     
-    // Create intersection observer
     const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // Add in-view class to trigger section animation
                 entry.target.classList.add('in-view');
                 
-                // Animate child elements with stagger
                 const animatableElements = entry.target.querySelectorAll(
                     '.step-content-card, .about__card, .contact__profile, .hero-content > *, .hero-visual > *'
                 );
@@ -23,10 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 animatableElements.forEach((element, index) => {
                     setTimeout(() => {
                         element.classList.add('animate-in');
-                    }, index * 100); // 100ms delay between elements
+                    }, index * 100); 
                 });
                 
-                // Special handling for different section types
                 if (entry.target.classList.contains('hero-section')) {
                     animateHeroSection(entry.target);
                 } else if (entry.target.classList.contains('tutorial-section')) {
@@ -37,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     animateContactSection(entry.target);
                 }
                 
-                // Unobserve after animation to prevent re-triggering
                 sectionObserver.unobserve(entry.target);
             }
         });
@@ -171,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Enhanced scroll indicator animation
     const scrollIndicator = document.querySelector('.scroll-indicator');
     if (scrollIndicator) {
         scrollIndicator.addEventListener('click', function() {
@@ -199,7 +191,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Add parallax effect to section transitions
     const sectionTransitions = document.querySelectorAll('.section-transition');
     
     window.addEventListener('scroll', function() {

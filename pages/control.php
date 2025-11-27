@@ -14,9 +14,8 @@ $canChangeIP = can_access_feature('ip_management');
 $canControlCameras = can_access_feature('camera_control');
 ?>
 <main class="container-fluid" style="padding-top: 70px;">
-  <?php include BASE_PATH . "/components/infoModal.php" ?>
+  <!-- Automatic Mode Control -->
   <div class="px-2 container">
-    <!-- Automatic Mode Control -->
     <?php if ($isAdmin): ?>
     <div class="text-center py-3">
       <button id="auto-mode-button" class="btn btn-primary btn-lg px-4">
@@ -32,6 +31,7 @@ $canControlCameras = can_access_feature('camera_control');
     </div>
     <?php endif; ?>
     
+    <!-- Camera with button -->
     <div class="row row-cols-1 row-cols-sm-2 py-4 g-3">
       <div class="col">
         <div class="row gap-2">
@@ -68,6 +68,7 @@ $canControlCameras = can_access_feature('camera_control');
         </div>
       </div>
     </div>
+    <!-- Current duration card -->
     <div class=" mb-5 control__card-container">
       <div class="control__card ">
         <div>
@@ -85,6 +86,8 @@ $canControlCameras = can_access_feature('camera_control');
           </div>
         </div>
       </div>
+
+      <!-- Duration schedule card -->
       <div class="control__card <?= !$isAdmin ? 'restricted-access' : '' ?>">
         <div class="d-flex flex-column" style="gap: 5px;">
           <h3>Duration Schedule <?= !$isAdmin ? '<span class="badge bg-warning text-dark ms-2">Admin Only</span>' : '' ?></h3>
@@ -104,7 +107,6 @@ $canControlCameras = can_access_feature('camera_control');
           </div>
           <?php endif; ?>
           
-          <!-- Always visible duration input form -->
           <div class="mt-3">
             <input type="hidden" name="user-id" value="<?= $_SESSION["user_id"] ?>">
             <label for="duration-input" class="form-label">Duration (seconds)</label>
@@ -112,7 +114,7 @@ $canControlCameras = can_access_feature('camera_control');
               <input type="number" class="form-control" placeholder="Enter duration" id="duration-input" min="1" required>
               <button class="btn btn-primary" type="button" id="save-duration-btn">Save</button>
             </div>
-            <small class="form-text text-muted">Select a day above and enter duration</small>
+            <small class="form-text">Select a day above and enter duration</small>
             <div id="duration-result" class="mt-2"></div>
           </div>
           
@@ -136,6 +138,7 @@ $canControlCameras = can_access_feature('camera_control');
           </form>
         </div>
       </div>
+      <!-- Change IP address card -->
       <div class="control__card <?= !$isAdmin ? 'restricted-access' : '' ?>">
         <div class="container-fluid">
           <h3>Change IP Address <?= !$isAdmin ? '<span class="badge bg-warning text-dark ms-2">Admin Only</span>' : '' ?></h3>
@@ -155,15 +158,11 @@ $canControlCameras = can_access_feature('camera_control');
               </div>
               <small id="result_cam_1" class="form-text text-danger"></small>
             </div>
-            <!-- <input type="text" name="ip_address_cam_1" placeholder="IP Address CAM 1" class="ip-input" required>
-            <!-- <br> -->
             <div class="mb-3">
               <div class="input-group">
                 <input type="text" class="form-control ip-input" placeholder="IP Address Cam A" aria-label="Duration" name="ip_address_cam_2" aria-describedby="connect-cam-2" required>
                 <button class="btn btn-secondary" type="button" id="connect-cam-2">Connect</button>
               </div>
-              <!-- <input type="text" name="ip_address_cam_2" placeholder="IP Address CAM 2" class= "ip-input"  required>
-              <button type="button" id="connect-cam-2">Connect</button> -->
               <span id="result_cam_2" class="form-text text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary">Change</button>
@@ -173,6 +172,8 @@ $canControlCameras = can_access_feature('camera_control');
       </div>
     </div>
   </div>
+  <!-- Modal Component -->
+  <?php include BASE_PATH . "/components/infoModal.php" ?>
 </main>
 
 <!-- Pass user role data to JavaScript -->
@@ -182,6 +183,5 @@ $canControlCameras = can_access_feature('camera_control');
   window.canControlCameras = <?= $canControlCameras ? 'true' : 'false' ?>;
 </script>
 
-<script type="module" src="<?= BASE_URL ?>/assets/js/forms/setupIpForm.js"></script>
 <script type="module" src="<?= BASE_URL ?>/assets/js/control.js"></script>
 <?php include BASE_PATH . "/includes/footer.php"; ?>

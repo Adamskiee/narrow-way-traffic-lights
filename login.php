@@ -23,7 +23,6 @@ include "./includes/header.php";
                         class="form-control"
                         name="username"
                         id="username"
-                        aria-describedby="helpId"
                         placeholder="Username"
                         required
                     />
@@ -35,7 +34,6 @@ include "./includes/header.php";
                         class="form-control"
                         name="password"
                         id="password"
-                        aria-describedby="helpId"
                         placeholder="Password"
                         required
                     />
@@ -52,5 +50,5 @@ include "./includes/header.php";
         </div>
     </div>
 </main>
-<script type="module" src="<?= BASE_URL ?>/assets/js/forms/loginForm.js"></script>
+<script type="module" src="<?= BASE_URL ?>/assets/js/login.js"></script>
 <?php include BASE_PATH . "/includes/footer.php" ?>

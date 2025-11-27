@@ -1,7 +1,3 @@
-/**
- * Traffic Logs Management System
- * Handles fetching, displaying, and filtering traffic light logs
- */
 
 // ================================================================
 // GLOBAL STATE
@@ -114,7 +110,6 @@ async function fetchStatistics() {
  */
 function updateStatisticsDisplay(stats) {
     if (!stats) {
-        // Show loading or error state
         document.getElementById('total-logs-count').textContent = '-';
         document.getElementById('auto-mode-count').textContent = '-';
         document.getElementById('manual-mode-count').textContent = '-';
@@ -122,7 +117,6 @@ function updateStatisticsDisplay(stats) {
         return;
     }
     
-    // Update statistics cards
     const totalLogsEl = document.getElementById('total-logs-count');
     const autoModeEl = document.getElementById('auto-mode-count');
     const manualModeEl = document.getElementById('manual-mode-count');
@@ -177,7 +171,6 @@ async function fetchLogs(page = 1, filters = {}) {
     try {
         showLoading();
         
-        // Build query parameters
         const params = new URLSearchParams({
             page: page,
             limit: 20,
@@ -200,7 +193,6 @@ async function fetchLogs(page = 1, filters = {}) {
         updatePagination(data.pagination);
         updateFiltersDisplay(data.filters);
         
-        // Update global state
         currentPage = page;
         currentFilters = filters;
         
@@ -309,7 +301,6 @@ function updatePagination(pagination) {
     
     const { current_page, total_pages, has_prev, has_next, total_records } = pagination;
     
-    // Update records info
     const recordsInfo = document.getElementById('records-info');
     if (recordsInfo) {
         const start = ((current_page - 1) * pagination.per_page) + 1;
@@ -317,7 +308,6 @@ function updatePagination(pagination) {
         recordsInfo.textContent = `Showing ${start}-${end} of ${total_records} logs`;
     }
     
-    // Generate pagination buttons
     let paginationHTML = `
         <nav aria-label="Logs pagination">
             <ul class="pagination justify-content-center mb-0">
@@ -479,12 +469,10 @@ async function exportLogs() {
  */
 async function viewLogDetails(logId) {
     try {
-        // Try to get log from current page data first
         const logRow = document.querySelector(`[data-log-id="${logId}"]`);
         let logData = null;
         
         if (logRow) {
-            // Extract data from the row
             const cells = logRow.querySelectorAll('td');
             logData = {
                 id: logId,
@@ -499,7 +487,6 @@ async function viewLogDetails(logId) {
         }
         
         if (!logData) {
-            // If not found in current data, fetch from server
             const response = await fetch(`../admin/get-logs-traffic.php?log_id=${logId}`);
             const data = await response.json();
             
@@ -535,7 +522,6 @@ async function viewLogDetails(logId) {
  * @param {Object} logData - Log data to display
  */
 function showLogDetailsModal(logData) {
-    // Try to use the existing info modal
     if (typeof openInfoModal === 'function') {
         const modalBody = `
             <div class="row g-3">
@@ -691,7 +677,6 @@ async function deleteLog(logId) {
         logInfo = `${camera} log from ${timestamp}`;
     }
     
-    // Use reusable modal for confirmation
     if (typeof openInfoModal === 'function') {
         const modalBody = `
             <div class="text-center">
@@ -719,7 +704,6 @@ async function deleteLog(logId) {
             footer: modalFooter
         });
     } else {
-        // Fallback to confirm dialog if modal is not available
         if (confirm(`Are you sure you want to delete ${logInfo}?`)) {
             await performDeleteLog(logId);
         }
@@ -741,7 +725,6 @@ async function confirmDeleteLog(logId) {
  */
 async function performDeleteLog(logId) {
     try {
-        // Show loading state
         showSuccess('Deleting log...');
         
         const response = await fetch('../admin/delete-log-traffic.php', {
@@ -756,7 +739,7 @@ async function performDeleteLog(logId) {
         
         if (data.success) {
             showSuccess('Log deleted successfully');
-            refreshLogs(); // Refresh the current view
+            refreshLogs(); 
         } else {
             throw new Error(data.message || 'Failed to delete log');
         }
@@ -777,7 +760,6 @@ async function performDeleteLog(logId) {
 document.addEventListener("DOMContentLoaded", () => {
     console.log('Traffic Logs System Initializing...');
     
-    // Set up filter event listeners
     const filterButton = document.getElementById('apply-filters');
     const clearButton = document.getElementById('clear-filters');
     const refreshButton = document.getElementById('refresh-logs');
@@ -799,7 +781,6 @@ document.addEventListener("DOMContentLoaded", () => {
         exportButton.addEventListener('click', exportLogs);
     }
     
-    // Set up filter form submission
     const filterForm = document.getElementById('filter-form');
     if (filterForm) {
         filterForm.addEventListener('submit', (e) => {
@@ -808,7 +789,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     
-    // Set up auto-refresh (optional)
     const autoRefreshCheckbox = document.getElementById('auto-refresh');
     if (autoRefreshCheckbox) {
         autoRefreshCheckbox.addEventListener('change', (e) => {
@@ -816,7 +796,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (statisticsInterval) {
                     clearInterval(statisticsInterval);
                 }
-                statisticsInterval = setInterval(refreshLogs, 30000); // Refresh every 30 seconds
+                statisticsInterval = setInterval(refreshLogs, 30000); 
             } else {
                 if (statisticsInterval) {
                     clearInterval(statisticsInterval);
@@ -826,7 +806,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     
-    // Initial load
     fetchLogs();
     fetchStatistics();
     

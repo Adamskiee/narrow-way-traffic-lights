@@ -1,5 +1,4 @@
 
-// Enhanced About Section (preserving existing card effects)
 .about-section-enhanced {
     position: relative;
     background: linear-gradient(135deg, rgba(9, 10, 11, 0.97) 0%, rgba(22, 22, 22, 0.95) 100%);
@@ -199,7 +198,7 @@
         padding-bottom: 6rem;
     }
     
-    // Mobile: horizontal scroll
+    
     @media (max-width: 991px) {
         padding-top: 50px;
         display: flex;
@@ -259,7 +258,6 @@
     }
 
 
-    // Mobile: make cards fill viewport width and snap
     @media (max-width: 991px) {
         flex: 0 0 calc(100vw - 4rem); 
         max-width: calc(100vw - 4rem);
@@ -271,7 +269,7 @@
         }
     }
     
-    // Tablet: show 2 cards at once
+    
     @media (min-width: 576px) and (max-width: 991px) {
         flex: 0 0 calc(50vw - 3rem);
         max-width: calc(50vw - 3rem);
