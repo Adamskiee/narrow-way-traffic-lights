@@ -185,3 +185,4 @@ $canControlCameras = can_access_feature('camera_control');
 
 <script type="module" src="<?= BASE_URL ?>/assets/js/control.js"></script>
 <?php include BASE_PATH . "/includes/footer.php"; ?>
+<script type="module" src="<?= BASE_URL ?>/assets/js/forms/setupIpForm.js"></script>

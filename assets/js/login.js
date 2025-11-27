@@ -3,7 +3,11 @@ import { handleFormSubmit } from "./formHandler.js";
 handleFormSubmit(
     "loginForm",
     (data) =>  {
-        window.location.href = data.redirect
+        if(data.redirect) window.location.href = data.redirect
+        else {
+            document.getElementById("insert-ip-form").classList.remove("hidden")
+            document.getElementById("loginForm").classList.add("hidden")
+        }
     },
     (error) => {
         document.querySelector('.form-control[type="password"]').value="";

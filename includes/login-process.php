@@ -40,7 +40,7 @@ if($result && $result->num_rows > 0) {
         if($result && $result->num_rows > 0)
             echo json_encode(["success" => true, "redirect" => BASE_URL . "/pages/control.php"]);
         else{
-            echo json_encode(["success" => true, "redirect" => BASE_URL . "/pages/setup-ip.php"]);
+            echo json_encode(["success" => true]);
         }
     }else {
         echo json_encode(["success" => false, "message"=>"Invalid password"]);

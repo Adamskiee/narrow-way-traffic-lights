@@ -34,8 +34,5 @@ handleFormSubmit("insert-ip-form",
 );
 
 
-
-
 document.getElementById("connect-cam-1").addEventListener("click", ()=>checkESP(1));
-
 document.getElementById("connect-cam-2").addEventListener("click", ()=>checkESP(2));
