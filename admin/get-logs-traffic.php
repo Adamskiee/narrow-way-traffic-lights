@@ -1,18 +1,15 @@
 <?php
-session_start();
 require_once "../includes/config.php";
 
 header('Content-Type: application/json');
 
-// Check if user is logged in
-if (!isset($_SESSION["user_id"])) {
+if(!is_logged_in()) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
     exit;
 }
 
 try {
-    // Check if requesting a specific log by ID
     if (isset($_GET['log_id'])) {
         $log_id = intval($_GET['log_id']);
         
@@ -63,18 +60,15 @@ try {
         exit;
     }
     
-    // Get pagination parameters
     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $limit = isset($_GET['limit']) ? max(1, min(100, intval($_GET['limit']))) : 20;
     $offset = ($page - 1) * $limit;
     
-    // Get filter parameters
     $camera_filter = isset($_GET['camera']) ? $_GET['camera'] : '';
     $mode_filter = isset($_GET['mode']) ? $_GET['mode'] : '';
     $date_from = isset($_GET['date_from']) ? $_GET['date_from'] : '';
     $date_to = isset($_GET['date_to']) ? $_GET['date_to'] : '';
     
-    // Build WHERE clause for filters
     $where_conditions = [];
     $params = [];
     $types = '';
@@ -105,7 +99,6 @@ try {
     
     $where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
     
-    // Get total count for pagination
     $count_sql = "
         SELECT COUNT(*) as total 
         FROM traffic_logs tl 
@@ -124,7 +117,6 @@ try {
         $total_records = $count_result->fetch_assoc()['total'];
     }
     
-    // Get logs with user information
     $sql = "
         SELECT 
             tl.id,
@@ -144,7 +136,6 @@ try {
         LIMIT ? OFFSET ?
     ";
     
-    // Add limit and offset parameters
     $params[] = $limit;
     $params[] = $offset;
     $types .= 'ii';
@@ -159,7 +150,6 @@ try {
     
     $logs = [];
     while ($row = $result->fetch_assoc()) {
-        // Format the data for better display
         $logs[] = [
             'id' => $row['id'],
             'camera_id' => $row['camera_id'],
@@ -176,7 +166,6 @@ try {
         ];
     }
     
-    // Calculate pagination info
     $total_pages = ceil($total_records / $limit);
     
     $response = [

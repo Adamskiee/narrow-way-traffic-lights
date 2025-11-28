@@ -2,10 +2,7 @@
 $page_title = "Traffic Logs";
 include "../includes/header.php"; 
 
-if(!$isLoggedIn) {
-  header("Location: ". BASE_URL ."/index.php");
-  exit();
-}
+redirect_if_not_logged_in();
 ?>
 
 <main class="container-fluid" style="padding-top: 100px;">

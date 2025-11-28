@@ -2,11 +2,7 @@
 $page_title = 'User Management';
 include '../includes/header.php';
 
-// Check if user is logged in and redirect if not
-if(!$isLoggedIn) {
-    header("Location: ". BASE_URL ."/index.php");
-    exit();
-}
+redirect_if_not_logged_in();
 ?>
 
 <main class="container-fluid " style="padding-top: 100px;">

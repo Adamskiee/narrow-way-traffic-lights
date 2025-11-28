@@ -82,7 +82,7 @@ function showLoading() {
  */
 async function fetchStatistics() {
     try {
-        const response = await fetch('../admin/get-logs-stats.php');
+        const response = await fetch('../admin/get-logs-stats.php', {credentials: "include"});
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -177,7 +177,7 @@ async function fetchLogs(page = 1, filters = {}) {
             ...filters
         });
         
-        const response = await fetch(`../admin/get-logs-traffic.php?${params}`);
+        const response = await fetch(`../admin/get-logs-traffic.php?${params}`, {credentials: "include"});
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -423,7 +423,7 @@ async function exportLogs() {
             ...currentFilters
         });
         
-        const response = await fetch(`../admin/export-logs-traffic.php?${params}`);
+        const response = await fetch(`../admin/export-logs-traffic.php?${params}`, {credentials: "include"});
         
         if (!response.ok) {
             throw new Error('Export failed');
@@ -487,7 +487,7 @@ async function viewLogDetails(logId) {
         }
         
         if (!logData) {
-            const response = await fetch(`../admin/get-logs-traffic.php?log_id=${logId}`);
+            const response = await fetch(`../admin/get-logs-traffic.php?log_id=${logId}`, {credentials: "include"});
             const data = await response.json();
             
             if (data.success && data.logs && data.logs.length > 0) {
@@ -729,6 +729,7 @@ async function performDeleteLog(logId) {
         
         const response = await fetch('../admin/delete-log-traffic.php', {
             method: 'POST',
+            credentials: "include",
             headers: {
                 'Content-Type': 'application/json',
             },

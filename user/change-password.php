@@ -3,15 +3,26 @@
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
-
-session_start();
-
 require_once "../includes/config.php";
+
+$user = get_authenticated_user();
+if(!$user) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
+    exit;
+}
+
+if(!is_admin_authenticated()) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Admin access required']);
+    exit;
+}
+
 
 // read the raw body of the http request from fetch function
 $input = json_decode(file_get_contents("php://input"), true);
 
-$username = $_SESSION["username"] ?? "";
+$username = $user["username"] ?? "";
 $currentPassword = $input["current_password"] ?? "";
 $newPassword = $input["new_password"] ?? "";
 $confirmPassword = $input["confirm_new_password"] ?? "";

@@ -1,6 +1,7 @@
 <?php 
 $page_title = "Setup IP";
 include "../includes/header.php";
+redirect_if_not_logged_in();
  ?>
 <main class="container">
     <div class="form-box">

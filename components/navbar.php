@@ -1,21 +1,18 @@
 <?php
-session_start();
 
 $current = basename($_SERVER['REQUEST_URI']);
 
 if(isset($_GET["logout"])) {
-    session_destroy();
-    header("Location: ". BASE_URL . "/login.php");
-    exit();
+    logout_user();
 }
 
-$isLoggedIn = isset($_SESSION["user_id"]);
+$user = get_authenticated_user();
 ?>
 
-<nav class="navbar navbar-expand-lg navbar-glassmorphism <?= $isLoggedIn ? 'navbar-authenticated' : 'navbar-guest' ?>">
+<nav class="navbar navbar-expand-lg navbar-glassmorphism <?= $user ? 'navbar-authenticated' : 'navbar-guest' ?>">
     <div class="container-fluid">
         <!-- Brand -->
-        <a href="<?= $isLoggedIn ? BASE_URL . '/pages/control.php' : BASE_URL . '/index.php' ?>" class="navbar-brand">
+        <a href="<?= $user ? BASE_URL . '/pages/control.php' : BASE_URL . '/index.php' ?>" class="navbar-brand">
             <div class="brand-container">
                 <div class="brand-icon">
                     <i class="fas fa-traffic-light"></i>
@@ -35,7 +32,7 @@ $isLoggedIn = isset($_SESSION["user_id"]);
 
         <!-- Navbar Content -->
         <div class="collapse navbar-collapse" id="navbarContent">
-            <?php if ($isLoggedIn): ?>
+            <?php if ($user): ?>
                 <!-- Authenticated Navigation -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
@@ -44,7 +41,7 @@ $isLoggedIn = isset($_SESSION["user_id"]);
                             <span>Control</span>
                         </a>
                     </li>
-                    <?php if (($_SESSION['user_role'] ?? 'operator') === 'admin'): ?>
+                    <?php if (($user['role'] ?? 'operator') === 'admin'): ?>
                     <li class="nav-item">
                         <a class="nav-link <?= $current === 'user.php' ? 'active' : '' ?>" href="<?=BASE_URL?>/pages/user.php">
                             <i class="fas fa-users nav-icon"></i>
@@ -58,7 +55,7 @@ $isLoggedIn = isset($_SESSION["user_id"]);
                             <span>Logs</span>
                         </a>
                     </li>
-                    <?php if (($_SESSION['user_role'] ?? 'operator') === 'admin'): ?>
+                    <?php if (($user['role'] ?? 'operator') === 'admin'): ?>
                     <li class="nav-item">
                         <a class="nav-link <?= $current === 'settings.php' ? 'active' : '' ?>" href="<?=BASE_URL?>/pages/settings.php">
                             <i class="fas fa-cog nav-icon"></i>
@@ -75,10 +72,10 @@ $isLoggedIn = isset($_SESSION["user_id"]);
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="user-details">
-                            <span class="user-name"><?= $_SESSION['username'] ?? 'User' ?></span>
-                            <span class="user-role role-<?= strtolower($_SESSION['user_role'] ?? 'operator') ?>">
-                                <?= ucfirst($_SESSION['user_role'] ?? 'Operator') ?>
-                                <?php if (($_SESSION['user_role'] ?? 'operator') === 'admin'): ?>
+                            <span class="user-name"><?= $user['username'] ?? 'User' ?></span>
+                            <span class="user-role role-<?= strtolower($user['role'] ?? 'operator') ?>">
+                                <?= ucfirst($user['role'] ?? 'Operator') ?>
+                                <?php if (($user['role'] ?? 'operator') === 'admin'): ?>
                                     <i class="fas fa-crown ms-1"></i>
                                 <?php else: ?>
                                     <i class="fas fa-user-cog ms-1"></i>

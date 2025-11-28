@@ -1,11 +1,9 @@
 <?php
-session_start();
 require_once "../includes/config.php";
 
-// Check if user is logged in
-if (!isset($_SESSION["user_id"])) {
+if(!is_logged_in()) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
     exit;
 }
 

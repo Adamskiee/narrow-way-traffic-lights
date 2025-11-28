@@ -1,6 +1,7 @@
 <?php 
 $page_title = "Settings";
 include "../includes/header.php"; 
+redirect_if_not_logged_in();
 ?>
 
 <main class="container-fluid " style="padding-top: 70px;">

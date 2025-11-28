@@ -654,6 +654,7 @@ if (saveDurationBtn && durationInput) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(requestData),
       });
 
@@ -694,6 +695,7 @@ async function checkLed(camName, ip, color) {
     const res = await fetch(`http://${ip}/check-${color}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
+      
       timeout: 5000,
     });
 
@@ -1455,7 +1457,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initializePrivilegeRestrictions();
 
-  fetch("../user/get-ip.php")
+  fetch("../user/get-ip.php", {credentials: "include"})
     .then((res) => {
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -1485,7 +1487,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
 
-  fetch("../user/get_durations.php")
+  fetch("../user/get_durations.php", {credentials: "include"})
     .then((res) => res.json())
     .then((data) => {
       durations = data["schedules"];

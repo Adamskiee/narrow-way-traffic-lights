@@ -54,3 +54,12 @@ Content-Type: application/json
     "message": "Hello",
     "phone": "091234566783"
 }
+
+###
+POST http://localhost/narrow-way-traffic-lights/includes/login-process.php
+Content-Type: application/json
+
+{
+    "password": "admin",
+    "username": "admin"
+}

@@ -5,18 +5,27 @@ header("Access-Control-Allow-Methods: POST");
 require_once "../includes/config.php";
 require_once "../includes/privilege-middleware.php";
 
-// Check admin privileges
-check_admin_access();
+$user = get_authenticated_user();
+if(!$user) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
+    exit;
+}
+
+if (!is_admin_authenticated()) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Admin access required']);
+    exit;
+}
 
 try {
     $input = json_decode(file_get_contents("php://input"), true);
     
     $week_day = $input["weekday"];
     $duration = $input["weekday-duration"];
-    $user_id = $input["user-id"];
 
     $ins = $conn->prepare("UPDATE schedules SET duration = ? WHERE admin_id = ? AND week_day = ?");
-    $ins->bind_param("iii", $duration, $user_id, $week_day);
+    $ins->bind_param("iii", $duration, $user['user_id'], $week_day);
     $ins->execute();
     echo json_encode([
         "success" => true,

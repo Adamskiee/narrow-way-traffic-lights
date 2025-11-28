@@ -1,14 +1,19 @@
 <?php 
 header('Content-Type: application/json');
 require_once "../includes/config.php";
-session_start();
+
+$user = get_authenticated_user();
+if(!$user) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
+    exit;
+}
 
 try {
     $input = json_decode(file_get_contents("php://input"), true);
-    $id = $input["user_id"] ?? $_SESSION["user_id"];
 
     $sel = $conn->prepare("SELECT created_by FROM users WHERE id = ?");
-    $sel->bind_param("i", $id);
+    $sel->bind_param("i", $user["user_id"]);
     $sel->execute();
     $result = $sel->get_result();
     if($result->num_rows > 0) {

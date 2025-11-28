@@ -3,8 +3,17 @@ header('Content-Type: application/json');
 require_once "../includes/config.php";
 require_once "../includes/privilege-middleware.php";
 
-// Check admin privileges
-check_admin_access();
+if(!is_logged_in()) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
+    exit;
+}
+
+if(!is_admin_authenticated()) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Admin access required']);
+    exit;
+}
 
 try {
     $input = json_decode(file_get_contents("php://input"), true);

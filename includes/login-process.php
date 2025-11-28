@@ -10,6 +10,7 @@ error_reporting(E_ALL);
 session_start();
 
 require_once "./config.php";
+require_once "./JWTHelper.php";
   
 // read the raw body of the http request from fetch function
 $input = json_decode(file_get_contents("php://input"), true);
@@ -26,11 +27,16 @@ if($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
 
     if(password_verify($password, $row["password"])) {
-        $_SESSION["username"] = $row["username"];
-        $_SESSION["user_id"] = $row["id"];
-        $_SESSION["user_role"] = $row["role"];
-        $_SESSION["user_email"] = $row["email"];
-        $_SESSION["user_name"] = $row["first_name"];
+        $jwt = new JWTHelper();
+        $token = $jwt->createToken($row['id'], $row['username'], $row['role']);
+
+        setcookie('jwt_token', $token, [
+            'expires' => time() + (60 * 60), 
+            'path' => '/',
+            'httponly' => true,
+            'secure' => false, 
+            'samesite' => 'Lax'
+        ]);
 
         $ip_check = $conn->prepare("SELECT * FROM ip_addresses WHERE admin_id = ?");
         $ip_check->bind_param("i", $row["created_by"]);
@@ -38,9 +44,9 @@ if($result && $result->num_rows > 0) {
         $result = $ip_check->get_result();
 
         if($result && $result->num_rows > 0)
-            echo json_encode(["success" => true, "redirect" => BASE_URL . "/pages/control.php"]);
+            echo json_encode(["success" => true, "redirect" => BASE_URL . "/pages/control.php", "token" => $token]);
         else{
-            echo json_encode(["success" => true]);
+            echo json_encode(["success" => true, "token" => $token]);
         }
     }else {
         echo json_encode(["success" => false, "message"=>"Invalid password"]);

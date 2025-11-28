@@ -2,10 +2,16 @@
 require_once "../includes/config.php";
 
 header("Content-Type: application/json");
-session_start();
+
+$user = get_authenticated_user();
+if(!$user) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
+    exit;
+}
 
 try {
-    $user_id = $_SESSION["user_id"];
+    $user_id = $user["user_id"];
 
     $stmt = $conn->prepare("SELECT week_day, duration FROM users u JOIN schedules s ON u.created_by = s.admin_id WHERE u.id = ? GROUP BY s.id");
     $stmt->bind_param("i", $user_id);

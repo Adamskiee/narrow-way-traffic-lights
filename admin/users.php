@@ -2,11 +2,23 @@
 require_once "../includes/config.php";
 
 header("Content-Type: application/json");
-session_start();
+
+$user = get_authenticated_user();
+if(!$user) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
+    exit;
+}
+
+if(!is_admin_authenticated()) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Admin access required']);
+    exit;
+}
 
 try {
     $stmt = $conn->prepare("SELECT id, username, email, first_name, last_name, created_at FROM users WHERE created_by = ? AND id != ?");
-    $stmt->bind_param("ii", $_SESSION["user_id"], $_SESSION["user_id"]);
+    $stmt->bind_param("ii", $user["user_id"], $user["user_id"]);
     $stmt->execute();
     $result = $stmt->get_result();
     $users = $result->fetch_all(MYSQLI_ASSOC);

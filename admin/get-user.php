@@ -2,6 +2,18 @@
 header('Content-Type: application/json');
 require_once "../includes/config.php";
 
+if(!is_logged_in()) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
+    exit;
+}
+
+if(!is_admin_authenticated()) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Admin access required']);
+    exit;
+}
+
 try {
     $id = $_GET["id"];
 

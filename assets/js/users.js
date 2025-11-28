@@ -62,7 +62,7 @@ function openDeleteModal(id) {
 }
 
 function openEditModal(id) {
-    fetch(`../admin/get-user.php?id=${id}`)
+    fetch(`../admin/get-user.php?id=${id}`, {credentials: "include"})
     .then(res => res.json())
     .then(data => {
         const user = data.user;
@@ -224,7 +224,7 @@ function loadUsers() {
         </tr>
     `;
     
-    fetch("../admin/users.php")
+    fetch("../admin/users.php", {credentials: "include"})
     .then(res => res.json())
     .then(data => {
         currentUsers = data.users;
@@ -501,7 +501,7 @@ function exportUsers() {
  * Open view user details modal
  */
 function openViewModal(id) {
-    fetch(`../admin/get-user.php?id=${id}`)
+    fetch(`../admin/get-user.php?id=${id}`, {credentials: "include"})
     .then(res => res.json())
     .then(data => {
         const user = data.user;

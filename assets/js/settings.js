@@ -9,7 +9,7 @@ const phoneNumber = document.getElementById("phone-number");
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    fetch("../user/get-info.php")
+    fetch("../user/get-info.php", {credentials: "include"})
         .then(res=>res.json())
         .then(data=> {
             const info = data.information;
@@ -33,7 +33,6 @@ document.getElementById("change-password-btn").addEventListener("click", () => {
         const formData = new FormData(e.target);
         const payload = Object.fromEntries(formData.entries());
 
-        console.log(payload["new_password"], payload["confirm_new_password"])
         if(payload["new_password"] !== payload["confirm_new_password"]) {
             document.getElementById("confirm-password-error-text").innerText = "Password did not match";
             return;
@@ -61,7 +60,6 @@ document.getElementById("change-password-btn").addEventListener("click", () => {
 })
 
 function openChangePasswordModal() {
-    fetch("../")
     openModal({
         title: "Change Password",
         body: `

@@ -1,16 +1,21 @@
 <?php
-session_start();
 require_once "../includes/config.php";
 
 header('Content-Type: application/json');
 
-// Handle both JSON and form data
+$user = get_authenticated_user();
+if(!$user) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
+    exit;
+}
+
 $input = json_decode(file_get_contents('php://input'), true);
 if (!$input) {
     $input = $_POST;
 }
 
-$user_id = $input['user_id'] ?? $_SESSION["user_id"];
+$user_id = $input['user_id'] ?? $user["user_id"];
 $camera_id = $input['camera_name'] ?? $input['camera_id'] ?? null;
 $light_state = $input['light_color'] ?? $input['light_state'] ?? null;
 $mode_type = $input['mode'] ?? $input['mode_type'] ?? null;

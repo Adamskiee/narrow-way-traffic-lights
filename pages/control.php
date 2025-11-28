@@ -1,14 +1,12 @@
 <?php 
 $page_title = "Control";
 include "../includes/header.php"; 
-if(!$isLoggedIn) {
-  header("Location: ". BASE_URL ."/index.php");
-  exit();
-}
 
-// Get user role for frontend
+redirect_if_not_logged_in();
+
+$user = get_authenticated_user();
 $userRole = get_user_role();
-$isAdmin = is_admin();
+$isAdmin = is_admin_authenticated();
 $canControlDuration = can_access_feature('duration_control');
 $canChangeIP = can_access_feature('ip_management');
 $canControlCameras = can_access_feature('camera_control');
@@ -108,7 +106,7 @@ $canControlCameras = can_access_feature('camera_control');
           <?php endif; ?>
           
           <div class="mt-3">
-            <input type="hidden" name="user-id" value="<?= $_SESSION["user_id"] ?>">
+            <input type="hidden" name="user-id" value="<?= $user['user_id'] ?>">
             <label for="duration-input" class="form-label">Duration (seconds)</label>
             <div class="input-group">
               <input type="number" class="form-control" placeholder="Enter duration" id="duration-input" min="1" required>
@@ -119,7 +117,7 @@ $canControlCameras = can_access_feature('camera_control');
           </div>
           
           <form action="<?= BASE_URL ?>/admin/insert-duration.php" id="add-weekday-form" method="post" class="weekday-form hidden">
-            <input type="hidden" name="user-id" value="<?= $_SESSION["user_id"] ?>">
+            <input type="hidden" name="user-id" value="<?= $user['user_id'] ?>">
             <input type="hidden" name="weekday" id="weekday-add">
             <span id="add-weekday-form-result"></span>
             <div class="input-group mb-3">
@@ -128,7 +126,7 @@ $canControlCameras = can_access_feature('camera_control');
             </div>
           </form>
           <form action="<?= BASE_URL ?>/admin/edit-duration.php" method="post" id="edit-weekday-form" class="weekday-form hidden">
-            <input type="hidden" name="user-id" value="<?= $_SESSION["user_id"] ?>">
+            <input type="hidden" name="user-id" value="<?= $user['user_id'] ?>">
             <input type="hidden" name="weekday" id="weekday-edit">
             <div class="input-group mb-3">
               <input type="number" class="form-control" placeholder="Duration" aria-label="Duration" name="weekday-duration" aria-describedby="submit-button" id="weekday-duration-edit" required>
@@ -150,7 +148,7 @@ $canControlCameras = can_access_feature('camera_control');
           </div>
           <form action="<?= BASE_URL ?>/admin/change-ip.php" method="post" id="change-ip-form" novalidate class="needs-validation" style="display: none;">
           <?php endif; ?>
-            <input type="hidden" name="user_id" value="<?= $_SESSION["user_id"] ?>">
+            <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
             <div class="mb-3">
               <div class="input-group">
                 <input type="text" class="form-control ip-input" placeholder="IP Address Cam A" aria-label="Duration" name="ip_address_cam_1" aria-describedby="connect-cam-1" required>

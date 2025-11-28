@@ -12,7 +12,7 @@ define( "BASE_URL", "http://localhost/narrow-way-traffic-lights");
 require BASE_PATH ."/vendor/autoload.php";
 require BASE_PATH ."/includes/auth.php";
 require BASE_PATH ."/includes/helpers.php";
-
+require BASE_PATH ."/includes/JWTHelper.php";
 
 // Load environment variables
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');

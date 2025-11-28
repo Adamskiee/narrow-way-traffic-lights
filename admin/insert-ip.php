@@ -4,6 +4,18 @@ header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
 require_once "../includes/config.php";
 
+if(!is_logged_in()) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
+    exit;
+}
+
+if(!is_admin_authenticated()) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Admin access required']);
+    exit;
+}
+
 try {
     $input = json_decode(file_get_contents("php://input"), true);
     

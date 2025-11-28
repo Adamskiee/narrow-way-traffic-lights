@@ -3,9 +3,16 @@ header('Content-Type: application/json');
 require_once "../includes/config.php";
 session_start();
 
+$user = get_authenticated_user();
+if(!$user) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
+    exit;
+}
+
 try {
     $input = json_decode(file_get_contents("php://input"), true);
-    $id = $input["user_id"] ?? $_SESSION["user_id"];
+    $id = $input["user_id"] ?? $user["user_id"];
 
     $sel = $conn->prepare("SELECT first_name, last_name, username, email, phone_number FROM users WHERE id = ?");
     $sel->bind_param("i", $id);
