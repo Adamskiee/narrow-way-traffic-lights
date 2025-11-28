@@ -2,17 +2,13 @@
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
-
 ini_set('display_errors', 1); 
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-session_start();
-
 require_once "./config.php";
 require_once "./JWTHelper.php";
   
-// read the raw body of the http request from fetch function
 $input = json_decode(file_get_contents("php://input"), true);
 
 $username = $input["username"] ?? "";

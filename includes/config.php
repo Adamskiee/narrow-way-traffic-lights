@@ -2,7 +2,6 @@
 ini_set('display_errors', 1); 
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-// Define absolute server path (not URL)
 define("BASE_PATH", realpath(__DIR__ . '/..'));
 
 // Define base URL (useful for linking assets)

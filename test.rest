@@ -63,3 +63,26 @@ Content-Type: application/json
     "password": "admin",
     "username": "admin"
 }
+
+###
+POST http://localhost/narrow-way-traffic-lights/admin/add-user.php
+Content-Type: application/json
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzY0MzE3MzYwfQ.c8WCY3Gba-pDLgH94-35phzS6-fwLF6BeD-HKlAFYEA
+
+{
+    "username": "Adamskieee12",
+    "first-name": "Adam1",
+    "email": "tosinomatthew@gmail.com",
+    "password": "adam1",
+    "user_id": 2
+}
+
+###
+POST http://localhost/narrow-way-traffic-lights/includes/setup-process.php
+Content-Type: application/json
+
+{
+    "token": "e77eb8b6d7ea01b04caff6c239cea3cd9f084d6e9d69c9844b7fd2b5f867d462",
+    "new-password": "adams",
+    "confirm-password": "adams"
+}

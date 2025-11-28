@@ -76,4 +76,15 @@ function redirect_if_not_logged_in($redirect_url = null) {
     }
 }
 
+function validateToken($token) {
+    global $conn;
+    $token = trim($token);
+
+    $stmt = $conn->prepare("SELECT id FROM users WHERE setup_token = ? AND token_expires > NOW()");
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    $user = $stmt->get_result();
+
+    return $user->num_rows > 0;
+}
 ?>

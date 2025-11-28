@@ -629,16 +629,66 @@ function setupAddUserButton() {
             modalForm.method = "post";
             modalForm.id = "user-add";
             
-            handleFormSubmit(
-                "user-add", 
-                (data) => {
-                    openSuccessModal(data.message);
-                },
-                (error) => openErrorModal(error.message)
-            );
+            if (!modalForm.hasAttribute('data-form-handler')) {
+                modalForm.setAttribute('data-form-handler', 'true');
+                modalForm.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                
+                    showAddUserLoading(true);
+                    const formData = new FormData(modalForm);
+                    const payload = Object.fromEntries(formData.entries());
+                    try {
+                        const response = await fetch(modalForm.action, {
+                        method: modalForm.method,
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload),
+                        });
+
+                        showAddUserLoading(false);
+                        
+                        const data = await response.json();
+                        if (data.success) openSuccessModal(data.message);
+                        else openErrorModal(data.message);
+                    } catch (err) {
+                        openErrorModal(err.message);
+                        showAddUserLoading(false);
+                        console.log(err);
+                    }
+                });
+            }
             
             openAddModal();
         });
+    }
+}
+
+function showAddUserLoading(isLoading) {
+    const submitBtn = document.getElementById("add-user-submit-btn");
+    const modal = document.querySelector("#modal .modal-content");
+    
+    if (isLoading) {
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                Adding User...
+            `;
+        }
+        
+        if (modal) {
+            modal.style.opacity = "0.7";
+            modal.style.pointerEvents = "none";
+        }
+    } else {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `Add User`;
+        }
+        
+        if (modal) {
+            modal.style.opacity = "1";
+            modal.style.pointerEvents = "auto";
+        }
     }
 }
 

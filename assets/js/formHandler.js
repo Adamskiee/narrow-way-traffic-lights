@@ -2,7 +2,7 @@ export async function handleFormSubmit(formId, onSuccess, onError, extendedLogic
   const form = document.getElementById(formId);
   if (!form) return;
 
-   if (form.hasAttribute('data-form-handler')) {
+  if (form.hasAttribute('data-form-handler')) {
     return; // Exit early if handler already exists
   }
 

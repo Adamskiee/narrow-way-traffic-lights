@@ -18,17 +18,31 @@ if(!is_admin_authenticated()) {
     exit;
 }
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+$mail = new PHPMailer(true);
+
 $cacheKey = "db:users";
+$mail->SMTPDebug = 0;                     
+$mail->isSMTP();                                          
+$mail->Host       = get_env_var("SMTP_HOST");                     
+$mail->SMTPAuth   = true;                                  
+$mail->Username   = get_env_var('GMAIL_USERNAME');                     
+$mail->Password   = get_env_var("GMAIL_PASSWORD");                              
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            
+$mail->Port       = get_env_var("SMTP_PORT");  
 
 try {
     $input = json_decode(file_get_contents("php://input"), true);
     
     $first_name = $input["first-name"];
     $last_name = $input["last-name"] ?? "";
-    $email = $input["email"] ?? "";
+    $email = $input["email"];
     $username = $input["username"];
     $password = $input["password"];
-    $phone_number = $input["phone"];
+    $phone_number = $input["phone"] ?? "";
     $user_id = $input["user_id"] ?? $user["user_id"];
 
     $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
@@ -39,18 +53,75 @@ try {
     if($result && $result->num_rows > 0) {
         echo json_encode(["success" => false, "message"=>"Username exist"]);
     }else {
+        $token = generateToken();
+        $tokenExpires = date('Y-m-d H:i:s', strtotime('+24 hours'));
+
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $ins = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by) VALUES(?, ?, ?, ?, ?, ?, ?)");
-        $ins->bind_param("ssssssi", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $user_id);
+        $ins = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by, token_expires, setup_token) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $ins->bind_param("ssssssiss", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $user_id, $tokenExpires, $token);
         $ins->execute();
 
         $redis->del($cacheKey);
 
         echo json_encode(["success" => true, "message" => "User created successfully"]);
+
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        }
+
+        sendSetupEmail($email, $first_name, $token);
     }
 }catch(Error $e){
     echo json_encode([
         "success" => false,
         "error" => "Database error: " . $e->getMessage()
     ]);
+}
+
+function generateToken($length = 32) {
+    return bin2hex(string: random_bytes($length));
+}
+
+function sendSetupEmail($email, $name, $token) {
+    $setupLink = BASE_URL . "/setup-account.php?token=" . $token;
+
+    global $mail;
+
+    $mail->setFrom(get_env_var("GMAIL_USERNAME"), "FlowSync");
+    $mail->addAddress($email);
+
+    $mail->isHTML(true);
+    $mail->Subject = "Set up your FlowSync account";
+    $mail->Body = "
+    <html>
+    <head>
+        <title>Set up your account</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .button { background: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; }
+            .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 4px; margin: 15px 0; }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <h2>Welcome to FlowSync!</h2>
+            <p>Hello " . htmlspecialchars($name) . ",</p>
+            <p>An account has been created for you. Click the button below to set up your account and create your password:</p>
+            
+            <div style='text-align: center; margin: 25px 0;'>
+                <a href='" . $setupLink . "' class='button'>Set Up Your Account</a>
+            </div>
+            
+            <div class='warning'>
+                <strong>Important:</strong> This link will expire in 24 hours. If you didn't request this account, please ignore this email.
+            </div>
+            
+            <p>Or copy and paste this link in your browser:<br>
+            <small>" . $setupLink . "</small></p>
+        </div>
+    </body>
+    </html>
+    ";
+    return $mail->send();
 }
