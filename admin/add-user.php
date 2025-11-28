@@ -18,8 +18,9 @@ if(!is_admin_authenticated()) {
     exit;
 }
 
+$cacheKey = "db:users";
+
 try {
-    // read the raw body of the http request from fetch function
     $input = json_decode(file_get_contents("php://input"), true);
     
     $first_name = $input["first-name"];
@@ -42,6 +43,9 @@ try {
         $ins = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by) VALUES(?, ?, ?, ?, ?, ?, ?)");
         $ins->bind_param("ssssssi", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $user_id);
         $ins->execute();
+
+        $redis->del($cacheKey);
+
         echo json_encode(["success" => true, "message" => "User created successfully"]);
     }
 }catch(Error $e){

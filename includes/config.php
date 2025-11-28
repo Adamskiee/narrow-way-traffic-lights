@@ -14,7 +14,12 @@ require BASE_PATH ."/includes/auth.php";
 require BASE_PATH ."/includes/helpers.php";
 require BASE_PATH ."/includes/JWTHelper.php";
 
-// Load environment variables
+$redis = new Predis\Client([
+    'scheme' => 'tcp',
+    'host'   => '127.0.0.1',
+    'port'   => 6379,
+]);
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 

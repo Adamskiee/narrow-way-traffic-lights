@@ -16,18 +16,32 @@ if(!is_admin_authenticated()) {
     exit;
 }
 
-try {
-    $stmt = $conn->prepare("SELECT id, username, email, first_name, last_name, created_at FROM users WHERE created_by = ? AND id != ?");
-    $stmt->bind_param("ii", $user["user_id"], $user["user_id"]);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $users = $result->fetch_all(MYSQLI_ASSOC);
-    echo json_encode(["success" => true, "users" => $users]);
-}catch(Exception $e) {
-    echo json_encode([
-        "success" => false,
-        "error" => "Database error: " . $e->getMessage()
-    ]);
+$cacheKey = "db:users";
+$data = $redis->get($cacheKey);
+
+if(!$data) {
+    try {
+        $stmt = $conn->prepare("SELECT id, username, email, first_name, last_name, created_at FROM users WHERE created_by = ? AND id != ?");
+        $stmt->bind_param("ii", $user["user_id"], $user["user_id"]);
+        $stmt->execute();
+        
+        $result = $stmt->get_result();
+        
+        $users = $result->fetch_all(MYSQLI_ASSOC);
+        
+        $res = json_encode(["success" => true, "users" => $users]);
+        
+        $redis->setex($cacheKey, 600, $res);
+        
+        echo $res;
+    }catch(Exception $e) {
+        echo json_encode([
+            "success" => false,
+            "error" => "Database error: " . $e->getMessage()
+        ]);
+    }
+}else {
+    echo $data;
 }
 
 ?>

@@ -14,22 +14,34 @@ if(!is_admin_authenticated()) {
     exit;
 }
 
-try {
-    $id = $_GET["id"];
+$id = $_GET["id"];
 
-    $stmt = $conn->prepare("SELECT first_name, last_name, email, phone_number, username, password, created_at FROM users WHERE id = ?");
-    $stmt->bind_param("s", $id);
-    $stmt->execute();
+$cacheKey = "db:user:". $id;
+$data = $redis->get($cacheKey);
 
-    $result = $stmt->get_result();
-    echo json_encode([
-        "success" => true,
-        "user" => $result->fetch_assoc()
-    ]);
-}catch(Error $e){
-    echo json_encode([
-        "success" => false,
-        "error" => "Database error: " . $e->getMessage()
-    ]);
+if(!$data) {
+    try {
+        
+        $stmt = $conn->prepare("SELECT first_name, last_name, email, phone_number, username, password, created_at FROM users WHERE id = ?");
+        $stmt->bind_param("s", $id);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $res = json_encode([
+            "success" => true,
+            "user" => $result->fetch_assoc()
+        ]);
+
+        $redis->setex($cacheKey,600, $res);
+
+        echo $res;
+    }catch(Error $e){
+        echo json_encode([
+            "success" => false,
+            "error" => "Database error: " . $e->getMessage()
+        ]);
+    }
+}else {
+    echo $data;
 }
 ?>

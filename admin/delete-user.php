@@ -15,6 +15,8 @@ if(!is_admin_authenticated()) {
     exit;
 }
 
+$cacheKey = "db:users";
+
 try {
     $input = json_decode(file_get_contents("php://input"), true);
     
@@ -23,6 +25,9 @@ try {
     $stmt = $conn->prepare("DELETE FROM users WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
+
+    $redis->del($cacheKey);
+    $redis->del("db:user:".$id);
 
     echo json_encode([
         "success" => true,

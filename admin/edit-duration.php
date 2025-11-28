@@ -18,6 +18,8 @@ if (!is_admin_authenticated()) {
     exit;
 }
 
+$cacheKey = "db:durations";
+
 try {
     $input = json_decode(file_get_contents("php://input"), true);
     
@@ -27,6 +29,9 @@ try {
     $ins = $conn->prepare("UPDATE schedules SET duration = ? WHERE admin_id = ? AND week_day = ?");
     $ins->bind_param("iii", $duration, $user['user_id'], $week_day);
     $ins->execute();
+
+    $redis->del($cacheKey);
+    
     echo json_encode([
         "success" => true,
         "message" => "Schedule successfully edited"

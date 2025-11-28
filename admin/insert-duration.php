@@ -17,6 +17,8 @@ if(!is_admin_authenticated()) {
     exit;
 }
 
+$cacheKey = "db:durations";
+
 try {
     $input = json_decode(file_get_contents("php://input"), true);
     
@@ -27,6 +29,9 @@ try {
     $stmt = $conn->prepare("INSERT INTO schedules(admin_id, week_day, duration) VALUES(?, ?, ?)");
     $stmt->bind_param("iii", $user_id, $week_day, $duration);
     $stmt->execute();
+
+    $redis->del($cacheKey);
+    
     echo json_encode([
         "success" => true,
         "message" => "Schedule successfully inserted",

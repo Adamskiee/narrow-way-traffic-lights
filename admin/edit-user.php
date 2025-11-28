@@ -17,6 +17,8 @@ if(!is_admin_authenticated()) {
     exit;
 }
 
+$cacheKey = "db:users";
+
 try {
     $input = json_decode(file_get_contents("php://input"), true);
     
@@ -30,6 +32,10 @@ try {
     $stmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, email = ?, username = ?, phone_number = ? WHERE id = ?");
     $stmt->bind_param("sssssi", $first_name, $last_name, $email, $username, $phone_number, $user_id);
     $stmt->execute();
+
+    $redis->del($cacheKey);
+    $redis->del("db:user:".$user_id);
+
     echo json_encode([
         "success" => true,
         "message" => "Update successfully"

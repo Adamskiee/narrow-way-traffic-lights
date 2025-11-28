@@ -2,6 +2,17 @@
 
 $page_title = 'Landing page';
 include './includes/header.php';
+
+$cacheKey = "page:index";
+$cacheTime = 60;
+$cached = $redis->get($cacheKey);
+
+if($cached === false) {
+    echo $cached;
+    exit;
+}
+
+ob_start();
 ?>
 
 <main class="container" style="padding-top: 70px;">
@@ -589,5 +600,10 @@ include './includes/header.php';
 <script src="<?= BASE_URL ?>/assets/js/contact.js"></script>
 <script src="<?= BASE_URL ?>/assets/js/transitions.js"></script>
 <?php
-include BASE_PATH . "/includes/footer.php"
+include BASE_PATH . "/includes/footer.php";
+$content = ob_get_clean();
+
+$redis->setex($cacheKey, $cacheTime, $content);
+
+echo $content;
 ?>

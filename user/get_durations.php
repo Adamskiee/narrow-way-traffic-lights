@@ -10,19 +10,29 @@ if(!$user) {
     exit;
 }
 
-try {
-    $user_id = $user["user_id"];
+$cacheKey = "db:durations";
+$data = $redis->get($cacheKey);
+if(!$data) {
+    try {
+        $user_id = $user["user_id"];
 
-    $stmt = $conn->prepare("SELECT week_day, duration FROM users u JOIN schedules s ON u.created_by = s.admin_id WHERE u.id = ? GROUP BY s.id");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $schedules = $result->fetch_all(MYSQLI_ASSOC);
-    echo json_encode(["success" => true, "schedules" => $schedules]);
-}catch(Exception $e) {
-    echo json_encode([
-        "success" => false,
-        "error" => "Database error: " . $e->getMessage()
-    ]);
+        $stmt = $conn->prepare("SELECT week_day, duration FROM users u JOIN schedules s ON u.created_by = s.admin_id WHERE u.id = ? GROUP BY s.id");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $schedules = $result->fetch_all(MYSQLI_ASSOC);
+        
+        $res = json_encode(["success" => true, "schedules" => $schedules]);
+
+        $redis->setex($cacheKey,600, $res);
+        echo $res;
+    }catch(Exception $e) {
+        echo json_encode([
+            "success" => false,
+            "error" => "Database error: " . $e->getMessage()
+        ]);
+    }
+}else {
+    echo $data;
 }
 ?>

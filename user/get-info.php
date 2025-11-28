@@ -9,31 +9,41 @@ if(!$user) {
     echo json_encode(['success' => false, 'message' => 'Authentication required']);
     exit;
 }
+$id = $input["user_id"] ?? $user["user_id"];
 
-try {
-    $input = json_decode(file_get_contents("php://input"), true);
-    $id = $input["user_id"] ?? $user["user_id"];
+$cacheKey = "db:user:".$id;
+$data = $redis->get($cacheKey);
 
-    $sel = $conn->prepare("SELECT first_name, last_name, username, email, phone_number FROM users WHERE id = ?");
-    $sel->bind_param("i", $id);
-    $sel->execute();
-    $result = $sel->get_result();
-    if($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        echo json_encode([
-            "success" => true,
-            "information" => $row
-        ]);
-    }else{
+if(!$data) {
+    try {
+        $input = json_decode(file_get_contents("php://input"), true);
+
+        $sel = $conn->prepare("SELECT first_name, last_name, username, email, phone_number FROM users WHERE id = ?");
+        $sel->bind_param("i", $id);
+        $sel->execute();
+        $result = $sel->get_result();
+        if($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+
+            $res = json_encode([
+                "success" => true,
+                "information" => $row
+            ]);
+            $redis->setex($cacheKey,600, $res);
+            echo $res;
+        }else{
+            echo json_encode([
+                "success" => false,
+                "message" => "Invalid User"
+            ]);
+        }
+    }catch(Error $e){
         echo json_encode([
             "success" => false,
-            "message" => "Invalid User"
+            "error" => "Database error: " . $e->getMessage()
         ]);
     }
-}catch(Error $e){
-    echo json_encode([
-        "success" => false,
-        "error" => "Database error: " . $e->getMessage()
-    ]);
+}else {
+    echo $data;
 }
 ?>
