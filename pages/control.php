@@ -148,17 +148,18 @@ $canControlCameras = can_access_feature('camera_control');
           </div>
           <form action="<?= BASE_URL ?>/admin/change-ip.php" method="post" id="change-ip-form" novalidate class="needs-validation" style="display: none;">
           <?php endif; ?>
-            <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
             <div class="mb-3">
               <div class="input-group">
-                <input type="text" class="form-control ip-input" placeholder="IP Address Cam A" aria-label="Duration" name="ip_address_cam_1" aria-describedby="connect-cam-1" required>
+                <label for="ip_address_cam_1" class="hidden">IP address</label>
+                <input type="text" class="form-control ip-input" placeholder="IP Address Cam A" aria-label="Duration" name="ip_address_cam_1" id="ip_address_cam_2" aria-describedby="connect-cam-1" data-cam="1" required>
                 <button class="btn btn-secondary" type="button" id="connect-cam-1">Connect</button>
               </div>
               <small id="result_cam_1" class="form-text text-danger"></small>
             </div>
             <div class="mb-3">
               <div class="input-group">
-                <input type="text" class="form-control ip-input" placeholder="IP Address Cam A" aria-label="Duration" name="ip_address_cam_2" aria-describedby="connect-cam-2" required>
+                <label for="ip_address_cam_2" class="hidden">IP address</label>
+                <input type="text" class="form-control ip-input" placeholder="IP Address Cam B" aria-label="Duration" name="ip_address_cam_2" id="ip_address_cam_2" aria-describedby="connect-cam-2" data-cam="2" required>
                 <button class="btn btn-secondary" type="button" id="connect-cam-2">Connect</button>
               </div>
               <span id="result_cam_2" class="form-text text-danger"></span>

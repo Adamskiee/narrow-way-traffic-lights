@@ -1,5 +1,6 @@
 import { handleFormSubmit } from "./formHandler.js";
-import { openInfoModal, closeInfoModal } from "./infoModal.js";
+import { openInfoModal, closeInfoModal, openConfirmModal } from "./infoModal.js";
+import { setupRealtimeValidation } from "./validate.js";
 
 // ================================================================
 // PRIVILEGE ACCESS CONTROL
@@ -985,11 +986,94 @@ if (cam2Btn) {
 }
 
 if (IS_ADMIN) {
-  handleFormSubmit(
-    "change-ip-form",
-    (data) => openSuccessModal(data.message),
-    (error) => openErrorModal(error.message)
-  );
+  // handleFormSubmit(
+  //   "change-ip-form",
+  //   (data) => openSuccessModal(data.message),
+  //   (error) => openErrorModal(error.message)
+  // );
+  
+  document.getElementById("change-ip-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+    const cam1IP = formData.get('ip_address_cam_1');
+    const cam2IP = formData.get('ip_address_cam_2');
+
+    const ipPattern = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+    
+    if (!ipPattern.test(cam1IP)) {
+      document.getElementById("result_cam_1").innerText = "Please enter a valid IP address";
+      
+      if (!ipPattern.test(cam2IP)) {
+      document.getElementById("result_cam_2").innerText = "Please enter a valid IP address";
+      }
+      return;
+    }
+
+    if(!ipPattern.test(cam2IP)) {
+      document.getElementById("result_cam_2").innerText = "Please enter a valid IP address";
+      return;
+    }
+    
+    
+    if (cam1IP === cam2IP) {
+      openErrorModal("Camera 1 and Camera 2 cannot have the same IP address");
+      return;
+    }
+
+    openConfirmModal({
+      title: "Update Camera IP Addresses",
+      body: `
+        <div class="alert alert-info mb-3">
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>Confirm IP Address Changes</strong>
+        </div>
+        <p><strong>Current Settings:</strong></p>
+        <ul class="list-unstyled">
+          <li><i class="fas fa-camera me-2"></i>Camera 1: <code>${cams.cam1.ip || 'Not set'}</code></li>
+          <li><i class="fas fa-camera me-2"></i>Camera 2: <code>${cams.cam2.ip || 'Not set'}</code></li>
+        </ul>
+        <p><strong>New Settings:</strong></p>
+        <ul class="list-unstyled">
+          <li><i class="fas fa-camera me-2 text-primary"></i>Camera 1: <code class="text-primary">${cam1IP}</code></li>
+          <li><i class="fas fa-camera me-2 text-primary"></i>Camera 2: <code class="text-primary">${cam2IP}</code></li>
+        </ul>
+        <div class="alert alert-warning mt-3 mb-0">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <small>This will restart camera connections and may temporarily interrupt traffic light control.</small>
+        </div>
+      `,
+      confirmText: "Update IP Addresses",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        await updateCameraIP(form, formData);
+      },
+      onCancel: () => {
+        console.log("IP address update cancelled by user");
+      }
+    });
+  });
+  setupRealtimeValidation(document.getElementById("change-ip-form"));
+}
+
+async function updateCameraIP(form, formData) {
+  const payload = Object.fromEntries(formData.entries());
+  try {
+    const response = await fetch(form.action, {
+      method: form.method,
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    if (data.success) openSuccessModal(data.message);
+    else openErrorModal(data.message);
+  } catch (err) {
+    openErrorModal(err.message);
+    console.log(err);
+  }
 }
 
 // ================================================================

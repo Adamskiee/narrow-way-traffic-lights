@@ -2,8 +2,8 @@ import { handleFormSubmit } from "../formHandler.js";
 
 const result = document.getElementById("ip-result");
 const weekDays = document.getElementById("week-days");
-
 const ipRegex = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+const inputs = document.querySelectorAll(".ip-input");
 
 export async function checkESP(num) {
     const controller = new AbortController();
@@ -27,6 +27,14 @@ export async function checkESP(num) {
         return false;
     }
 }
+
+inputs.forEach(input => {
+    input.addEventListener("input", (e) => {
+        const camNum = e.target.dataset.cam;
+
+        document.getElementById(`result_cam_${camNum}`).innerText = "";
+    })
+})
 
 handleFormSubmit("insert-ip-form",
     (data)=>(window.location.href = data.redirect),

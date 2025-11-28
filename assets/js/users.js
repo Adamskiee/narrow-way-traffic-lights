@@ -1,6 +1,7 @@
 import { openModal, closeModal } from "./modal.js";
 import { openInfoModal, closeInfoModal } from "./infoModal.js";
 import { handleFormSubmit } from "./formHandler.js";
+import { setupRealtimeValidation } from "./validate.js";
 
 function attachEvents() {
     document.querySelectorAll(".delete-btn").forEach(btn => {
@@ -35,30 +36,58 @@ function generatePassword(length = 16) {
 function openDeleteModal(id) {
     const modalForm = document.querySelector(".modalForm");
 
-    modalForm.onsubmit = null;
-    modalForm.removeAttribute('data-form-handler');
+    // modalForm.onsubmit = null;
+    // modalForm.removeAttribute('data-form-handler');
     
-    modalForm.action = "../admin/delete-user.php";
-    modalForm.method = "post";
-    modalForm.id = "user-delete";
+    // modalForm.action = "../admin/delete-user.php";
+    // modalForm.method = "post";
+    // modalForm.id = "user-delete";
     
-    handleFormSubmit(
-        "user-delete", 
-        (data) => {
-            openSuccessModal(data.message);
-        },
-        (error) => openErrorModal(error.message)
-    );
+    // handleFormSubmit(
+    //     "user-delete", 
+    //     (data) => {
+    //         openSuccessModal(data.message);
+    //     },
+    //     (error) => openErrorModal(error.message)
+    // );
 
-    openModal({
+    openInfoModal({
         title: "Delete User",
         body: `
-        <input type="hidden" name="user-id" value="${id}">
-        <p>Are you sure to delete?</p>
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Confirm Deletion</h5>
+            <p class="mb-0">Are you sure you want to delete this user?</p>
+            <p class=" small mb-0">This action cannot be undone.</p>
+        </div>
         `,
-        footer: `<button type="submit" class="btn btn-danger">Delete</button>
+        footer: `
+        <button class="btn btn-secondary" onclick="closeInfoModal()">
+        <i class="fas fa-times me-1"></i>Close</button>
+        <button class="btn btn-danger" onclick="deleteUser(${id})">
+        <i class="fas fa-trash me-1"></i>Delete</button>
         `
     });
+}
+
+async function deleteUser(id) {
+    try {
+      const response = await fetch("../admin/delete-user.php", {
+        method: "post",
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({"user-id": id}),
+      });
+
+      const data = await response.json();
+      if (data.success) openSuccessModal(data.message);
+      else openErrorModal(data.message)
+    } catch (err) {
+      openErrorModal(err.message)
+      console.log(err);
+    }
 }
 
 function openEditModal(id) {
@@ -138,10 +167,19 @@ function openEditModal(id) {
                 />
             </div>
             `,
-            footer: `<button type="submit" class="btn btn-primary">Edit</button>
+            footer: `
+            <button type="button" class="btn btn-secondary" onclick="closeModal()"> 
+                <i class="fas fa-times me-1"></i>Close
+            </button>
+            <button type="submit" class="btn btn-primary"> 
+                <i class="fas fa-trash me-1"></i>Edit
+            </button>
             `
         });
 
+        setTimeout(() => {
+            setupRealtimeValidation(modalForm);
+        }, 100);
     })
 }
 
@@ -259,7 +297,6 @@ function loadUsers() {
                     <td>
                         <div>
                             ${user["email"] || '-'}
-                            ${user["email"] ? '<br><small class="">Verified</small>' : ''}
                         </div>
                     </td>
                     <td>${user["phone_number"] || '-'}</td>
@@ -414,11 +451,20 @@ function openAddModal() {
         </div>
         `,
         footer: `
-        <button type="submit" class="btn btn-primary" id="add-user-submit-btn">Add User</button>
+        <button type="button" class="btn btn-secondary">
+            <i class="fas fa-times me-1"></i>Add User
+        </button>
+        <button type="submit" class="btn btn-primary" id="add-user-submit-btn">
+            <i class="fas fa-plus me-1"></i>Add User
+        </button>
         `
     });
     
     setTimeout(() => {
+        const form = document.querySelector(".modalForm");
+
+        setupRealtimeValidation(form);
+
         const generateBtn = document.getElementById("generate-btn");
         if (generateBtn && !generateBtn.hasAttribute('data-listener-attached')) {
             generateBtn.setAttribute('data-listener-attached', 'true');
@@ -692,6 +738,9 @@ function showAddUserLoading(isLoading) {
     }
 }
 
+function phoneInputChange() {
+    console.log("ahdsfahsfd")
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     loadUsers();
@@ -714,3 +763,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Make functions globally available for onclick handlers
 window.loadUsers = loadUsers;
 window.exportUsers = exportUsers;
+window.deleteUser = deleteUser;
+window.closeModal = closeModal;
+window.closeInfoModal = closeInfoModal;
+window.phoneInputChange = phoneInputChange;

@@ -21,7 +21,7 @@ $data = $redis->get($cacheKey);
 
 if(!$data) {
     try {
-        $stmt = $conn->prepare("SELECT id, username, email, first_name, last_name, created_at FROM users WHERE created_by = ? AND id != ?");
+        $stmt = $conn->prepare("SELECT id, username, email, first_name, last_name, created_at, phone_number FROM users WHERE created_by = ? AND id != ?");
         $stmt->bind_param("ii", $user["user_id"], $user["user_id"]);
         $stmt->execute();
         

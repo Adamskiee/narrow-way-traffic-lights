@@ -8,6 +8,7 @@ function logout_user() {
         'secure' => false,
         'samesite' => 'Lax'
     ]);
+    header('Location: ../index.php');
 }
 
 function get_authenticated_user() {

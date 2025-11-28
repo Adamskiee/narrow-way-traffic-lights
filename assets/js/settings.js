@@ -1,5 +1,6 @@
 import { openModal, closeModal } from "./modal.js";
 import { openInfoModal, closeInfoModal } from "./infoModal.js";
+import { setupRealtimeValidation } from "./validate.js";
 
 const firstName = document.getElementById("first-name");
 const lastName = document.getElementById("last-name");
@@ -57,6 +58,7 @@ document.getElementById("change-password-btn").addEventListener("click", () => {
     });
 
     openChangePasswordModal();
+    setupRealtimeValidation(document.getElementById("change-password-form"))
 })
 
 function openChangePasswordModal() {
@@ -109,7 +111,10 @@ function openSuccessModal(message) {
 
     openInfoModal({
         title: "Success",
-        body: `<p>${message}</p>`,
+        body: `<div class="text-center">
+                    <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+                    <p class="mb-0">${message}</p>
+                </div>`,
         footer: `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`
     })
 

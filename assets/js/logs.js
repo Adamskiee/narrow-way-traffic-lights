@@ -1,3 +1,4 @@
+import { openInfoModal,closeInfoModal } from "./infoModal.js";
 
 // ================================================================
 // GLOBAL STATE
@@ -42,16 +43,29 @@ function showError(message) {
  * @param {string} message - Success message to display
  */
 function showSuccess(message) {
-    const alertContainer = document.getElementById('alert-container');
-    if (alertContainer) {
-        alertContainer.innerHTML = `
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i>
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-    }
+    openInfoModal({
+            title: "Success",
+            body: `
+                <div class="text-center">
+                    <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+                    <p class="mb-0">${message}</p>
+                </div>
+            `,
+            footer: `<button type="button" class="btn btn-success" id="closeSuccessModal">Close</button>`
+        });
+    
+        setTimeout(() => {
+            const closeBtn = document.getElementById('closeSuccessModal');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    closeInfoModal();
+                });
+            }
+        }, 100);
+
+        setTimeout(() => {
+            closeInfoModal();
+        }, 1500);
 }
 
 /**
@@ -822,3 +836,5 @@ window.exportLogs = exportLogs;
 window.viewLogDetails = viewLogDetails;
 window.deleteLog = deleteLog;
 window.confirmDeleteLog = confirmDeleteLog;
+window.openInfoModal = openInfoModal;
+window.closeInfoModal = closeInfoModal;

@@ -216,11 +216,7 @@ redirect_if_not_logged_in();
 <!-- Modal components -->
 <?php include BASE_PATH . "/components/infoModal.php"; ?>
 
-<script type="module">
-import { openInfoModal, closeInfoModal } from '<?= BASE_URL ?>/assets/js/infoModal.js';
-window.openInfoModal = openInfoModal;
-window.closeInfoModal = closeInfoModal;
-</script>
-<script src="<?= BASE_URL ?>/assets/js/logs.js"></script>
+
+<script src="<?= BASE_URL ?>/assets/js/logs.js" type="module"></script>
 
 <?php include BASE_PATH . "/includes/footer.php"; ?>
