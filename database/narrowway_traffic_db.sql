@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 26, 2025 at 09:53 AM
+-- Generation Time: Nov 28, 2025 at 02:37 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,8 +39,9 @@ CREATE TABLE `ip_addresses` (
 --
 
 INSERT INTO `ip_addresses` (`id`, `admin_id`, `ip_address_1`, `ip_address_2`) VALUES
-(1, 2, '10.42.0.76', '10.42.0.131'),
-(2, 25, '10.42.0.76', '10.42.0.131');
+(1, 2, '10.10.10.10', '10.10.10.1'),
+(2, 25, '2.2.2.2', '2.2.2.1'),
+(3, 100, '2.2.2.2', '2.2.2.1');
 
 -- --------------------------------------------------------
 
@@ -71,7 +72,7 @@ INSERT INTO `schedules` (`id`, `admin_id`, `week_day`, `duration`) VALUES
 (9, 2, 2, 32),
 (10, 2, 4, 40),
 (29, 2, 6, 13),
-(32, 2, 3, 12),
+(32, 2, 3, 11),
 (35, 2, 7, 25),
 (36, 2, 5, 11);
 
@@ -735,7 +736,6 @@ INSERT INTO `traffic_logs` (`id`, `user_id`, `camera_id`, `light_state`, `mode_t
 (645, 2, 'cam2', 'green', 'auto', 12, '2025-11-26 16:25:48', NULL),
 (646, 2, 'cam1', 'green', 'auto', 12, '2025-11-26 16:26:07', NULL),
 (647, 2, 'cam2', 'red', 'auto', 12, '2025-11-26 16:26:07', NULL),
-(648, 2, 'cam1', 'green', 'auto', 12, '2025-11-26 16:26:07', NULL),
 (649, 2, 'cam2', 'red', 'auto', 12, '2025-11-26 16:26:07', NULL),
 (650, 2, 'cam1', 'red', 'auto', 12, '2025-11-26 16:26:22', NULL),
 (651, 2, 'cam2', 'green', 'auto', 12, '2025-11-26 16:26:22', NULL),
@@ -749,7 +749,6 @@ INSERT INTO `traffic_logs` (`id`, `user_id`, `camera_id`, `light_state`, `mode_t
 (659, 2, 'cam2', 'green', 'auto', 12, '2025-11-26 16:26:57', NULL),
 (660, 2, 'cam1', 'red', 'auto', 12, '2025-11-26 16:26:59', NULL),
 (661, 2, 'cam2', 'green', 'auto', 12, '2025-11-26 16:26:59', NULL),
-(662, 2, 'cam1', 'green', 'auto', 12, '2025-11-26 16:27:13', NULL),
 (663, 2, 'cam2', 'red', 'auto', 12, '2025-11-26 16:27:13', NULL),
 (664, 2, 'cam1', 'green', 'auto', 12, '2025-11-26 16:27:13', NULL),
 (665, 2, 'cam2', 'red', 'auto', 12, '2025-11-26 16:27:13', NULL),
@@ -776,17 +775,7 @@ INSERT INTO `traffic_logs` (`id`, `user_id`, `camera_id`, `light_state`, `mode_t
 (686, 2, 'cam1', 'red', 'manual', 0, '2025-11-26 16:27:51', NULL),
 (687, 2, 'cam2', 'green', 'manual', 0, '2025-11-26 16:27:51', NULL),
 (688, 2, 'cam1', 'red', 'manual', 0, '2025-11-26 16:27:51', NULL),
-(689, 2, 'cam2', 'green', 'manual', 0, '2025-11-26 16:27:51', NULL),
-(690, 2, 'cam1', 'red', 'manual', 0, '2025-11-26 16:27:51', NULL),
-(691, 2, 'cam2', 'green', 'manual', 0, '2025-11-26 16:27:51', NULL),
-(692, 2, 'cam2', 'red', 'manual', 2, '2025-11-26 16:27:57', NULL),
-(693, 2, 'cam1', 'green', 'manual', 2, '2025-11-26 16:27:57', NULL),
-(694, 2, 'cam1', 'red', 'manual', 0, '2025-11-26 16:27:59', NULL),
-(695, 2, 'cam2', 'green', 'manual', 0, '2025-11-26 16:27:59', NULL),
-(696, 2, 'cam1', 'green', 'manual', 0, '2025-11-26 16:28:02', NULL),
-(697, 2, 'cam2', 'red', 'manual', 0, '2025-11-26 16:28:02', NULL),
-(698, 2, 'cam1', 'red', 'manual', 1, '2025-11-26 16:28:09', NULL),
-(699, 2, 'cam2', 'green', 'manual', 1, '2025-11-26 16:28:09', NULL);
+(689, 2, 'cam2', 'green', 'manual', 0, '2025-11-26 16:27:51', NULL);
 
 -- --------------------------------------------------------
 
@@ -804,6 +793,8 @@ CREATE TABLE `users` (
   `phone_number` varchar(15) NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) DEFAULT NULL,
+  `setup_token` varchar(64) DEFAULT NULL,
+  `token_expires` datetime DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -811,34 +802,37 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `created_by`, `password`, `role`, `email`, `phone_number`, `first_name`, `last_name`, `created_at`) VALUES
-(2, 'admin', 2, '$2y$10$0CMwVgYuz4BHqY0CtDrwS.iuYeWYH8rXSHscuaM1sBYESUAlHiTne', 'admin', '', '', '', NULL, '2025-11-13 14:20:27'),
-(4, 'operator', 2, '$2y$10$A6PzdC0Oa/AgmUv.Wg3L8OQ.x61gefoLNdFtWV8jcMRjjiSC0Ya3.', 'operator', 'operator421@gmail.com', '', 'OperatorEdit122112122', '', '2025-11-26 06:09:46'),
-(5, 'operator1', 2, '$2y$10$K8U49OhReJjOOLCyP.yBReoSNECJ600r1SMYAS0lh3g7aLEq9PqaC', 'operator', 'operator1@gmail.com', '09123456789', 'Operator1Edit', '', '2025-11-14 11:30:10'),
-(6, 'Operator3', 2, '$2y$10$36Ld1xlhnJmTngUrXzR7POTMd/0eqPowjN1AU2DwSF2xVlwc0.BG.', 'operator', 'operator3@gmail.com', '09123456782', 'Operator3', '', '2025-11-14 07:32:21'),
-(11, 'Adam', 2, '$2y$10$6blQAQW2MLKs0UBdIf/gL../AWrEQa3bT/YvPkLjx5PWS/tW0PQCq', 'operator', 'toisnomatthew@gmail.com', '09108412802', 'Adriele', 'Tosino', '2025-11-15 10:16:59'),
-(25, 'Test', 25, '$2a$10$TTVGR.KlzIuPhZJ.Fn29qOH7.hh8h.NK/SXzWIzk0m7p/aqiXHSeq', 'admin', 'test@gmail.com', '09108412809', 'Test', NULL, '2025-11-16 13:56:31'),
-(100, 'admin2', 100, '$2a$10$RJa3YrF89z/Wnuor7OyMyug.4b89jZnfIOWJ4MBo.PA3v5C0EmfKG', 'admin', 'admin2@gmail.com', '09102434542', 'Admin2', NULL, '2025-11-19 08:13:16'),
-(105, 'admin1232', 2, '$2y$10$azFJzIrkhhcT.MuXR3fLw.axKRYcOL/D8LZLjFv5FS/hNQWZajn4W', 'operator', 'tosinomatthew@gmail.com', '09123456782', 'OperatorEdit12211212321', 'Anonymous', '2025-11-24 08:52:59'),
-(107, 'adam2414112asfas', 2, '$2y$10$b8bBmvEeXSqWUU50UjJjXumXkaHkvgZURWbwwdX7aIU8kf.MRpVlK', 'operator', 'operator1@gmail.com', '09562438645', 'OperatorEdit12211212321', 'Anonymous', '2025-11-24 08:53:51'),
-(108, 'operator241', 2, '$2y$10$UplnvXteu89JgpRgvfqwzeImnT5mtKZ65no4YZe8mVKLQLBOwVWZK', 'operator', 'lorstosino15@gmail.com', '09562438645', 'OperatorEdit12211212321', 'Anonymous', '2025-11-24 08:55:31'),
-(109, 'operator4125', 2, '$2y$10$OwKj0ksMZ/LJbgexUKrKpetKSTn7vSqo5wI9ip/P3L9usgTF/y.AW', 'operator', 'operator42@gmail.com', '09123456782', 'OperatorEdit12211212321', 'Anonymous', '2025-11-24 08:59:21'),
-(110, 'adam12312', 2, '$2y$10$PXN7L0CT6/wZ/b2dgjK7KOThCUtm/9FkTJEqi7Fl34vmQr931MR0q', 'operator', 'operator1@gmail.com', '09123456782', 'Operator1', '', '2025-11-26 05:36:51'),
-(111, 'adam122', 2, '$2y$10$xppg9E4tw1XASPVT/xUII.ZwQTMi78qUnBHwfmTkvn8Rcm4pSJ0JK', 'operator', 'tosinomatthew@gmail.com', '09562438645', 'OperatorEdit12211212321', 'asdf', '2025-11-26 05:37:19'),
-(112, 'adam1234124', 2, '$2y$10$hQ4oD7nHd7mMwPuvE0Yh/e3ux60vPT/xIzpQBhms//xTbwbAzPZlG', 'operator', 'operator42@gmail.com', '09123456782', 'Operator1', 'asdf', '2025-11-26 05:43:36'),
-(114, 'adam12412sdafs', 2, '$2y$10$kw43kS1SGPpwuvQFmx5XE.ukiWjqQSsr2J3tYixThbDsfhmcYzjb.', 'operator', 'operator1@gmail.com', '09123456789', 'OperatorEdit12211212321', 'asdf', '2025-11-26 05:45:37'),
-(115, 'adam1212', 2, '$2y$10$DVzlZzmAFvFIqB2E1Ml1zOFbV8WAtiRQvyGn9HcasG3sJn8bsSDq2', 'operator', 'operator42@gmail.com', '09123456789', 'OperatorEdit12211212321', 'asdf', '2025-11-26 05:45:49'),
-(117, 'User122421221', 2, '$2y$10$qq2zbsCHAwWxUs1Slf3Ybu2C8Qjo2KsmjWWIGcDIdQ.gkrzjZM1g.', 'operator', 'operator42@gmail.com', '09123456789', 'OperatorEdit12211212321', 'asdf', '2025-11-26 05:46:31'),
-(119, '12saddfasf', 2, '$2y$10$g39tmEsBZrpmcFDFlrPuUevOu3dnXMMfqJ3nEgkI6Xx57Nznp8Duy', 'operator', 'operator1@gmail.com', '09123456789', 'Operator', 'asdf', '2025-11-26 05:48:36'),
-(120, 'adam1212fsadfasdf', 2, '$2y$10$7F7WF/fx1TlYpWApZJzNtuOX5Z.gKtqzqgmtq0OsbAe.HTC9eywtC', 'operator', 'operator42@gmail.com', '09123456782', 'Operator', 'asdf', '2025-11-26 05:48:52'),
-(121, 'asadfsadf', 2, '$2y$10$R1mag7nTJVzptF8fo.JQl.BJ63cpzp7a./noI0PMq7p.zkro5e3si', 'operator', 'tosinomatthew@gmail.com', 'asdfasf', 'asfasfasdfaf', 'asdfasfd', '2025-11-26 05:57:05'),
-(122, 'adamasfsadfasfd12adgf', 2, '$2y$10$PiOoBJ8CGeV2qiS.Dyo2VuCggAP7M3Ms.cQ4dHQrGve7szupX4EbS', 'operator', 'lorstosino15@gmail.com', 'asdfasf', 'OperatorEdit12211212321', 'asdf', '2025-11-26 05:57:31'),
-(123, 'asdfasdf12412asdf', 2, '$2y$10$VF4rpF.p4eP/2ex0yHLSpeusS9rnZ.ve2jOSvl/nvtQ0Z4aUoDhG6', 'operator', 'operator42@gmail.com', '', 'asfasfasdfaf', 'asdf', '2025-11-26 06:04:16'),
-(124, 'User1asdfsafcasdfraw2asdf', 2, '$2y$10$Piu9NWGwzdT6ebKYbyVheePu5GFO4aP6CfNf7Q59lurcBvxFizEz2', 'operator', 'operator1@gmail.com', '', 'Operator', 'asdf', '2025-11-26 06:04:33'),
-(125, 'asdfafasdf', 2, '$2y$10$/SOcm2cM4ES/LiHYVaSHa.SOXrBU01vXYKCuwGcAbS1oktd/2zEL6', 'operator', 'tosinomatthew@gmail.com', '', 'OperatorEdit12211212321', '', '2025-11-26 06:04:59'),
-(126, 'asdfasfd124asdf', 2, '$2y$10$K1aIz.LvL/.NQCahkVB/oeco38nwAOaBVUn16lKvUA7YbteYsAEsa', 'operator', 'operator42@gmail.com', '', 'OperatorEdit12211212321', '', '2025-11-26 06:05:08'),
-(127, 'adam12312412', 2, '$2y$10$W/80Fs5fI2tRxX9isZSX0uKmnPUuxYD2jCOVj7IQUJLKiig9OlhTm', 'operator', 'lorstosino15@gmail.com', '', 'OperatorEdit12211212321', '', '2025-11-26 06:08:46'),
-(128, 'asdf1234124asfsaf12', 2, '$2y$10$JkHVXAUVx2bGxA/LzzZQ/evPZbL4f.1wdfpIy/D2i8AEvOaV8wHwC', 'operator', 'operator42@gmail.com', '', 'OperatorEdit122112123211142', '', '2025-11-26 06:09:36');
+INSERT INTO `users` (`id`, `username`, `created_by`, `password`, `role`, `email`, `phone_number`, `first_name`, `last_name`, `setup_token`, `token_expires`, `created_at`) VALUES
+(2, 'admin', 2, '$2y$10$wQE4jIZ1RXW4j.ssD32lyudS9sqUkutt1G23YwzJhko3czJ4z3dYq', 'admin', '', '', '', NULL, NULL, NULL, '2025-11-28 11:27:15'),
+(4, 'operator', 2, '$2y$10$A6PzdC0Oa/AgmUv.Wg3L8OQ.x61gefoLNdFtWV8jcMRjjiSC0Ya3.', 'operator', 'operator421@gmail.com', '', 'Adam', '', NULL, NULL, '2025-11-28 11:16:05'),
+(5, 'operator1', 2, '$2y$10$K8U49OhReJjOOLCyP.yBReoSNECJ600r1SMYAS0lh3g7aLEq9PqaC', 'operator', 'operator1@gmail.com', '09123456789', 'Operator1Edit', '', NULL, NULL, '2025-11-14 11:30:10'),
+(6, 'Operator3', 2, '$2y$10$36Ld1xlhnJmTngUrXzR7POTMd/0eqPowjN1AU2DwSF2xVlwc0.BG.', 'operator', 'operator3@gmail.com', '09123456782', 'Operator3', '', NULL, NULL, '2025-11-14 07:32:21'),
+(11, 'Adam', 2, '$2y$10$6blQAQW2MLKs0UBdIf/gL../AWrEQa3bT/YvPkLjx5PWS/tW0PQCq', 'operator', 'toisnomatthew@gmail.com', '09108412802', 'Adriele', 'Tosino', NULL, NULL, '2025-11-15 10:16:59'),
+(25, 'Test', 25, '$2a$10$TTVGR.KlzIuPhZJ.Fn29qOH7.hh8h.NK/SXzWIzk0m7p/aqiXHSeq', 'admin', 'test@gmail.com', '09108412809', 'Test', NULL, NULL, NULL, '2025-11-16 13:56:31'),
+(100, 'admin2', 100, '$2a$10$RJa3YrF89z/Wnuor7OyMyug.4b89jZnfIOWJ4MBo.PA3v5C0EmfKG', 'admin', 'admin2@gmail.com', '09102434542', 'Admin2', NULL, NULL, NULL, '2025-11-19 08:13:16'),
+(105, 'admin1232', 2, '$2y$10$azFJzIrkhhcT.MuXR3fLw.axKRYcOL/D8LZLjFv5FS/hNQWZajn4W', 'operator', 'tosinomatthew@gmail.com', '09123456782', 'OperatorEdit12211212321', 'Anonymous', NULL, NULL, '2025-11-24 08:52:59'),
+(107, 'adam2414112asfas', 2, '$2y$10$b8bBmvEeXSqWUU50UjJjXumXkaHkvgZURWbwwdX7aIU8kf.MRpVlK', 'operator', 'operator1@gmail.com', '09562438645', 'OperatorEdit12211212321', 'Anonymous', NULL, NULL, '2025-11-24 08:53:51'),
+(108, 'operator241', 2, '$2y$10$UplnvXteu89JgpRgvfqwzeImnT5mtKZ65no4YZe8mVKLQLBOwVWZK', 'operator', 'lorstosino15@gmail.com', '09562438645', 'OperatorEdit12211212321', 'Anonymous', NULL, NULL, '2025-11-24 08:55:31'),
+(109, 'operator4125', 2, '$2y$10$OwKj0ksMZ/LJbgexUKrKpetKSTn7vSqo5wI9ip/P3L9usgTF/y.AW', 'operator', 'operator42@gmail.com', '09123456782', 'OperatorEdit12211212321', 'Anonymous', NULL, NULL, '2025-11-24 08:59:21'),
+(110, 'adam12312', 2, '$2y$10$PXN7L0CT6/wZ/b2dgjK7KOThCUtm/9FkTJEqi7Fl34vmQr931MR0q', 'operator', 'operator1@gmail.com', '09123456782', 'Operator1', '', NULL, NULL, '2025-11-26 05:36:51'),
+(111, 'adam122', 2, '$2y$10$xppg9E4tw1XASPVT/xUII.ZwQTMi78qUnBHwfmTkvn8Rcm4pSJ0JK', 'operator', 'tosinomatthew@gmail.com', '09562438645', 'OperatorEdit12211212321', 'asdf', NULL, NULL, '2025-11-26 05:37:19'),
+(112, 'adam1234124', 2, '$2y$10$hQ4oD7nHd7mMwPuvE0Yh/e3ux60vPT/xIzpQBhms//xTbwbAzPZlG', 'operator', 'operator42@gmail.com', '09123456782', 'Operator1', 'asdf', NULL, NULL, '2025-11-26 05:43:36'),
+(114, 'adam12412sdafs', 2, '$2y$10$kw43kS1SGPpwuvQFmx5XE.ukiWjqQSsr2J3tYixThbDsfhmcYzjb.', 'operator', 'operator1@gmail.com', '09123456789', 'OperatorEdit12211212321', 'asdf', NULL, NULL, '2025-11-26 05:45:37'),
+(115, 'adam1212', 2, '$2y$10$DVzlZzmAFvFIqB2E1Ml1zOFbV8WAtiRQvyGn9HcasG3sJn8bsSDq2', 'operator', 'operator42@gmail.com', '09123456789', 'OperatorEdit12211212321', 'asdf', NULL, NULL, '2025-11-26 05:45:49'),
+(117, 'User122421221', 2, '$2y$10$qq2zbsCHAwWxUs1Slf3Ybu2C8Qjo2KsmjWWIGcDIdQ.gkrzjZM1g.', 'operator', 'operator42@gmail.com', '09123456789', 'OperatorEdit12211212321', 'asdf', NULL, NULL, '2025-11-26 05:46:31'),
+(119, '12saddfasf', 2, '$2y$10$g39tmEsBZrpmcFDFlrPuUevOu3dnXMMfqJ3nEgkI6Xx57Nznp8Duy', 'operator', 'operator1@gmail.com', '09123456789', 'Operator', 'asdf', NULL, NULL, '2025-11-26 05:48:36'),
+(120, 'adam1212fsadfasdf', 2, '$2y$10$7F7WF/fx1TlYpWApZJzNtuOX5Z.gKtqzqgmtq0OsbAe.HTC9eywtC', 'operator', 'operator42@gmail.com', '09123456782', 'Operator', 'asdf', NULL, NULL, '2025-11-26 05:48:52'),
+(121, 'asadfsadf', 2, '$2y$10$R1mag7nTJVzptF8fo.JQl.BJ63cpzp7a./noI0PMq7p.zkro5e3si', 'operator', 'tosinomatthew@gmail.com', 'asdfasf', 'asfasfasdfaf', 'asdfasfd', NULL, NULL, '2025-11-26 05:57:05'),
+(122, 'adamasfsadfasfd12adgf', 2, '$2y$10$PiOoBJ8CGeV2qiS.Dyo2VuCggAP7M3Ms.cQ4dHQrGve7szupX4EbS', 'operator', 'lorstosino15@gmail.com', 'asdfasf', 'OperatorEdit12211212321', 'asdf', NULL, NULL, '2025-11-26 05:57:31'),
+(123, 'asdfasdf12412asdf', 2, '$2y$10$VF4rpF.p4eP/2ex0yHLSpeusS9rnZ.ve2jOSvl/nvtQ0Z4aUoDhG6', 'operator', 'operator42@gmail.com', '', 'asfasfasdfaf', 'asdf', NULL, NULL, '2025-11-26 06:04:16'),
+(124, 'User1asdfsafcasdfraw2asdf', 2, '$2y$10$Piu9NWGwzdT6ebKYbyVheePu5GFO4aP6CfNf7Q59lurcBvxFizEz2', 'operator', 'operator1@gmail.com', '', 'Operator', 'asdf', NULL, NULL, '2025-11-26 06:04:33'),
+(125, 'asdfafasdf', 2, '$2y$10$/SOcm2cM4ES/LiHYVaSHa.SOXrBU01vXYKCuwGcAbS1oktd/2zEL6', 'operator', 'tosinomatthew@gmail.com', '', 'OperatorEdit12211212321', '', NULL, NULL, '2025-11-26 06:04:59'),
+(131, 'operator4124123', 2, '$2y$10$HKicrPYhFTAjkQhmLr2YZOUPJ5uJnQR/NcwQGSFelI3/3TjmxlXqe', 'operator', 'operator42@gmail.com', '', 'Operator', '', NULL, NULL, '2025-11-28 05:20:06'),
+(132, 'Adamskieee', 2, '$2y$10$4FWRwvdCPmTJjhTpSTyPgufW7YlQRB7Rq65YNKOh99xisGBBpKSMS', 'operator', 'tosinomatthew@gmail.com', '', 'Adam', '', NULL, NULL, '2025-11-28 07:06:30'),
+(133, 'Adamsk', 2, '$2y$10$BxRWCErX06Om1lB.HkrZxeBMOKdhErq.VQER6r5dAy26i8kNyxOye', 'operator', 'tosinomatthew@gmail.com', '', 'Adamsk', '', NULL, NULL, '2025-11-28 07:08:21'),
+(134, 'Adamskieee1', 2, '$2y$10$7cVQQuF25hfy.wJx4vFuie4zHkSxkLXUORX8AjKTpVeNkPb3jx1X2', 'operator', 'tosinomatthew@gmail.com', '', 'Adam1', '', '2620090d8390aef9625322232a31f0fea03e63367001e1882ac146726d367bf9', '2025-11-29 08:15:07', '2025-11-28 07:15:07'),
+(135, 'Adamskieee12', 2, '$2y$10$evFboa7sPNLp9e2C.PisPOElMUVWNL.33VWNsdKAuh6CfjiIZnDd.', 'operator', 'tosinomatthew@gmail.com', '', 'Adam1', '', 'bab06f04d62562541cf8e3c59550058b4f9ee55a7ca273ac5cad1d7a96c0c4fa', '2025-11-29 08:15:42', '2025-11-28 07:15:42'),
+(136, 'Userasfsafd24', 2, '$2y$10$xBu0L87RK8wkASrDWrHsSOEhFksNslJc.weG6xzXG/VThM.KYD0pW', 'operator', 'tosinomatthew@gmail.com', '', 'OperatorEdit12211212321', '', '9a527f72894d58ba6f7b636a51e8febcee2024f1edf9b41f7f49e44a02a1991c', '2025-11-29 08:24:47', '2025-11-28 07:24:48');
 
 --
 -- Indexes for dumped tables
@@ -881,7 +875,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `ip_addresses`
 --
 ALTER TABLE `ip_addresses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `schedules`
@@ -899,7 +893,7 @@ ALTER TABLE `traffic_logs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=149;
 
 --
 -- Constraints for dumped tables
