@@ -361,7 +361,7 @@ function connectWebSocket(camName) {
   cam.ws.onopen = () => {
     cam.connected = true;
     updateStatus(camName, true);
-    document.getElementById(camName).src = "http://" + cam.ip + "/stream";
+    // document.getElementById(camName).src = "http://" + cam.ip + "/stream";
 
     setTimeout(() => {
       const savedState = loadLEDState(camName);
@@ -413,6 +413,14 @@ function connectWebSocket(camName) {
     }
 
     setTimeout(() => connectWebSocket(camName), 30000);
+  };
+
+  cam.ws.onmessage = (event) => {
+    if (event.data instanceof Blob) {
+        const url = URL.createObjectURL(event.data);
+        document.getElementById(camName).onload = () => URL.revokeObjectURL(url);
+        document.getElementById(camName).src = url;
+    }
   };
 }
 
