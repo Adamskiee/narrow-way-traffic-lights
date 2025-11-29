@@ -5,14 +5,13 @@ header("Access-Control-Allow-Methods: POST");
 require_once "../includes/config.php";
 require_once "../includes/privilege-middleware.php";
 
-$user = get_authenticated_user();
-if(!$user) {
+if(!is_logged_in()) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Authentication required']);
     exit;
 }
 
-if (!is_admin_authenticated()) {
+if(!is_admin_authenticated()) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Admin access required']);
     exit;
@@ -24,18 +23,19 @@ try {
     $input = json_decode(file_get_contents("php://input"), true);
     
     $week_day = $input["weekday"];
-    $duration_a = $input["weekday-duration-a"];
-    $duration_b = $input["weekday-duration-b"];
+    $temp_duration_a = $input["temp-duration-a"];
+    $temp_duration_b = $input["temp-duration-b"];
+    $user_id = $input["user-id"];
 
-    $ins = $conn->prepare("UPDATE schedules SET duration_a = ?, duration_b = ? WHERE admin_id = ? AND week_day = ?");
-    $ins->bind_param("iiii", $duration_a, $duration_b, $user['user_id'], $week_day);
-    $ins->execute();
+    $stmt = $conn->prepare("INSERT INTO schedules(admin_id, week_day, temp_duration_a, temp_duration_b) VALUES(?, ?, ?, ?)");
+    $stmt->bind_param("iiii", $user_id, $week_day, $temp_duration_a, $temp_duration_b);
+    $stmt->execute();
 
     $redis->del($cacheKey);
     
     echo json_encode([
         "success" => true,
-        "message" => "Schedule successfully edited"
+        "message" => "Schedule successfully inserted",
     ]);
 }catch(Error $e){
     echo json_encode([

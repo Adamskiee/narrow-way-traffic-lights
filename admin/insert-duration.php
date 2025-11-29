@@ -23,11 +23,12 @@ try {
     $input = json_decode(file_get_contents("php://input"), true);
     
     $week_day = $input["weekday"];
-    $duration = $input["weekday-duration"];
+    $duration_a = $input["weekday-duration-a"];
+    $duration_b = $input["weekday-duration-b"];
     $user_id = $input["user-id"];
 
-    $stmt = $conn->prepare("INSERT INTO schedules(admin_id, week_day, duration) VALUES(?, ?, ?)");
-    $stmt->bind_param("iii", $user_id, $week_day, $duration);
+    $stmt = $conn->prepare("INSERT INTO schedules(admin_id, week_day, duration_a, duration_b) VALUES(?, ?, ?, ?)");
+    $stmt->bind_param("iiii", $user_id, $week_day, $duration_a, $duration_b);
     $stmt->execute();
 
     $redis->del($cacheKey);

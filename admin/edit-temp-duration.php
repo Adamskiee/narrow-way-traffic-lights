@@ -18,7 +18,7 @@ if (!is_admin_authenticated()) {
     exit;
 }
 
-$cacheKey = "db:durations";
+$cacheKey = "db:temp-durations";
 
 try {
     $input = json_decode(file_get_contents("php://input"), true);
@@ -27,7 +27,7 @@ try {
     $duration_a = $input["weekday-duration-a"];
     $duration_b = $input["weekday-duration-b"];
 
-    $ins = $conn->prepare("UPDATE schedules SET duration_a = ?, duration_b = ? WHERE admin_id = ? AND week_day = ?");
+    $ins = $conn->prepare("UPDATE schedules SET temp_duration_a = ?, temp_duration_b = ? WHERE admin_id = ? AND week_day = ?");
     $ins->bind_param("iiii", $duration_a, $duration_b, $user['user_id'], $week_day);
     $ins->execute();
 

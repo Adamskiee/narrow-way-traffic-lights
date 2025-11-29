@@ -18,6 +18,9 @@ $canControlCameras = can_access_feature('camera_control');
     <button id="auto-mode-button" class="btn btn-primary btn-lg px-4">
       <i class="fas fa-play me-2"></i>Start Automatic Mode
     </button>
+    <button id="emergency-btn" class="btn btn-primary btn-lg px-4">
+      <i class="fas fa-play me-2"></i>Emergency
+    </button>
   </div>
   <?php else: ?>
   <div class="text  <div class="px-2 container">
@@ -72,16 +75,30 @@ $canControlCameras = can_access_feature('camera_control');
       <div>
         <h3>Current duration</h3>
         <div class="mb-3">
-          <label for="" class="form-label">Duration</label>
+          <label for="" class="form-label">Duration A</label>
           <input
-            type="text"
+            type="num"
             class="form-control"
-            name="duration"
-            id="current-duration"
+            name="duration-a"
+            id="current-duration-a"
             aria-describedby="helpId"
+            min="1"
             disabled
           />
         </div>
+        <div class="mb-3">
+          <label for="" class="form-label">Duration B</label>
+          <input
+          type="num"
+          class="form-control"
+          name="duration-b"
+          id="current-duration-b"
+          aria-describedby="helpId"
+          min="1"
+          disabled
+          />
+        </div>
+        <button class="btn btn-primary" id="override-btn">Override</button>
       </div>
     </div>
 
@@ -107,9 +124,10 @@ $canControlCameras = can_access_feature('camera_control');
         
         <div class="mt-3">
           <input type="hidden" name="user-id" value="<?= $user['user_id'] ?>">
-          <label for="duration-input" class="form-label">Duration (seconds)</label>
+          <label class="form-label">Duration (seconds)</label>
           <div class="input-group">
-            <input type="number" class="form-control" placeholder="Enter duration" id="duration-input" min="1" required>
+            <input type="number" class="form-control" placeholder="Enter duration A" id="duration-input-a" min="1" required>
+            <input type="number" class="form-control" placeholder="Enter duration B" id="duration-input-b" min="1" required>
             <button class="btn btn-primary" type="button" id="save-duration-btn">Save</button>
           </div>
           <small class="form-text">Select a day above and enter duration</small>

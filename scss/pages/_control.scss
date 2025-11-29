@@ -525,114 +525,16 @@ auto mode
     font-size: 1.1rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-radius: 15px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 
-        0 6px 20px rgba(66, 220, 52, 0.35),
-        0 0 25px rgba(66, 220, 52, 0.15);
-    white-space: nowrap;
-    min-width: 200px;
-    
-    
-    @media (max-width: 768px) {
-        padding: 0.8rem 1.5rem;
-        font-size: 1rem;
-        min-width: 180px;
-        letter-spacing: 0.4px;
-    }
-    
-    @media (max-width: 576px) {
-        padding: 0.7rem 1.2rem;
-        font-size: 0.95rem;
-        min-width: 160px;
-        letter-spacing: 0.3px;
-        border-radius: 12px;
-    }
-    
-    @media (max-width: 480px) {
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
-        min-width: 140px;
-        letter-spacing: 0.2px;
-        font-weight: 600;
-        border-radius: 10px;
-    }
-    
-    
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, var(--bs-red) 0%, #cc1f1f 100%);
-        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1;
-    }
-    
-    
-    span, .btn-text {
-        position: relative;
-        z-index: 2;
-    }
-    
-    
-    &:hover {
-        color: #ffffff;
-        border-color: var(--bs-red);
-        transform: translateY(-3px);
-        box-shadow: 
-            0 8px 25px rgba(66, 220, 52, 0.4),
-            0 0 30px rgba(66, 220, 52, 0.2);
-        
-        &::before {
-            left: 0;
-        }
-    }
-    
-    
-    &:active {
-        transform: translateY(-1px);
-        box-shadow: 
-            0 4px 15px rgba(66, 220, 52, 0.5),
-            0 0 25px rgba(66, 220, 52, 0.3);
-    }
-    
-    
-    &:focus {
-        outline: none;
-        box-shadow: 
-            0 0 0 3px rgba(66, 220, 52, 0.3),
-            0 8px 25px rgba(66, 220, 52, 0.4);
-    }
-    
-    
-    &:disabled,
-    &.disabled {
-        background: rgba(108, 117, 125, 0.3);
-        border-color: rgba(108, 117, 125, 0.4);
-        color: rgba(255, 255, 255, 0.5);
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-        
-        &:hover {
-            background: rgba(108, 117, 125, 0.3);
-            border-color: rgba(108, 117, 125, 0.4);
-            transform: none;
-            box-shadow: none;
-            
-            &::before {
-                left: -100%;
-            }
-        }
-    }
+}
+#emergency-btn {
+    color: #ffffff;
+    padding: 1rem 2rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-Design
 .d-flex.justify-content-between.align-items-center {
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -656,6 +558,11 @@ Design
             width: 100%;
             max-width: 200px;
         }
+        #emergency-btn {
+            order: 3;
+            width: 100%;
+            max-width: 200px;
+        }
     }
     
     @media (max-width: 576px) {
@@ -668,10 +575,16 @@ Design
         #auto-mode-button {
             max-width: 180px;
         }
+        #emergency-btn {
+            max-width: 180px;
+        }
     }
     
     @media (max-width: 480px) {
         #auto-mode-button {
+            max-width: 160px;
+        }
+        #emergency-btn {
             max-width: 160px;
         }
     }

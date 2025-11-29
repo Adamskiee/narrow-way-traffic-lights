@@ -1,5 +1,9 @@
 import { handleFormSubmit } from "./formHandler.js";
-import { openInfoModal, closeInfoModal, openConfirmModal } from "./infoModal.js";
+import {
+  openInfoModal,
+  closeInfoModal,
+  openConfirmModal,
+} from "./infoModal.js";
 import { setupRealtimeValidation } from "./validate.js";
 
 // ================================================================
@@ -80,8 +84,9 @@ function disableAdminFeatures() {
     });
   }
 
-  if (durationInput && saveDurationBtn && !IS_ADMIN) {
-    durationInput.disabled = true;
+  if (durationInputA && durationInputB && saveDurationBtn && !IS_ADMIN) {
+    durationInputA.disabled = true;
+    durationInputB.disabled = true;
     saveDurationBtn.disabled = true;
   }
 }
@@ -111,10 +116,14 @@ const WEEKDAY_MAPPING = {
 const cam1Btn = document.getElementById("cam1-button");
 const cam2Btn = document.getElementById("cam2-button");
 const autoModeBtn = document.getElementById("auto-mode-button");
+const overrideBtn = document.getElementById("override-btn");
+const emergencyBtn = document.getElementById("emergency-btn");
 
 const weekDays = document.getElementById("week-days");
-const currentDuration = document.getElementById("current-duration");
-const durationInput = document.getElementById("duration-input");
+const currentDurationA = document.getElementById("current-duration-a");
+const currentDurationB = document.getElementById("current-duration-b");
+const durationInputA = document.getElementById("duration-input-a");
+const durationInputB = document.getElementById("duration-input-b");
 const saveDurationBtn = document.getElementById("save-duration-btn");
 const durationResult = document.getElementById("duration-result");
 
@@ -156,12 +165,12 @@ let autoModeController = null;
  * @param {number} weekDay - Day of week (1-7)
  * @returns {number|undefined} Duration in seconds
  */
-function findDuration(weekDay) {
+function findDuration(weekDay, type) {
   let durationOfDay;
 
   durations.forEach((duration) => {
     if (duration["week_day"] == weekDay) {
-      durationOfDay = duration["duration"];
+      durationOfDay = duration[`duration_${type}`];
     }
   });
 
@@ -546,6 +555,28 @@ function clearTimerState() {
   localStorage.removeItem("autoModeTimer");
 }
 
+function saveDurationInputState() {
+  localStorage.setItem("durationOverride",
+     JSON.stringify({
+      durationA: currentDurationA.value,
+      durationB: currentDurationB.value,
+     }))
+}
+
+function loadDurationInputState() {
+  try {
+    const saved = localStorage.getItem("durationOverride");
+    return saved ? JSON.parse(saved) : null;
+  }catch (error) {
+    console.warn("Fialed to laod duration input:", error);
+    return null
+  }
+}
+
+function clearDurationInputState() {
+  localStorage.removeItem("durationOverride");
+}
+
 function calculateRemainingTime(savedTimer) {
   if (!savedTimer) return null;
 
@@ -613,11 +644,17 @@ if (weekDays) {
       e.target.classList.add("active");
 
       selectedWeekday = e.target.dataset.week;
-      const dayDuration = findDuration(selectedWeekday);
+      const dayDurationA = findDuration(selectedWeekday, "a");
+      const dayDurationB = findDuration(selectedWeekday, "b");
 
-      if (durationInput) {
-        durationInput.value = dayDuration || "";
-        durationInput.placeholder = `Duration for ${e.target.textContent}`;
+      if (durationInputA) {
+        durationInputA.value = dayDurationA || "";
+        durationInputA.placeholder = `Duration A for ${e.target.textContent}`;
+      }
+
+      if (durationInputB) {
+        durationInputB.value = dayDurationB || "";
+        durationInputB.placeholder = `Duration B for ${e.target.textContent}`;
       }
 
       if (durationResult) {
@@ -627,30 +664,30 @@ if (weekDays) {
   });
 }
 
-if (saveDurationBtn && durationInput) {
+if (saveDurationBtn && durationInputA && durationInputB) {
   saveDurationBtn.addEventListener("click", async () => {
-    const duration = durationInput.value;
-    if (!duration || duration <= 0) {
+    const durationA = durationInputA.value;
+    const durationB = durationInputB.value;
+    if (!durationA || durationA <= 0) {
+      durationResult.innerHTML =
+        '<div class="alert alert-danger alert-sm">Please enter a valid duration</div>';
+      return;
+    }
+    if (!durationB || durationB <= 0) {
       durationResult.innerHTML =
         '<div class="alert alert-danger alert-sm">Please enter a valid duration</div>';
       return;
     }
 
-    const existingDuration = findDuration(selectedWeekday);
-    const action = existingDuration ? "edit" : "add";
-    const url =
-      action === "edit"
-        ? "../admin/edit-duration.php"
-        : "../admin/insert-duration.php";
-
     try {
       const requestData = {
         "user-id": document.querySelector('input[name="user-id"]').value,
         weekday: selectedWeekday,
-        "weekday-duration": duration,
+        "weekday-duration-a": durationA,
+        "weekday-duration-b": durationB,
       };
 
-      const response = await fetch(url, {
+      const response = await fetch("../admin/edit-duration.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -664,17 +701,22 @@ if (saveDurationBtn && durationInput) {
       if (result.success) {
         durationResult.innerHTML = `<div class="alert alert-success alert-sm">${result.message}</div>`;
 
-        if (action === "add") {
-          durations.push({ week_day: selectedWeekday, duration: duration });
-        } else {
-          const durationObj = durations.find(
-            (d) => d.week_day == selectedWeekday
-          );
-          if (durationObj) durationObj.duration = duration;
+        durations.push({
+          week_day: selectedWeekday,
+          durationA: durationA,
+          durationB: durationB,
+        });
+        const durationObj = durations.find(
+          (d) => d.week_day == selectedWeekday
+        );
+        if (durationObj) {
+          durationObj.durationA = durationA;
+          durationObj.durationB = durationB;
         }
 
         if (selectedWeekday == (currentWeekDay === 0 ? 7 : currentWeekDay)) {
-          currentDuration.value = duration;
+          currentDurationA.value = durationA;
+          currentDurationB.value = durationB;
         }
       } else {
         durationResult.innerHTML = `<div class="alert alert-danger alert-sm">${result.message}</div>`;
@@ -696,7 +738,7 @@ async function checkLed(camName, ip, color) {
     const res = await fetch(`http://${ip}/check-${color}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
-      
+
       timeout: 5000,
     });
 
@@ -991,48 +1033,57 @@ if (IS_ADMIN) {
   //   (data) => openSuccessModal(data.message),
   //   (error) => openErrorModal(error.message)
   // );
-  
-  document.getElementById("change-ip-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
 
-    const form = e.target;
-    const formData = new FormData(form);
-    const cam1IP = formData.get('ip_address_cam_1');
-    const cam2IP = formData.get('ip_address_cam_2');
+  document
+    .getElementById("change-ip-form")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    const ipPattern = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
-    
-    if (!ipPattern.test(cam1IP)) {
-      document.getElementById("result_cam_1").innerText = "Please enter a valid IP address";
-      
-      if (!ipPattern.test(cam2IP)) {
-      document.getElementById("result_cam_2").innerText = "Please enter a valid IP address";
+      const form = e.target;
+      const formData = new FormData(form);
+      const cam1IP = formData.get("ip_address_cam_1");
+      const cam2IP = formData.get("ip_address_cam_2");
+
+      const ipPattern =
+        /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+
+      if (!ipPattern.test(cam1IP)) {
+        document.getElementById("result_cam_1").innerText =
+          "Please enter a valid IP address";
+
+        if (!ipPattern.test(cam2IP)) {
+          document.getElementById("result_cam_2").innerText =
+            "Please enter a valid IP address";
+        }
+        return;
       }
-      return;
-    }
 
-    if(!ipPattern.test(cam2IP)) {
-      document.getElementById("result_cam_2").innerText = "Please enter a valid IP address";
-      return;
-    }
-    
-    
-    if (cam1IP === cam2IP) {
-      openErrorModal("Camera 1 and Camera 2 cannot have the same IP address");
-      return;
-    }
+      if (!ipPattern.test(cam2IP)) {
+        document.getElementById("result_cam_2").innerText =
+          "Please enter a valid IP address";
+        return;
+      }
 
-    openConfirmModal({
-      title: "Update Camera IP Addresses",
-      body: `
+      if (cam1IP === cam2IP) {
+        openErrorModal("Camera 1 and Camera 2 cannot have the same IP address");
+        return;
+      }
+
+      openConfirmModal({
+        title: "Update Camera IP Addresses",
+        body: `
         <div class="alert alert-info mb-3">
           <i class="fas fa-info-circle me-2"></i>
           <strong>Confirm IP Address Changes</strong>
         </div>
         <p><strong>Current Settings:</strong></p>
         <ul class="list-unstyled">
-          <li><i class="fas fa-camera me-2"></i>Camera 1: <code>${cams.cam1.ip || 'Not set'}</code></li>
-          <li><i class="fas fa-camera me-2"></i>Camera 2: <code>${cams.cam2.ip || 'Not set'}</code></li>
+          <li><i class="fas fa-camera me-2"></i>Camera 1: <code>${
+            cams.cam1.ip || "Not set"
+          }</code></li>
+          <li><i class="fas fa-camera me-2"></i>Camera 2: <code>${
+            cams.cam2.ip || "Not set"
+          }</code></li>
         </ul>
         <p><strong>New Settings:</strong></p>
         <ul class="list-unstyled">
@@ -1044,17 +1095,154 @@ if (IS_ADMIN) {
           <small>This will restart camera connections and may temporarily interrupt traffic light control.</small>
         </div>
       `,
-      confirmText: "Update IP Addresses",
-      cancelText: "Cancel",
-      onConfirm: async () => {
-        await updateCameraIP(form, formData);
-      },
-      onCancel: () => {
-        console.log("IP address update cancelled by user");
-      }
+        confirmText: "Update IP Addresses",
+        cancelText: "Cancel",
+        onConfirm: async () => {
+          await updateCameraIP(form, formData);
+        },
+        onCancel: () => {
+          console.log("IP address update cancelled by user");
+        },
+      });
     });
-  });
   setupRealtimeValidation(document.getElementById("change-ip-form"));
+}
+
+if (overrideBtn) {
+  overrideBtn.addEventListener("click", (e) => {
+      
+    if(overrideBtn.innerText === "Override") {
+      openConfirmModal({
+        title: "Override Duration",
+        body: `
+          <h3>Confirm to override</h3>
+        <div class="alert alert-warning mt-3 mb-0">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <small>This will temporarily edit the configured duration</small>
+        </div>
+      `,
+        confirmText: "Override",
+        cancelText: "Cancel",
+        onConfirm: async () => {
+          overrideDuration();
+        },
+        onCancel: () => {
+          console.log("IP address update cancelled by user");
+        },
+      });
+      
+    }else {
+      openConfirmModal({
+        title: "Override Duration Cancel",
+        body: `
+          <h3>Confirm to back to default</h3>
+        <div class="alert alert-warning mt-3 mb-0">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <small>This will back to original duration</small>
+        </div>
+      `,
+        confirmText: "Back to default",
+        cancelText: "Cancel",
+        onConfirm: async () => {
+          backToDefaultDuration();
+        },
+        onCancel: () => {
+          console.log("IP address update cancelled by user");
+        },
+      });
+    }
+  })
+}
+
+function overrideDuration() {
+  currentDurationA.disabled = false;  
+  currentDurationB.disabled = false;
+  
+  overrideBtn.innerText = "Back to default";
+  clearDurationInputState();
+}
+
+currentDurationA.addEventListener("input", (e) => {
+  saveDurationInputState();
+})
+currentDurationB.addEventListener("input", (e) => {
+  saveDurationInputState();
+})
+
+function backToDefaultDuration() {
+  currentDurationA.disabled = true;  
+    currentDurationB.disabled = true;
+
+    overrideBtn.innerText = "Override"
+
+    currentDurationB.value = findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b");
+    currentDurationA.value = findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a");
+}
+
+if(emergencyBtn) {
+  emergencyBtn.addEventListener("click", () => {
+    if(emergencyBtn.innerText === "Emergency") {
+      openConfirmModal({
+        title: "Emergency Activation",
+        body: `
+          <h3>Emergency Confirmation</h3>
+        <div class="alert alert-warning mt-3 mb-0">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <small>Traffic lights will become red</small>
+        </div>
+      `,
+        confirmText: "Confirm",
+        cancelText: "Cancel",
+        onConfirm: async () => {
+          performEmergency();
+        },
+        onCancel: () => {
+        },
+      });
+    }else {
+      openConfirmModal({
+        title: "Emergency Cancellation",
+        body: `
+          <h3>Cancellation Confirmation</h3>
+      `,
+        confirmText: "Confirm",
+        cancelText: "Cancel",
+        onConfirm: async () => {
+          cancelEmergency();
+        },
+        onCancel: () => {
+        },
+      });
+    }
+  })
+}
+
+function performEmergency() {
+  if(isAutoModeRunning) {
+    stopAutoMode();
+  }
+
+  cam1Btn.disabled = true;
+  cam2Btn.disabled = true;
+  cam1Btn.classList.add("disabled");
+  cam2Btn.classList.add("disabled");
+  autoModeBtn.disabled = true;
+  emergencyBtn.innerText = "Cancel Emergency";
+  
+  sendLED("cam1", "red_on");
+  sendLED("cam2", "red_on");
+}
+
+function cancelEmergency() {
+  sendLED("cam1", "green_on");
+  sendLED("cam2", "red_on");
+  
+  cam1Btn.disabled = false;
+  cam2Btn.disabled = false;
+  cam1Btn.classList.remove("disabled");
+  cam2Btn.classList.remove("disabled");
+  autoModeBtn.disabled = false;
+  emergencyBtn.innerText = "Emergency";
 }
 
 async function updateCameraIP(form, formData) {
@@ -1075,6 +1263,8 @@ async function updateCameraIP(form, formData) {
     console.log(err);
   }
 }
+
+
 
 // ================================================================
 // AUTO MODE SYSTEM
@@ -1167,7 +1357,7 @@ async function startAutoMode() {
         return;
       }
 
-      for (let i = currentDuration.value; i > 0; i--) {
+      for (let i = currentDurationA.value; i > 0; i--) {
         if (autoModeController.signal.aborted) {
           console.log("Auto mode aborted during countdown");
           return;
@@ -1184,13 +1374,13 @@ async function startAutoMode() {
           "cam1",
           "green",
           "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay)
+          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a")
         );
         logLightChange(
           "cam2",
           "red",
           "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay)
+          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a")
         );
         document.getElementById("cam1-count").innerText = "0";
       }
@@ -1255,7 +1445,7 @@ async function startAutoMode() {
         return;
       }
 
-      for (let i = currentDuration.value; i > 0; i--) {
+      for (let i = currentDurationB.value; i > 0; i--) {
         if (autoModeController.signal.aborted) {
           console.log("Auto mode aborted during second countdown");
           return;
@@ -1271,13 +1461,13 @@ async function startAutoMode() {
           "cam1",
           "red",
           "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay)
+          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
         );
         logLightChange(
           "cam2",
           "green",
           "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay)
+          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
         );
         document.getElementById("cam2-count").innerText = "0";
       }
@@ -1398,13 +1588,13 @@ async function resumeAutoModeWithTimer() {
           "cam1",
           "green",
           "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay)
+          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a")
         );
         logLightChange(
           "cam2",
           "red",
           "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay)
+          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
         );
         cam1Count.innerText = "0";
       }
@@ -1426,7 +1616,7 @@ async function resumeAutoModeWithTimer() {
         saveTimerState("phase2", i, Date.now());
         const num = await count(i);
         cam2Count.innerText = num;
-        cam1Count.innerText = ""; 
+        cam1Count.innerText = "";
       }
 
       if (!autoModeController.signal.aborted) {
@@ -1434,13 +1624,13 @@ async function resumeAutoModeWithTimer() {
           "cam1",
           "red",
           "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay)
+          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
         );
         logLightChange(
           "cam2",
           "green",
           "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay)
+          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
         );
         cam2Count.innerText = "0";
       }
@@ -1485,12 +1675,12 @@ async function continueAutoModePhase2() {
   cam2Count.style.display = "block";
   cam1Count.innerText = "";
 
-  for (let i = currentDuration.value; i > 0; i--) {
+  for (let i = currentDurationB.value; i > 0; i--) {
     if (autoModeController.signal.aborted) return;
     saveTimerState("phase2", i, Date.now());
     const num = await count(i);
     cam2Count.innerText = num;
-    cam1Count.innerText = ""; 
+    cam1Count.innerText = "";
   }
 
   if (!autoModeController.signal.aborted) {
@@ -1498,13 +1688,13 @@ async function continueAutoModePhase2() {
       "cam1",
       "red",
       "auto",
-      findDuration(currentWeekDay === 0 ? 7 : currentWeekDay)
+      findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
     );
     logLightChange(
       "cam2",
       "green",
       "auto",
-      findDuration(currentWeekDay === 0 ? 7 : currentWeekDay)
+      findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
     );
     cam2Count.innerText = "0";
   }
@@ -1541,7 +1731,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initializePrivilegeRestrictions();
 
-  fetch("../user/get-ip.php", {credentials: "include"})
+  fetch("../user/get-ip.php", { credentials: "include" })
     .then((res) => {
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -1571,21 +1761,38 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
 
-  fetch("../user/get_durations.php", {credentials: "include"})
+  fetch("../user/get_durations.php", { credentials: "include" })
     .then((res) => res.json())
     .then((data) => {
       durations = data["schedules"];
 
-      currentDuration.value = findDuration(
-        currentWeekDay === 0 ? 7 : currentWeekDay
-      );
+        const overrideDurationState = loadDurationInputState();
+        if (overrideDurationState) {
+          overrideDuration();
+          currentDurationA.value = overrideDurationState.durationA;
+          currentDurationB.value = overrideDurationState.durationB;
+        }else {
+          currentDurationA.value = findDuration(
+            currentWeekDay === 0 ? 7 : currentWeekDay, "a"
+          );
+          currentDurationB.value = findDuration(
+            currentWeekDay === 0 ? 7 : currentWeekDay, "b"
+          );
+        }
 
-      if (durationInput) {
+      if (durationInputA) {
         const currentDayDuration = findDuration(
-          currentWeekDay === 0 ? 7 : currentWeekDay
+          currentWeekDay === 0 ? 7 : currentWeekDay, "a"
         );
-        durationInput.value = currentDayDuration || "";
-        durationInput.placeholder = "Duration for today";
+        durationInputA.value = currentDayDuration || "";
+        durationInputA.placeholder = "Duration for today";
+      }
+      if (durationInputB) {
+        const currentDayDuration = findDuration(
+          currentWeekDay === 0 ? 7 : currentWeekDay, "b"
+        );
+        durationInputB.value = currentDayDuration || "";
+        durationInputB.placeholder = "Duration for today";
       }
     });
 
@@ -1617,9 +1824,11 @@ document.addEventListener("DOMContentLoaded", () => {
         clearAutoModeState();
         clearTimerState();
       }
-    }, 3000); 
+    }, 3000);
   } else {
     document.getElementById("cam1-count").style.display = "none";
     document.getElementById("cam2-count").style.display = "none";
   }
+
+
 });
