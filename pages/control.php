@@ -75,7 +75,18 @@ $canControlCameras = can_access_feature('camera_control');
       <div>
         <h3>Current duration</h3>
         <div class="mb-3">
-          <label for="" class="form-label">Duration A</label>
+          <label for="" class="form-label">Delay (seconds)</label>
+          <input
+            type="num"
+            class="form-control"
+            name="current-delay"
+            id="current-delay"
+            min="1"
+            disabled
+          />
+        </div>
+        <div class="mb-3">
+          <label for="" class="form-label">Duration A (seconds)</label>
           <input
             type="num"
             class="form-control"
@@ -87,7 +98,7 @@ $canControlCameras = can_access_feature('camera_control');
           />
         </div>
         <div class="mb-3">
-          <label for="" class="form-label">Duration B</label>
+          <label for="" class="form-label">Duration B (seconds)</label>
           <input
           type="num"
           class="form-control"
@@ -153,6 +164,7 @@ $canControlCameras = can_access_feature('camera_control');
           <span id="edit-weekday-form-result"></span>
         </form>
       </div>
+      
     </div>
     <!-- Change IP address card -->
     <div class="control__card <?= !$isAdmin ? 'restricted-access' : '' ?>">
@@ -181,6 +193,20 @@ $canControlCameras = can_access_feature('camera_control');
               <button class="btn btn-secondary" type="button" id="connect-cam-2">Connect</button>
             </div>
             <span id="result_cam_2" class="form-text text-danger"></span>
+          </div>
+          <button type="submit" class="btn btn-primary">Change</button>
+          <span id="ip-result"></span>
+        </form>
+      </div>
+    </div>
+    <div class="control__card">
+      <div class="container-fluid">
+        <h3>Change Delay</h3>
+        <form action="<?= BASE_URL ?>/admin/update-delay.php" method="post" id="change-delay-form" novalidate class="needs-validation">
+          <div class="mb-3">
+              <label for="delay" class="hidden">Delay</label>
+              <input type="text" class="form-control" placeholder="Delay" aria-label="Delay" name="delay" id="delay-input"  data-cam="1" required>
+            <small id="result_cam_1" class="form-text text-danger"></small>
           </div>
           <button type="submit" class="btn btn-primary">Change</button>
           <span id="ip-result"></span>

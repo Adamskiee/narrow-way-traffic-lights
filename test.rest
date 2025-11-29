@@ -86,3 +86,20 @@ Content-Type: application/json
     "new-password": "adams",
     "confirm-password": "adams"
 }
+
+###
+POST http://localhost/narrow-way-traffic-lights/user/get-delay.php
+Content-Type: application/json
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzY0Mzk4MTk4fQ.NZXZ3RN2xGKQ_PLae3tHXZbPlusxWCe2G12p6STOhUI
+
+{
+}
+
+###
+POST http://localhost/narrow-way-traffic-lights/admin/update-delay.php
+Content-Type: application/json
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzY0Mzk4MTk4fQ.NZXZ3RN2xGKQ_PLae3tHXZbPlusxWCe2G12p6STOhUI
+
+{
+    "delay": 15
+}

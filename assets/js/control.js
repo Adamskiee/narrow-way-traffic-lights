@@ -122,6 +122,8 @@ const emergencyBtn = document.getElementById("emergency-btn");
 const weekDays = document.getElementById("week-days");
 const currentDurationA = document.getElementById("current-duration-a");
 const currentDurationB = document.getElementById("current-duration-b");
+const currentDelay = document.getElementById("current-delay");
+const delayInput = document.getElementById("delay-input");
 const durationInputA = document.getElementById("duration-input-a");
 const durationInputB = document.getElementById("duration-input-b");
 const saveDurationBtn = document.getElementById("save-duration-btn");
@@ -1028,12 +1030,6 @@ if (cam2Btn) {
 }
 
 if (IS_ADMIN) {
-  // handleFormSubmit(
-  //   "change-ip-form",
-  //   (data) => openSuccessModal(data.message),
-  //   (error) => openErrorModal(error.message)
-  // );
-
   document
     .getElementById("change-ip-form")
     .addEventListener("submit", async (e) => {
@@ -1106,6 +1102,47 @@ if (IS_ADMIN) {
       });
     });
   setupRealtimeValidation(document.getElementById("change-ip-form"));
+
+  document.getElementById("change-delay-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+    const delay = formData.get("delay");
+
+    openConfirmModal({
+        title: "Update Delay",
+        body: `
+        <h3>Confirm to change the delay</h3>
+      `,
+        confirmText: "Update Delay",
+        cancelText: "Cancel",
+        onConfirm: async () => {
+          await updateDelay(form, formData);
+        },
+        onCancel: () => {
+        },
+      });
+  })
+}
+
+async function updateDelay(form, formData) {
+  const payload = Object.fromEntries(formData.entries());
+  try {
+    const response = await fetch(form.action, {
+      method: form.method,
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    if (data.success) openSuccessModal(data.message);
+    else openErrorModal(data.message);
+  } catch (err) {
+    openErrorModal(err.message);
+    console.log(err);
+  }
 }
 
 if (overrideBtn) {
@@ -1390,6 +1427,19 @@ async function startAutoMode() {
         break;
       }
 
+      sendLED("cam1", "red_on");
+
+      for (let i = currentDelay.value; i > 0; i--) {
+        if (autoModeController.signal.aborted) {
+          console.log("Auto mode aborted during countdown");
+          return;
+        }
+
+        const num = await count(i);
+        document.getElementById("cam1-count").innerText = num;
+      }
+      document.getElementById("cam1-count").innerText = "0";
+
       if (!sendLED("cam1", "red_on")) return;
       if (!sendLED("cam2", "green_on")) return;
 
@@ -1471,6 +1521,19 @@ async function startAutoMode() {
         );
         document.getElementById("cam2-count").innerText = "0";
       }
+
+      sendLED("cam2", "red_on")
+
+      for (let i = currentDelay.value; i > 0; i--) {
+        if (autoModeController.signal.aborted) {
+          console.log("Auto mode aborted during countdown");
+          return;
+        }
+
+        const num = await count(i);
+        document.getElementById("cam2-count").innerText = num;
+      }
+      document.getElementById("cam2-count").innerText = "0";
     }
   } catch (error) {
     console.error("Auto mode error:", error);
@@ -1599,9 +1662,23 @@ async function resumeAutoModeWithTimer() {
         cam1Count.innerText = "0";
       }
 
+      for (let i = currentDelay.value; i > 0; i--) {
+        if (autoModeController.signal.aborted) {
+          console.log("Auto mode aborted during countdown");
+          return;
+        }
+
+        const num = await count(i);
+        sendLED("cam1", "red")
+        cam1Count.innerText = num;
+      }
+
+      cam1Count.innerText = "0";
+
       if (!autoModeController.signal.aborted) {
         await continueAutoModePhase2();
       }
+
     } else {
       if (!sendLED("cam1", "red_on")) return;
       if (!sendLED("cam2", "green_on")) return;
@@ -1634,6 +1711,20 @@ async function resumeAutoModeWithTimer() {
         );
         cam2Count.innerText = "0";
       }
+
+      for (let i = currentDelay.value; i > 0; i--) {
+        if (autoModeController.signal.aborted) {
+          console.log("Auto mode aborted during countdown");
+          return;
+        }
+
+        const num = await count(i);
+        sendLED("cam2", "red")
+        cam2Count.innerText = num;
+      }
+
+      cam2Count.innerText = "0";
+
     }
 
     clearTimerState();
@@ -1699,6 +1790,19 @@ async function continueAutoModePhase2() {
     cam2Count.innerText = "0";
   }
 
+  sendLED("cam2", "red_on")
+
+  for (let i = currentDelay.value; i > 0; i--) {
+    if (autoModeController.signal.aborted) {
+      console.log("Auto mode aborted during countdown");
+      return;
+    }
+
+    const num = await count(i);
+    cam1Count.innerText = num;
+  }
+  cam1Count.innerText = "";
+
   clearTimerState();
   if (!autoModeController.signal.aborted) {
     startAutoMode();
@@ -1760,6 +1864,26 @@ document.addEventListener("DOMContentLoaded", () => {
         "Failed to load camera configuration. Please refresh the page."
       );
     });
+
+  fetch("../user/get-delay.php", { credentials: "include" })
+  .then((res) => {
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  })
+  .then((data) => {
+    const delay = data["delay"] || {};
+
+    delayInput.value = delay;
+    currentDelay.value = delay;
+  })
+  .catch((err) => {
+    console.error("Failed to fetch camera IP addresses:", err);
+    openErrorModal(
+      "Failed to load camera configuration. Please refresh the page."
+    );
+  });
 
   fetch("../user/get_durations.php", { credentials: "include" })
     .then((res) => res.json())

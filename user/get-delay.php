@@ -1,0 +1,37 @@
+<?php
+require_once "../includes/config.php";
+
+header("Content-Type: application/json");
+
+$user = get_authenticated_user();
+if(!$user) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Authentication required']);
+    exit;
+}
+
+$cacheKey = "db:delay";
+$data = $redis->get($cacheKey);
+if(!$data) {
+    try {
+        $user_id = $user["user_id"];
+
+        $stmt = $conn->prepare("SELECT delay FROM users u JOIN delays d ON u.created_by = d.admin_id WHERE u.id = ?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $res = json_encode(["success" => true, "delay" => $result->fetch_assoc()["delay"]]);
+
+        $redis->setex($cacheKey,600, $res);
+        echo $res;
+    }catch(Exception $e) {
+        echo json_encode([
+            "success" => false,
+            "error" => "Database error: " . $e->getMessage()
+        ]);
+    }
+}else {
+    echo $data;
+}
+?>
