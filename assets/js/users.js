@@ -34,23 +34,6 @@ function generatePassword(length = 16) {
 }
 
 function openDeleteModal(id) {
-    const modalForm = document.querySelector(".modalForm");
-
-    // modalForm.onsubmit = null;
-    // modalForm.removeAttribute('data-form-handler');
-    
-    // modalForm.action = "../admin/delete-user.php";
-    // modalForm.method = "post";
-    // modalForm.id = "user-delete";
-    
-    // handleFormSubmit(
-    //     "user-delete", 
-    //     (data) => {
-    //         openSuccessModal(data.message);
-    //     },
-    //     (error) => openErrorModal(error.message)
-    // );
-
     openInfoModal({
         title: "Delete User",
         body: `
@@ -70,6 +53,15 @@ function openDeleteModal(id) {
         <i class="fas fa-trash me-1"></i>Delete</button>
         `
     });
+    setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+                closeInfoModal();
+            });
+        }
+    }, 100)
 }
 
 async function deleteUser(id) {
@@ -631,6 +623,7 @@ function openViewModal(id) {
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => {
                     closeInfoModal();
+                    console.log("close");
                 });
             }
             
@@ -643,7 +636,7 @@ function openViewModal(id) {
                     }, 300);
                 });
             }
-            
+
             if (modalCloseBtn) {
                 modalCloseBtn.addEventListener('click', () => {
                     closeInfoModal();

@@ -122,32 +122,13 @@ $canControlCameras = can_access_feature('camera_control');
           <input type="hidden" name="user-id" value="<?= $user['user_id'] ?>">
           <label class="form-label">Duration (seconds)</label>
           <div class="input-group">
-            <input type="number" class="form-control" placeholder="Enter duration A" id="duration-input-a" min="1" required>
-            <input type="number" class="form-control" placeholder="Enter duration B" id="duration-input-b" min="1" required>
-            <button class="btn btn-primary" type="button" id="save-duration-btn">Save</button>
+            <input type="number" class="form-control" placeholder="Enter duration A" id="duration-input-a" min="1" required disabled>
+            <input type="number" class="form-control" placeholder="Enter duration B" id="duration-input-b" min="1" required disabled>
+            <button class="btn btn-primary" type="button" id="save-duration-btn" data-state="edit">Edit</button>
           </div>
-          <small class="form-text">Select a day above and enter duration</small>
+          <small class="form-text">Select a day above and enter duration for A and B</small>
           <div id="duration-result" class="mt-2"></div>
         </div>
-        
-        <form action="<?= BASE_URL ?>/admin/insert-duration.php" id="add-weekday-form" method="post" class="weekday-form hidden">
-          <input type="hidden" name="user-id" value="<?= $user['user_id'] ?>">
-          <input type="hidden" name="weekday" id="weekday-add">
-          <span id="add-weekday-form-result"></span>
-          <div class="input-group mb-3">
-            <input type="number" class="form-control" placeholder="Duration" aria-label="Duration" name="weekday-duration"  id="weekday-duration-add" aria-describedby="submit-button" required>
-            <button class="btn btn-primary" type="submit" id="submit-button">Add</button>
-          </div>
-        </form>
-        <form action="<?= BASE_URL ?>/admin/edit-duration.php" method="post" id="edit-weekday-form" class="weekday-form hidden">
-          <input type="hidden" name="user-id" value="<?= $user['user_id'] ?>">
-          <input type="hidden" name="weekday" id="weekday-edit">
-          <div class="input-group mb-3">
-            <input type="number" class="form-control" placeholder="Duration" aria-label="Duration" name="weekday-duration" aria-describedby="submit-button" id="weekday-duration-edit" required>
-            <button class="btn btn-primary" type="submit" id="submit-button">Edit</button>
-          </div>
-          <span id="edit-weekday-form-result"></span>
-        </form>
       </div>
     </div>
     <!-- Change IP address card -->

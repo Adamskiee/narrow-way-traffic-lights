@@ -672,6 +672,61 @@ function updateLEDButton(camName, color, isOn, saveState = true) {
 if (weekDays) {
   weekDays.querySelectorAll("button[data-week]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
+      if(saveDurationBtn.dataset.state === "save") {
+        openInfoModal({
+          title: "Save duration",
+          body: `
+          <div class="text-center">
+              <div class="mb-3">
+                  <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+              </div>
+              <h5 class="mb-3">Confirm to save duration</h5>
+              <p class="mb-0">Are you sure you want to update duration?</p>
+          </div>
+          `,
+          footer: `
+          <button class="btn btn-secondary" id="dont-save-duration-modal-btn">
+          <i class="fas fa-times me-1"></i>Don't save</button>
+          <button class="btn btn-danger" id="save-duration-modal-btn">
+          <i class="fas fa-times me-1"></i>Update</button>
+          `
+        });
+        setTimeout(() => {
+          const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+          const cancelOverrideBtn = document.getElementById('save-duration-modal-btn');
+          const dontSaveDurationBtn = document.getElementById('dont-save-duration-modal-btn')
+          
+          if (modalCloseBtn) {
+              modalCloseBtn.addEventListener('click', () => {
+                  closeInfoModal();
+              });
+          }
+          if(cancelOverrideBtn) {
+            cancelOverrideBtn.addEventListener("click", () => {
+              closeInfoModal()
+              setTimeout(() => {
+                durationInputA.disabled = true;
+                durationInputB.disabled = true;
+                saveDurationBtn.innerText = "edit"
+                saveDurationBtn.dataset.state = "edit";
+                performSaveDuration()
+              }, 300)
+            })
+          }
+          if(dontSaveDurationBtn) {
+            dontSaveDurationBtn.addEventListener("click", () => {
+              closeInfoModal()
+              setTimeout(() => {
+                durationInputA.disabled = true;
+                durationInputB.disabled = true;
+                saveDurationBtn.innerText = "edit"
+                saveDurationBtn.dataset.state = "edit";
+              }, 300)
+            })
+          }
+          }, 100)
+        return;
+      }
       weekDays
         .querySelectorAll("button[data-week]")
         .forEach((b) => b.classList.remove("active"));
@@ -700,73 +755,136 @@ if (weekDays) {
 
 if (saveDurationBtn && durationInputA && durationInputB) {
   saveDurationBtn.addEventListener("click", async () => {
-    const durationA = durationInputA.value;
-    const durationB = durationInputB.value;
-    if (!durationA || durationA <= 0) {
-      durationResult.innerHTML =
-        '<div class="alert alert-danger alert-sm">Please enter a valid duration</div>';
-      return;
-    }
-    if (!durationB || durationB <= 0) {
-      durationResult.innerHTML =
-        '<div class="alert alert-danger alert-sm">Please enter a valid duration</div>';
-      return;
-    }
-
-    try {
-      const requestData = {
-        "user-id": document.querySelector('input[name="user-id"]').value,
-        weekday: selectedWeekday,
-        "weekday-duration-a": durationA,
-        "weekday-duration-b": durationB,
-      };
-
-      const response = await fetch("../admin/edit-duration.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(requestData),
+    if(saveDurationBtn.dataset.state === "edit") {
+      durationInputA.disabled = false;
+      durationInputB.disabled = false;
+      saveDurationBtn.innerText = "save"
+      saveDurationBtn.dataset.state = "save";
+      
+    } else if (saveDurationBtn.dataset.state === "save") {
+      openInfoModal({
+        title: "Save duration",
+        body: `
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Confirm to save duration</h5>
+            <p class="mb-0">Are you sure you want to update duration?</p>
+        </div>
+        `,
+        footer: `
+        <button class="btn btn-secondary" id="dont-save-duration-modal-btn">
+        <i class="fas fa-times me-1"></i>Don't Save</button>
+        <button class="btn btn-danger" id="save-duration-modal-btn">
+        <i class="fas fa-times me-1"></i>Save</button>
+        `
       });
-
-      const result = await response.json();
-
-      if (result.success) {
-        durationResult.innerHTML = `<div class="alert alert-success alert-sm">${result.message}</div>`;
-
-        durations.push({
-          week_day: selectedWeekday,
-          durationA: durationA,
-          durationB: durationB,
-        });
-        const durationObj = durations.find(
-          (d) => d.week_day == selectedWeekday
-        );
-        if (durationObj) {
-          durationObj.durationA = durationA;
-          durationObj.durationB = durationB;
+      setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        const saveDurationModalBtn = document.getElementById('save-duration-modal-btn');
+        const dontSaveDurationBtn = document.getElementById('dont-save-duration-modal-btn')
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+                closeInfoModal();
+            });
         }
-
-        if (selectedWeekday == (currentWeekDay === 0 ? 7 : currentWeekDay)) {
-          currentDurationA.value = durationA;
-          currentDurationB.value = durationB;
+        if(saveDurationModalBtn) {
+          saveDurationModalBtn.addEventListener("click", () => {
+            closeInfoModal()
+            setTimeout(() => {
+              performSaveDuration()
+            }, 300)
+          })
         }
-      } else {
-        durationResult.innerHTML = `<div class="alert alert-danger alert-sm">${result.message}</div>`;
-      }
-    } catch (error) {
-      console.error("Error saving duration:", error);
-      durationResult.innerHTML =
-        '<div class="alert alert-danger alert-sm">Error saving duration</div>';
+        if(dontSaveDurationBtn) {
+          dontSaveDurationBtn.addEventListener("click", () => {
+            closeInfoModal()
+            setTimeout(() => {
+              durationInputA.disabled = true;
+              durationInputB.disabled = true;
+              saveDurationBtn.innerText = "edit"
+              saveDurationBtn.dataset.state = "edit";
+            }, 300)
+          })
+        }
+      }, 100)
     }
-
-    setTimeout(() => {
-      if (durationResult) durationResult.innerHTML = "";
-    }, 3000);
   });
 }
 
+async function performSaveDuration() {
+  durationInputA.disabled = true;
+  durationInputB.disabled = true;
+  saveDurationBtn.innerText = "edit"
+  saveDurationBtn.dataset.state = "edit";
+  const durationA = durationInputA.value;
+  const durationB = durationInputB.value;
+  if (!durationA || durationA <= 0) {
+    durationResult.innerHTML =
+      '<div class="alert alert-danger alert-sm">Please enter a valid duration</div>';
+    return;
+  }
+  if (!durationB || durationB <= 0) {
+    durationResult.innerHTML =
+      '<div class="alert alert-danger alert-sm">Please enter a valid duration</div>';
+    return;
+  }
+
+  try {
+    const requestData = {
+      weekday: selectedWeekday,
+      "weekday-duration-a": durationA,
+      "weekday-duration-b": durationB,
+    };
+
+    const response = await fetch("../admin/edit-duration.php", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(requestData),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      durationResult.innerHTML = `<div class="alert alert-success alert-sm">${result.message}</div>`;
+      durations.forEach( duration=> {
+        if(duration["week_day"] == selectedWeekday) {
+          duration["duration_a"] = parseInt(durationA);
+          duration["duration_b"] = parseInt(durationB);
+        }
+      })
+
+      const durationObj = durations.find(
+        (d) => d.week_day == selectedWeekday
+      );
+      if (durationObj) {
+        durationObj.durationA = durationA;
+        durationObj.durationB = durationB;
+      }
+
+      if (selectedWeekday == (currentWeekDay === 0 ? 7 : currentWeekDay)) {
+        currentDurationA.value = durationA;
+        currentDurationB.value = durationB;
+      }
+    } else {
+      durationResult.innerHTML = `<div class="alert alert-danger alert-sm">${result.message}</div>`;
+    }
+  } catch (error) {
+    console.error("Error saving duration:", error);
+    durationResult.innerHTML =
+      '<div class="alert alert-danger alert-sm">Error saving duration</div>';
+  }
+
+  setTimeout(() => {
+    if (durationResult) durationResult.innerHTML = "";
+  }, 3000);
+}
+ 
 async function checkLed(camName, ip, color) {
   try {
     const res = await fetch(`http://${ip}/check-${color}`, {
@@ -1140,21 +1258,44 @@ if (IS_ADMIN) {
 
     const form = e.target;
     const formData = new FormData(form);
-    const delay = formData.get("delay");
 
-    openConfirmModal({
+    openInfoModal({
         title: "Update Delay",
         body: `
-        <h3>Confirm to change the delay</h3>
-      `,
-        confirmText: "Update Delay",
-        cancelText: "Cancel",
-        onConfirm: async () => {
-          await updateDelay(form, formData);
-        },
-        onCancel: () => {
-        },
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Confirm to change the delay</h5>
+            <p class="mb-0">Are you sure you want to update delay?</p>
+        </div>
+        `,
+        footer: `
+        <button class="btn btn-secondary" onclick="closeInfoModal()">
+        <i class="fas fa-times me-1"></i>Close</button>
+        <button class="btn btn-danger" id="delay-modal-btn">
+        <i class="fas fa-times me-1"></i>Update</button>
+        `
       });
+      setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        const cancelOverrideBtn = document.getElementById('delay-modal-btn');
+
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+                closeInfoModal();
+            });
+        }
+        if(cancelOverrideBtn) {
+          cancelOverrideBtn.addEventListener("click", () => {
+            closeInfoModal()
+            setTimeout(() => {
+              updateDelay(form, formData)
+            }, 300)
+          })
+        }
+      }, 100)
+    
   })
 }
 
@@ -1180,44 +1321,81 @@ async function updateDelay(form, formData) {
 if (overrideBtn) {
   overrideBtn.addEventListener("click", (e) => {
     if(overrideBtn.innerText === "Override") {
-      openConfirmModal({
-        title: "Override Duration",
+      openInfoModal({
+        title: "Override durations",
         body: `
-          <h3>Confirm to override</h3>
-        <div class="alert alert-warning mt-3 mb-0">
-          <i class="fas fa-exclamation-triangle me-2"></i>
-          <small>This will temporarily edit the configured duration</small>
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Confirm Override</h5>
+            <p class="mb-0">Are you sure you want to override the duration?</p>
+            <p class=" small mb-0">This action will temporarily edit the configured duration</p>
         </div>
-      `,
-        confirmText: "Override",
-        cancelText: "Cancel",
-        onConfirm: async () => {
-          overrideDuration();
-        },
-        onCancel: () => {
-          console.log("IP address update cancelled by user");
-        },
+        `,
+        footer: `
+        <button class="btn btn-secondary" onclick="closeInfoModal()">
+        <i class="fas fa-times me-1"></i>Close</button>
+        <button class="btn btn-danger" id="override-modal-btn">
+        <i class="fas fa-edit me-1"></i>Override</button>
+        `
       });
-      
+      setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        const overrideBtn = document.getElementById('override-modal-btn');
+
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+                closeInfoModal();
+            });
+        }
+        if(overrideBtn) {
+          overrideBtn.addEventListener("click", () => {
+            closeInfoModal()
+            setTimeout(() => {
+              overrideDuration();
+            }, 300)
+          })
+        }
+      }, 100)
     }else {
-      openConfirmModal({
-        title: "Override Duration Cancel",
+      openInfoModal({
+        title: "Cancel Override",
         body: `
-          <h3>Confirm to back to default</h3>
-        <div class="alert alert-warning mt-3 mb-0">
-          <i class="fas fa-exclamation-triangle me-2"></i>
-          <small>This will back to original duration</small>
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Confirm Override</h5>
+            <p class="mb-0">Are you sure you want to cancel overriding?</p>
+            <p class=" small mb-0">This action will back the duration input into its original input</p>
         </div>
-      `,
-        confirmText: "Back to default",
-        cancelText: "Cancel",
-        onConfirm: async () => {
-          backToDefaultDuration();
-        },
-        onCancel: () => {
-          console.log("IP address update cancelled by user");
-        },
+        `,
+        footer: `
+        <button class="btn btn-secondary" onclick="closeInfoModal()">
+        <i class="fas fa-times me-1"></i>Close</button>
+        <button class="btn btn-danger" id="cancel-override-modal-btn">
+        <i class="fas fa-times me-1"></i>Cancel Override</button>
+        `
       });
+      setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        const cancelOverrideBtn = document.getElementById('cancel-override-modal-btn');
+
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+                closeInfoModal();
+            });
+        }
+        if(cancelOverrideBtn) {
+          cancelOverrideBtn.addEventListener("click", () => {
+            closeInfoModal()
+            setTimeout(() => {
+              backToDefaultDuration();
+            }, 300)
+          })
+        }
+      }, 100)
     }
   })
 }
@@ -1260,37 +1438,81 @@ if(emergencyBtn) {
       return;
     }
     if(emergencyBtn.innerText === "EMERGENCY") {
-      openConfirmModal({
-        title: "Emergency Activation",
+      openInfoModal({
+        title: "Emergency Mode Activation",
         body: `
-          <h3>Emergency Confirmation</h3>
-        <div class="alert alert-warning mt-3 mb-0">
-          <i class="fas fa-exclamation-triangle me-2"></i>
-          <small>Traffic lights will become red</small>
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Activate emergency mode</h5>
+            <p class="mb-0">Are you sure you want to activate emergency mode?</p>
+            <p class="small mb-0">This action will make traffic lights become red</p>
         </div>
-      `,
-        confirmText: "Confirm",
-        cancelText: "Cancel",
-        onConfirm: async () => {
-          performEmergency();
-        },
-        onCancel: () => {
-        },
+        `,
+        footer: `
+        <button class="btn btn-secondary" onclick="closeInfoModal()">
+        <i class="fas fa-times me-1"></i>Close</button>
+        <button class="btn btn-danger" id="emergency-modal-btn">
+        <i class="fas fa-times me-1"></i>Activate</button>
+        `
       });
+      setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        const cancelOverrideBtn = document.getElementById('emergency-modal-btn');
+
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+                closeInfoModal();
+            });
+        }
+        if(cancelOverrideBtn) {
+          cancelOverrideBtn.addEventListener("click", () => {
+            closeInfoModal()
+            setTimeout(() => {
+              performEmergency();
+            }, 300)
+          })
+        }
+      }, 100)
     }else {
-      openConfirmModal({
-        title: "Emergency Cancellation",
+      openInfoModal({
+        title: "Emergency Mode Cancellation",
         body: `
-          <h3>Cancellation Confirmation</h3>
-      `,
-        confirmText: "Confirm",
-        cancelText: "Cancel",
-        onConfirm: async () => {
-          cancelEmergency();
-        },
-        onCancel: () => {
-        },
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Cancel emergency mode</h5>
+            <p class="mb-0">Are you sure you want to cancel emergency mode?</p>
+            <p class="small mb-0">This action will make traffic lights back to its previous state</p>
+        </div>
+        `,
+        footer: `
+        <button class="btn btn-secondary" onclick="closeInfoModal()">
+        <i class="fas fa-times me-1"></i>Close</button>
+        <button class="btn btn-danger" id="cancel-emergency-modal-btn">
+        <i class="fas fa-times me-1"></i>Cancel Emergency</button>
+        `
       });
+      setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        const cancelOverrideBtn = document.getElementById('cancel-emergency-modal-btn');
+
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+                closeInfoModal();
+            });
+        }
+        if(cancelOverrideBtn) {
+          cancelOverrideBtn.addEventListener("click", () => {
+            closeInfoModal()
+            setTimeout(() => {
+              cancelEmergency();
+            }, 300)
+          })
+        }
+      }, 100)
     }
   })
 }
@@ -1834,10 +2056,82 @@ async function continueAutoMode(phase) {
 if (autoModeBtn) {
   autoModeBtn.addEventListener("click", async () => {
     if (!isAutoModeRunning) {
-      await startAutoMode();
-    } else {
-      stopAutoMode();
+      openInfoModal({
+        title: "Automatic mode activation",
+        body: `
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Activate automatic mode</h5>
+            <p class="mb-0">Are you sure you want to activate automatic mode?</p>
+            <p class="small mb-0">This action will make traffic lights be automatic based on the configuration</p>
+        </div>
+        `,
+        footer: `
+        <button class="btn btn-secondary" onclick="closeInfoModal()">
+        <i class="fas fa-times me-1"></i>Close</button>
+        <button class="btn btn-danger" id="activate-auto-modal-btn">
+        <i class="fas fa-times me-1"></i>Activate</button>
+        `
+      });
+      setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        const cancelOverrideBtn = document.getElementById('activate-auto-modal-btn');
+
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+                closeInfoModal();
+            });
+        }
+        if(cancelOverrideBtn) {
+          cancelOverrideBtn.addEventListener("click", () => {
+            closeInfoModal()
+            setTimeout(async () => {
+              await startAutoMode();
+            }, 300)
+          })
+        }
+      }, 100)
+    }else {
+      openInfoModal({
+        title: "Automatic mode cancellation",
+        body: `
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Cancel automatic mode</h5>
+            <p class="mb-0">Are you sure you want to cancel automatic mode?</p>
+        </div>
+        `,
+        footer: `
+        <button class="btn btn-secondary" onclick="closeInfoModal()">
+        <i class="fas fa-times me-1"></i>Close</button>
+        <button class="btn btn-danger" id="activate-auto-modal-btn">
+        <i class="fas fa-times me-1"></i>Cancel Automatic Mode</button>
+        `
+      });
+      setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        const cancelOverrideBtn = document.getElementById('activate-auto-modal-btn');
+
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+              closeInfoModal();
+            });
+        }
+        if(cancelOverrideBtn) {
+          cancelOverrideBtn.addEventListener("click", () => {
+            closeInfoModal()
+            setTimeout(() => {
+              stopAutoMode();
+            }, 300)
+          })
+        }
+      }, 100)
     }
+    
   });
 }
 
@@ -1911,33 +2205,33 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((data) => {
       durations = data["schedules"];
 
-        const overrideDurationState = loadDurationInputState();
-        if (overrideDurationState) {
-          overrideDuration();
-          currentDurationA.value = overrideDurationState.durationA;
-          currentDurationB.value = overrideDurationState.durationB;
-          currentDelay.value = overrideDurationState.delay;
-        }else {
-          currentDurationA.value = findDuration(
-            currentWeekDay === 0 ? 7 : currentWeekDay, "a"
-          );
-          currentDurationB.value = findDuration(
-            currentWeekDay === 0 ? 7 : currentWeekDay, "b"
-          );
-        }
-
-      if (durationInputA) {
-        const currentDayDuration = findDuration(
+      const overrideDurationState = loadDurationInputState();
+      if (overrideDurationState) {
+        overrideDuration();
+        currentDurationA.value = overrideDurationState.durationA;
+        currentDurationB.value = overrideDurationState.durationB;
+        currentDelay.value = overrideDurationState.delay;
+      }else {
+        currentDurationA.value = findDuration(
           currentWeekDay === 0 ? 7 : currentWeekDay, "a"
         );
-        durationInputA.value = currentDayDuration || "";
+        currentDurationB.value = findDuration(
+          currentWeekDay === 0 ? 7 : currentWeekDay, "b"
+        );
+      }
+
+      if (durationInputA) {
+        const defaultDuration = findDuration(
+          1, "a"
+        );
+        durationInputA.value = defaultDuration || "";
         durationInputA.placeholder = "Duration for today";
       }
       if (durationInputB) {
-        const currentDayDuration = findDuration(
-          currentWeekDay === 0 ? 7 : currentWeekDay, "b"
+        const defaultDuration = findDuration(
+          1, "b"
         );
-        durationInputB.value = currentDayDuration || "";
+        durationInputB.value = defaultDuration || "";
         durationInputB.placeholder = "Duration for today";
       }
     });
@@ -2001,3 +2295,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
+
+window.closeInfoModal = closeInfoModal;
+window.performEmergency = performEmergency;
+window.overrideDuration = overrideDuration;

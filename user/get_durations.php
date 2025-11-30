@@ -16,7 +16,7 @@ if(!$data) {
     try {
         $user_id = $user["user_id"];
 
-        $stmt = $conn->prepare("SELECT week_day, duration_a, duration_b, temp_duration_a, temp_duration_b FROM users u JOIN schedules s ON u.created_by = s.admin_id WHERE u.id = ? GROUP BY s.id");
+        $stmt = $conn->prepare("SELECT week_day, duration_a, duration_b FROM users u JOIN schedules s ON u.created_by = s.admin_id WHERE u.id = ? GROUP BY s.id");
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
         $result = $stmt->get_result();
