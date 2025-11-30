@@ -127,16 +127,18 @@ $canControlCameras = can_access_feature('camera_control');
           <button class="btn flex-fill btn-secondary" data-week="7">Sun</button>
         </div>
         
-        <div class="mt-3">
+        <div class="mb-3">
           <input type="hidden" name="user-id" value="<?= $user['user_id'] ?>">
-          <label class="form-label">Duration (seconds)</label>
-          <div class="input-group">
+          <div class="">
+            <label class="form-label">Duration A</label>
             <input type="number" class="form-control" placeholder="Enter duration A" id="duration-input-a" min="1" required disabled>
-            <input type="number" class="form-control" placeholder="Enter duration B" id="duration-input-b" min="1" required disabled>
-            <button class="btn btn-primary" type="button" id="save-duration-btn" data-state="edit">Edit</button>
           </div>
-          <small class="form-text">Select a day above and enter duration for A and B</small>
-          <div id="duration-result" class="mt-2"></div>
+          <div class="mb-3">
+            <label class="form-label">Duration B</label>
+            <input type="number" class="form-control" placeholder="Enter duration B" id="duration-input-b" min="1" required disabled>
+          </div>
+          <button class="btn btn-primary" type="button" id="save-duration-btn" data-state="edit">Edit</button>
+          <button class="btn btn-secondary" type="button" id="cancel-save-duration-btn" disabled>Close</button>
         </div>
       </div>
     </div>

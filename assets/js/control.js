@@ -682,7 +682,7 @@ if (weekDays) {
           body: `
           <div class="text-center">
               <div class="mb-3">
-                  <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+                  <i class="fas fa-circle-info fa-3x"></i>
               </div>
               <h5 class="mb-3">Confirm to save duration</h5>
               <p class="mb-0">Are you sure you want to update duration?</p>
@@ -692,7 +692,7 @@ if (weekDays) {
           <button class="btn btn-secondary" id="dont-save-duration-modal-btn">
           <i class="fas fa-times me-1"></i>Don't save</button>
           <button class="btn btn-danger" id="save-duration-modal-btn">
-          <i class="fas fa-times me-1"></i>Update</button>
+          <i class="fas fa-check me-1"></i>Update</button>
           `
         });
         setTimeout(() => {
@@ -757,85 +757,160 @@ if (weekDays) {
   });
 }
 
+const cancelSaveDurationBtn = document.getElementById("cancel-save-duration-btn");
+cancelSaveDurationBtn.addEventListener("click", () => {
+  const durationA = durationInputA.value;
+  const durationB = durationInputB.value;
+  const durationObj = durations.find(
+    (d) => d.week_day == selectedWeekday
+  );
+
+  if(durationA == durationObj["duration_a"] && durationB == durationObj["duration_b"]) {
+    setTimeout(() => {
+      durationInputA.disabled = true;
+      durationInputB.disabled = true;
+      saveDurationBtn.innerText = "edit"
+      saveDurationBtn.dataset.state = "edit";
+      cancelSaveDurationBtn.disabled = true;
+      clearFieldError(durationInputA);
+      clearFieldError(durationInputB);
+    }, 100);
+    return;
+  }
+
+  openInfoModal({
+    title: "Save duration",
+    body: `
+    <div class="text-center">
+        <div class="mb-3">
+            <i class="fas fa-circle-info fa-3x"></i>
+        </div>
+        <h5 class="mb-3">Do you want to save duration?</h5>
+    </div>
+    `,
+    footer: `
+    <button class="btn btn-secondary" id="dont-save-duration-modal-btn">
+    <i class="fas fa-times me-1"></i>Don't Save</button>
+    <button class="btn btn-danger" id="save-duration-modal-btn-1">
+    <i class="fas fa-check me-1"></i>Save</button>
+    `
+  });
+  const saveDurationBtnModal = document.getElementById("save-duration-modal-btn-1");
+  const dontSaveDurationBtn = document.getElementById("dont-save-duration-modal-btn");
+
+  if(saveDurationBtnModal) {
+    saveDurationBtnModal.addEventListener("click", () => {
+      closeInfoModal()
+      setTimeout(() => {
+        validateSaveDuration();
+      }, 100)
+    })
+  }
+  if(dontSaveDurationBtn) {
+    dontSaveDurationBtn.addEventListener("click", () => {
+      closeInfoModal();
+      setTimeout(() => {
+        durationInputA.disabled = true;
+        durationInputB.disabled = true;
+        cancelSaveDurationBtn.disabled = true;
+        durationInputA.value = durationObj["duration_a"];
+        durationInputB.value = durationObj["duration_b"];
+        saveDurationBtn.innerText = "edit"
+        saveDurationBtn.dataset.state = "edit";
+        clearFieldError(durationInputA);
+        clearFieldError(durationInputB);
+      }, 100);
+    })
+  }
+})
 if (saveDurationBtn && durationInputA && durationInputB) {
   saveDurationBtn.addEventListener("click", async () => {
     if(saveDurationBtn.dataset.state === "edit") {
       durationInputA.disabled = false;
       durationInputB.disabled = false;
+      cancelSaveDurationBtn.disabled = false;
       saveDurationBtn.innerText = "save"
       saveDurationBtn.dataset.state = "save";
       
     } else if (saveDurationBtn.dataset.state === "save") {
-      const durationA = durationInputA.value;
-      const durationB = durationInputB.value;
-
-      const durationObj = durations.find(
-        (d) => d.week_day == selectedWeekday
-      );
-      
-      if(durationA == durationObj["duration_a"] && durationB == durationObj["duration_b"]) {
-        durationInputA.disabled = true;
-        durationInputB.disabled = true;
-        saveDurationBtn.innerText = "edit"
-        saveDurationBtn.dataset.state = "edit";
-        return;
-      }
-
-      validateDuration(
-        durationInputA.value,
-        () => validateDuration(
-          durationInputB.value,
-          ()=>{ openInfoModal({
-            title: "Save duration",
-            body: `
-            <div class="text-center">
-                <div class="mb-3">
-                    <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
-                </div>
-                <h5 class="mb-3">Confirm to save duration</h5>
-                <p class="mb-0">Are you sure you want to update duration?</p>
-            </div>
-            `,
-            footer: `
-            <button class="btn btn-secondary" id="dont-save-duration-modal-btn">
-            <i class="fas fa-times me-1"></i>Don't Save</button>
-            <button class="btn btn-danger" id="save-duration-modal-btn">
-            <i class="fas fa-times me-1"></i>Save</button>
-            `
-          });
-          setTimeout(() => {
-            const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-            const saveDurationModalBtn = document.getElementById('save-duration-modal-btn');
-            const dontSaveDurationBtn = document.getElementById('dont-save-duration-modal-btn')
-            if (modalCloseBtn) {
-                modalCloseBtn.addEventListener('click', () => {
-                    closeInfoModal();
-                });
-            }
-            if(saveDurationModalBtn) {
-              saveDurationModalBtn.addEventListener("click", () => {
-                closeInfoModal()
-                setTimeout(() => {
-                  performSaveDuration()
-                }, 300)
-              })
-            }
-            if(dontSaveDurationBtn) {
-              dontSaveDurationBtn.addEventListener("click", () => {
-                closeInfoModal()
-                setTimeout(() => {
-                  durationInputA.disabled = true;
-                  durationInputB.disabled = true;
-                  saveDurationBtn.innerText = "edit"
-                  saveDurationBtn.dataset.state = "edit";
-                }, 300)
-              })
-            }
-          }, 100)}
-        )
-      )
+      validateSaveDuration();
     }
   });
+}
+
+async function validateSaveDuration() {
+  const durationA = durationInputA.value;
+  const durationB = durationInputB.value;
+
+  const durationObj = durations.find(
+    (d) => d.week_day == selectedWeekday
+  );
+  
+  if(durationA == durationObj["duration_a"] && durationB == durationObj["duration_b"]) {
+    durationInputA.disabled = true;
+    durationInputB.disabled = true;
+    saveDurationBtn.innerText = "edit"
+    saveDurationBtn.dataset.state = "edit";
+    clearFieldError(durationInputA);
+    clearFieldError(durationInputB);
+    return;
+  }
+
+  if (!durationA || durationA <= 0) {
+    showFieldError(durationInputA, "Please enter a valid duration");
+    if (!durationB || durationB <= 0) {
+      showFieldError(durationInputB, "Please enter a valid duration");
+    }
+    return;
+  }
+  if (!durationB || durationB <= 0) {
+    showFieldError(durationInputB, "Please enter a valid duration");
+    return;
+  }
+
+  validateDuration(
+    durationInputA.value,
+    () => validateDuration(
+      durationInputB.value,
+      ()=>{ openInfoModal({
+        title: "Save duration",
+        body: `
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-circle-info fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Confirm to save duration</h5>
+            <p class="mb-0">Are you sure you want to update duration?</p>
+        </div>
+        `,
+        footer: `
+        <button class="btn btn-secondary" onclick="closeInfoModal()">
+        <i class="fas fa-times me-1"></i>Cancel</button>
+        <button class="btn btn-danger" id="save-duration-modal-btn">
+        <i class="fas fa-check me-1"></i>Save</button>
+        `
+      });
+      setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        const saveDurationModalBtn = document.getElementById('save-duration-modal-btn');
+        const dontSaveDurationBtn = document.getElementById('dont-save-duration-modal-btn')
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+              closeInfoModal();
+            });
+        }
+        if(saveDurationModalBtn) {
+          saveDurationModalBtn.addEventListener("click", () => {
+            closeInfoModal()
+            setTimeout(() => {
+              performSaveDuration()
+            }, 300)
+          })
+        }
+        
+      }, 100)}
+    )
+  )
 }
 
 async function performSaveDuration() {
@@ -845,16 +920,7 @@ async function performSaveDuration() {
   saveDurationBtn.dataset.state = "edit";
   const durationA = durationInputA.value;
   const durationB = durationInputB.value;
-  if (!durationA || durationA <= 0) {
-    durationResult.innerHTML =
-      '<div class="alert alert-danger alert-sm">Please enter a valid duration</div>';
-    return;
-  }
-  if (!durationB || durationB <= 0) {
-    durationResult.innerHTML =
-      '<div class="alert alert-danger alert-sm">Please enter a valid duration</div>';
-    return;
-  }
+  
 
   try {
     const requestData = {
@@ -876,7 +942,6 @@ async function performSaveDuration() {
     const result = await response.json();
 
     if (result.success) {
-      durationResult.innerHTML = `<div class="alert alert-success alert-sm">${result.message}</div>`;
       durations.forEach( duration=> {
         if(duration["week_day"] == selectedWeekday) {
           duration["duration_a"] = parseInt(durationA);
@@ -896,8 +961,9 @@ async function performSaveDuration() {
         currentDurationA.value = durationA;
         currentDurationB.value = durationB;
       }
+      openSuccessModal(result.message);
     } else {
-      durationResult.innerHTML = `<div class="alert alert-danger alert-sm">${result.message}</div>`;
+      openErrorModal(result.message);
     }
   } catch (error) {
     console.error("Error saving duration:", error);
@@ -1384,7 +1450,7 @@ if (IS_ADMIN) {
           body: `
           <div class="text-center">
               <div class="mb-3">
-                  <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+                  <i class="fas fa-circle-info text-warning fa-3x"></i>
               </div>
               <h5 class="mb-3">Confirm to change the delay</h5>
               <p class="mb-0">Are you sure you want to update delay?</p>
@@ -1394,7 +1460,7 @@ if (IS_ADMIN) {
           <button class="btn btn-secondary" onclick="closeInfoModal()">
           <i class="fas fa-times me-1"></i>Close</button>
           <button class="btn btn-danger" id="delay-modal-btn">
-          <i class="fas fa-times me-1"></i>Update</button>
+          <i class="fas fa-check me-1"></i>Update</button>
           `
         });
       setTimeout(() => {

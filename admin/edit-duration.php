@@ -35,12 +35,13 @@ try {
     
     echo json_encode([
         "success" => true,
-        "message" => "Schedule successfully edited"
+        "message" => "Duration successfully edited"
     ]);
 }catch(Error $e){
     echo json_encode([
         "success" => false,
-        "error" => "Database error: " . $e->getMessage()
+        "error" => "Database error: " . $e->getMessage(),
+        "message" => "Duration editing failed"
     ]);
 }
 ?>
