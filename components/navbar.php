@@ -48,14 +48,12 @@ $user = get_authenticated_user();
                             <span>Users</span>
                         </a>
                     </li>
-                    <?php endif; ?>
                     <li class="nav-item">
                         <a class="nav-link <?= $current === 'logs.php' ? 'active' : '' ?>" href="<?=BASE_URL?>/pages/logs.php">
                             <i class="fas fa-clipboard-list nav-icon"></i>
                             <span>Logs</span>
                         </a>
                     </li>
-                    <?php if (($user['role'] ?? 'operator') === 'admin'): ?>
                     <li class="nav-item">
                         <a class="nav-link <?= $current === 'settings.php' ? 'active' : '' ?>" href="<?=BASE_URL?>/pages/settings.php">
                             <i class="fas fa-cog nav-icon"></i>

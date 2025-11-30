@@ -13,7 +13,6 @@ $canControlCameras = can_access_feature('camera_control');
 ?>
 <main class="container-fluid" style="padding-top: 70px;">
   <!-- Automatic Mode Control -->
-  <?php if ($isAdmin): ?>
   <div class="text-center py-3">
     <button id="auto-mode-button" class="btn btn-primary btn-lg px-4">
       <i class="fas fa-play me-2"></i>Start Automatic Mode
@@ -22,16 +21,7 @@ $canControlCameras = can_access_feature('camera_control');
       <i class="fas fa-play me-2"></i>Emergency
     </button>
   </div>
-  <?php else: ?>
-  <div class="text  <div class="px-2 container">
--center py-3">
-    <div class="alert alert-info" role="alert">
-      <i class="fas fa-info-circle me-2"></i>
-      <strong>Operator Mode:</strong> You can control camera streams. Automatic mode requires admin privileges.
-    </div>
-  </div>
-  <?php endif; ?>
-  
+
   <!-- Camera with button -->
   <div class="row row-cols-1 row-cols-sm-2 py-4 g-3">
     <div class="col">
@@ -112,12 +102,12 @@ $canControlCameras = can_access_feature('camera_control');
         <button class="btn btn-primary" id="override-btn">Override</button>
       </div>
     </div>
-
+    
+    <?php if ($isAdmin): ?>
     <!-- Duration schedule card -->
-    <div class="control__card <?= !$isAdmin ? 'restricted-access' : '' ?>">
+    <div class="control__card">
       <div class="d-flex flex-column" style="gap: 5px;">
-        <h3>Duration Schedule <?= !$isAdmin ? '<span class="badge bg-warning text-dark ms-2">Admin Only</span>' : '' ?></h3>
-        <?php if ($isAdmin): ?>
+        <h3>Duration Schedule</h3>
         <div id="week-days" class="d-flex justify-content-between flex-wrap" style="gap: 5px;">
           <button class="btn flex-fill btn-secondary active" data-week="1">Mon</button>
           <button class="btn flex-fill btn-secondary" data-week="2">Tue</button>
@@ -127,11 +117,6 @@ $canControlCameras = can_access_feature('camera_control');
           <button class="btn flex-fill btn-secondary" data-week="6">Sat</button>
           <button class="btn flex-fill btn-secondary" data-week="7">Sun</button>
         </div>
-        <?php else: ?>
-        <div class="alert alert-warning" role="alert">
-          <i class="fas fa-lock me-2"></i>Duration scheduling requires admin privileges.
-        </div>
-        <?php endif; ?>
         
         <div class="mt-3">
           <input type="hidden" name="user-id" value="<?= $user['user_id'] ?>">
@@ -164,20 +149,13 @@ $canControlCameras = can_access_feature('camera_control');
           <span id="edit-weekday-form-result"></span>
         </form>
       </div>
-      
     </div>
     <!-- Change IP address card -->
-    <div class="control__card <?= !$isAdmin ? 'restricted-access' : '' ?>">
+    <div class="control__card">
       <div class="container-fluid">
-        <h3>Change IP Address <?= !$isAdmin ? '<span class="badge bg-warning text-dark ms-2">Admin Only</span>' : '' ?></h3>
-        <?php if ($isAdmin): ?>
+        <h3>Change IP Address</h3>
         <form action="<?= BASE_URL ?>/admin/change-ip.php" method="post" id="change-ip-form" novalidate class="needs-validation">
-        <?php else: ?>
-        <div class="alert alert-warning" role="alert">
-          <i class="fas fa-lock me-2"></i>IP address management requires admin privileges.
-        </div>
         <form action="<?= BASE_URL ?>/admin/change-ip.php" method="post" id="change-ip-form" novalidate class="needs-validation" style="display: none;">
-        <?php endif; ?>
           <div class="mb-3">
             <div class="input-group">
               <label for="ip_address_cam_1" class="hidden">IP address</label>
@@ -213,6 +191,7 @@ $canControlCameras = can_access_feature('camera_control');
         </form>
       </div>
     </div>
+    <?php endif; ?>
   </div>
   <!-- Modal Component -->
   <?php include BASE_PATH . "/components/infoModal.php" ?>
@@ -227,4 +206,5 @@ $canControlCameras = can_access_feature('camera_control');
 
 <script type="module" src="<?= BASE_URL ?>/assets/js/control.js"></script>
 <?php include BASE_PATH . "/includes/footer.php"; ?>
-<script type="module" src="<?= BASE_URL ?>/assets/js/forms/setupIpForm.js"></script>
+<?php if ($isAdmin): ?><script type="module" src="<?= BASE_URL ?>/assets/js/forms/setupIpForm.js"></script>
+  <?php endif; ?>

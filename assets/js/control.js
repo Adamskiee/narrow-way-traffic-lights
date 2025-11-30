@@ -62,12 +62,6 @@ function initializePrivilegeRestrictions() {
 }
 
 function disableAdminFeatures() {
-  if (autoModeBtn && !IS_ADMIN) {
-    autoModeBtn.disabled = true;
-    autoModeBtn.classList.add("disabled");
-    autoModeBtn.title = "Admin privileges required";
-  }
-
   const weekDayButtons = document.querySelectorAll("#week-days button");
   weekDayButtons.forEach((btn) => {
     if (!IS_ADMIN) {
@@ -129,12 +123,15 @@ const durationInputB = document.getElementById("duration-input-b");
 const saveDurationBtn = document.getElementById("save-duration-btn");
 const durationResult = document.getElementById("duration-result");
 
-if (!cam1Btn || !cam2Btn || !autoModeBtn) {
-  console.error(
-    "Critical control elements not found - camera buttons or auto mode button missing"
-  );
+if(IS_ADMIN) {
+  
+  if (!cam1Btn || !cam2Btn || !autoModeBtn) {
+    console.error(
+      "Critical control elements not found - camera buttons or auto mode button missing"
+    );
+  }
 }
-
+  
 // ================================================================
 // GLOBAL STATE MANAGEMENT
 // ================================================================
@@ -157,6 +154,7 @@ let manualDurationIntervals = {};
 
 let isAutoModeRunning = false;
 let autoModeController = null;
+let mainDelay;
 
 // ================================================================
 // UTILITY FUNCTIONS
@@ -424,14 +422,14 @@ function connectWebSocket(camName) {
   };
 }
 
-function sendLED(camName, cmd) {
+function sendLED(camName, cmd, isEmergency=false) {
   const cam = cams[camName];
   if (cam.connected && cam.ws && cam.ws.readyState === WebSocket.OPEN) {
     try {
       cam.ws.send(cmd);
 
       const color = cmd.includes("green") ? "green" : "red";
-      saveLEDState(camName, color, true);
+      if(!isEmergency) saveLEDState(camName, color, true);
       return true;
     } catch (error) {
       cam.connected = false;
@@ -570,6 +568,7 @@ function saveDurationInputState() {
      JSON.stringify({
       durationA: currentDurationA.value,
       durationB: currentDurationB.value,
+      delay: currentDelay.value
      }))
 }
 
@@ -587,11 +586,36 @@ function clearDurationInputState() {
   localStorage.removeItem("durationOverride");
 }
 
-function calculateRemainingTime(savedTimer) {
-  if (!savedTimer) return null;
+function saveEmergencyState() {
+  localStorage.setItem("emergencyState",
+     JSON.stringify({
+      isRunning: true
+     }))
+}
 
-  const elapsed = Math.floor((Date.now() - savedTimer.timestamp) / 1000);
-  const remaining = savedTimer.timeRemaining - elapsed;
+function loadEmergencyState() {
+  try {
+    const saved = localStorage.getItem("emergencyState");
+    return saved ? JSON.parse(saved) : null;
+  }catch (error) {
+    console.warn("Fialed to laod duration input:", error);
+    return null
+  }
+}
+
+function clearEmergencyState() {
+  localStorage.removeItem("emergencyState");
+}
+
+function calculateRemainingTime(savedTimer, isEmergency=false) {
+  if (!savedTimer) return null;
+  let remaining;
+  if(!isEmergency) {
+    const elapsed = Math.floor((Date.now() - savedTimer.timestamp) / 1000);
+    remaining = savedTimer.timeRemaining - elapsed;
+  }else {
+    remaining = savedTimer.timeRemaining;
+  }
 
   if (remaining <= 1) {
     return remaining > 0 ? remaining : 0;
@@ -1155,7 +1179,6 @@ async function updateDelay(form, formData) {
 
 if (overrideBtn) {
   overrideBtn.addEventListener("click", (e) => {
-      
     if(overrideBtn.innerText === "Override") {
       openConfirmModal({
         title: "Override Duration",
@@ -1202,6 +1225,7 @@ if (overrideBtn) {
 function overrideDuration() {
   currentDurationA.disabled = false;  
   currentDurationB.disabled = false;
+  currentDelay.disabled = false;
   
   overrideBtn.innerText = "Back to default";
   clearDurationInputState();
@@ -1213,20 +1237,29 @@ currentDurationA.addEventListener("input", (e) => {
 currentDurationB.addEventListener("input", (e) => {
   saveDurationInputState();
 })
+currentDelay.addEventListener("input", (e) => {
+  saveDurationInputState();
+})
 
 function backToDefaultDuration() {
   currentDurationA.disabled = true;  
-    currentDurationB.disabled = true;
-
-    overrideBtn.innerText = "Override"
-
-    currentDurationB.value = findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b");
-    currentDurationA.value = findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a");
+  currentDurationB.disabled = true;
+  currentDelay.disabled = true;
+  
+  overrideBtn.innerText = "Override"
+  
+  currentDelay.value = mainDelay;
+  currentDurationB.value = findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b");
+  currentDurationA.value = findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a");
 }
 
 if(emergencyBtn) {
   emergencyBtn.addEventListener("click", () => {
-    if(emergencyBtn.innerText === "Emergency") {
+    if (!cams.cam1.connected || !cams.cam2.connected) {
+      openErrorModal("Both cameras must be connected to start emergency mode");
+      return;
+    }
+    if(emergencyBtn.innerText === "EMERGENCY") {
       openConfirmModal({
         title: "Emergency Activation",
         body: `
@@ -1264,30 +1297,63 @@ if(emergencyBtn) {
 
 function performEmergency() {
   if(isAutoModeRunning) {
-    stopAutoMode();
+    stopAutoMode(true);
   }
-
   cam1Btn.disabled = true;
   cam2Btn.disabled = true;
   cam1Btn.classList.add("disabled");
   cam2Btn.classList.add("disabled");
+
   autoModeBtn.disabled = true;
   emergencyBtn.innerText = "Cancel Emergency";
   
-  sendLED("cam1", "red_on");
-  sendLED("cam2", "red_on");
+  sendLED("cam1", "red_on", true);
+  sendLED("cam2", "red_on", true);
+  updateLEDButton("cam1", "red", true, false)
+  updateLEDButton("cam2", "red", true, false)
+  saveEmergencyState();
 }
 
 function cancelEmergency() {
-  sendLED("cam1", "green_on");
-  sendLED("cam2", "red_on");
-  
-  cam1Btn.disabled = false;
-  cam2Btn.disabled = false;
-  cam1Btn.classList.remove("disabled");
-  cam2Btn.classList.remove("disabled");
+  const autoModeState = loadAutoModeState();
+  if (autoModeState.isRunning) {
+    setTimeout(() => {
+      if (cams.cam1.connected && cams.cam2.connected) {
+        console.log("Resuming auto mode after page reload");
+        resumeAutoModeWithTimer(true);
+      } else {
+        console.log("Cannot resume auto mode - cameras not connected");
+        clearAutoModeState();
+        clearTimerState();
+        cam1Btn.disabled = false;
+        cam2Btn.disabled = false;
+        cam1Btn.classList.remove("disabled");
+        cam2Btn.classList.remove("disabled");
+      }
+    }, 3000);
+  }else{
+    const cam1SavedState = loadLEDState("cam1");
+    const cam2SavedState = loadLEDState("cam2");
+
+    if (cam1SavedState && cam1SavedState.isOn) {
+      updateLEDButton("cam1", cam1SavedState.color, true, false);
+    } else {
+      updateLEDButton("cam1", "green", false, false);
+    }
+
+    if (cam2SavedState && cam2SavedState.isOn) {
+      updateLEDButton("cam2", cam2SavedState.color, true, false);
+    } else {
+      updateLEDButton("cam2", "red", false, false);
+    }
+    cam1Btn.disabled = false;
+    cam2Btn.disabled = false;
+    cam1Btn.classList.remove("disabled");
+    cam2Btn.classList.remove("disabled");
+  }
   autoModeBtn.disabled = false;
-  emergencyBtn.innerText = "Emergency";
+  emergencyBtn.innerText = "EMERGENCY";
+  clearEmergencyState();
 }
 
 async function updateCameraIP(form, formData) {
@@ -1314,6 +1380,234 @@ async function updateCameraIP(form, formData) {
 // ================================================================
 // AUTO MODE SYSTEM
 // ================================================================
+
+async function startPhase1(remainingTime = 0){
+  if (!sendLED("cam1", "green_on")) return;
+  if (!sendLED("cam2", "red_on")) return;
+
+  updateLEDButton("cam1", "green", true, false);
+  updateLEDButton("cam2", "red", true, false);
+
+  let criticalFailures = 0;
+
+  try {
+    const cam1Check = await checkLed("cam1", cams.cam1.ip, "green");
+    if (!cam1Check) {
+      openErrorModal("Camera 1 Green LED is not working");
+      criticalFailures++;
+
+      console.warn("CAM1 green LED check failed");
+    }
+  } catch (error) {
+    if (error.name === "TypeError" || error.message.includes("fetch")) {
+      openErrorModal("Camera 1 connection failure");
+      criticalFailures++;
+      console.error("CAM1 critical connection failure:", error);
+    }
+  }
+
+  try {
+    const cam2Check = await checkLed("cam2", cams.cam2.ip, "red");
+    if (!cam2Check) {
+      openErrorModal("Camera 2 Red LED is not working");
+      criticalFailures++;
+      console.warn("CAM2 red LED check failed");
+    }
+  } catch (error) {
+    if (error.name === "TypeError" || error.message.includes("fetch")) {
+      openErrorModal("Camera 2 connection failure");
+      criticalFailures++;
+      console.error("CAM2 critical connection failure:", error);
+    }
+  }
+
+  if (criticalFailures >= 2) {
+    console.error(
+      "Critical failures detected in both cameras, stopping auto mode"
+    );
+    stopAutoMode();
+    openErrorModal(
+      "Auto mode stopped due to critical ESP32/LED failures in both cameras"
+    );
+    return;
+  }
+
+  let time = remainingTime === 0 ? parseInt(currentDurationA.value) : parseInt(remainingTime);
+
+  for (let i = time; i >= 0; i--) {
+    if (autoModeController.signal.aborted || !isAutoModeRunning) {
+      console.log("Auto mode aborted during countdown");
+      return;
+    }
+
+    saveTimerState("phase1", i, Date.now());
+    const num = await count(i);
+
+    if (autoModeController.signal.aborted || !isAutoModeRunning) {
+      console.log("Auto mode aborted after count in phase1");
+      return;
+    }
+
+    document.getElementById("cam1-count").innerText = num;
+  }
+
+  if (!autoModeController.signal.aborted && isAutoModeRunning) {
+    logLightChange(
+      "cam1",
+      "green",
+      "auto",
+      findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a")
+    );
+    logLightChange(
+      "cam2",
+      "red",
+      "auto",
+      findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a")
+    );
+    document.getElementById("cam1-count").innerText = "0";
+  }
+}
+
+async function startPhase2(remainingTime = 0) {
+  if (autoModeController.signal.aborted || !isAutoModeRunning) return;
+
+  sendLED("cam1", "red_on");
+
+  const time = remainingTime === 0 ? parseInt(currentDelay.value) : parseInt(remainingTime);
+
+  for (let i = time; i >= 0; i--) {
+    if (autoModeController.signal.aborted || !isAutoModeRunning) {
+      console.log("Auto mode aborted during countdown");
+      return;
+    }
+    saveTimerState("phase2", i, Date.now());
+    const num = await count(i);
+
+    if (autoModeController.signal.aborted || !isAutoModeRunning) {
+      return;
+    }
+
+    document.getElementById("cam1-count").innerText = num;
+  }
+  document.getElementById("cam1-count").innerText = "0";
+}
+
+async function startPhase3(remainingTime = 0) {
+  if (autoModeController.signal.aborted || !isAutoModeRunning) return;
+  
+  if (!sendLED("cam1", "red_on")) return;
+  if (!sendLED("cam2", "green_on")) return;
+
+  updateLEDButton("cam1", "red", true, false);
+  updateLEDButton("cam2", "green", true, false);
+
+  let criticalFailures = 0;
+
+  try {
+    const cam1Check2 = await checkLed("cam1", cams.cam1.ip, "red");
+    if (!cam1Check2) {
+      openErrorModal("Camera 1 Red LED is not working");
+      criticalFailures++;
+      console.warn("CAM1 red LED check failed in second phase");
+    }
+  } catch (error) {
+    if (error.name === "TypeError" || error.message.includes("fetch")) {
+      criticalFailures++;
+      openErrorModal("Camera 1 connection failure");
+      console.error(
+        "CAM1 critical connection failure in second phase:",
+        error
+      );
+    }
+  }
+
+  try {
+    const cam2Check2 = await checkLed("cam2", cams.cam2.ip, "green");
+    if (!cam2Check2) {
+      openErrorModal("Camera 2 Green LED is not working");
+      criticalFailures++;
+      console.warn("CAM2 green LED check failed in second phase");
+    }
+  } catch (error) {
+    if (error.name === "TypeError" || error.message.includes("fetch")) {
+      openErrorModal("Camera 2 connection failure");
+      criticalFailures++;
+      console.error(
+        "CAM2 critical connection failure in second phase:",
+        error
+      );
+    }
+  }
+
+  if (criticalFailures >= 2) {
+    console.error(
+      "Critical failures detected in both cameras (second phase), stopping auto mode"
+    );
+    stopAutoMode();
+    openErrorModal(
+      "Auto mode stopped due to critical ESP32/LED failures in both cameras"
+    );
+    return;
+  }
+
+  const time = remainingTime === 0 ? parseInt(currentDurationB.value) : parseInt(remainingTime);
+  
+  for (let i = time; i >= 0; i--) {
+    if (autoModeController.signal.aborted || !isAutoModeRunning) {
+      console.log("Auto mode aborted during second countdown");
+      return;
+    }
+
+    saveTimerState("phase3", i, Date.now());
+    const num = await count(i);
+    
+    if (autoModeController.signal.aborted || !isAutoModeRunning) {
+      return;
+    }
+
+    document.getElementById("cam2-count").innerText = num;
+  }
+  if (!autoModeController.signal.aborted && isAutoModeRunning) {
+    logLightChange(
+      "cam1",
+      "red",
+      "auto",
+      findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
+    );
+    logLightChange(
+      "cam2",
+      "green",
+      "auto",
+      findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
+    );
+    document.getElementById("cam2-count").innerText = "0";
+  }
+}
+
+async function startPhase4(remainingTime = 0) {
+  if (autoModeController.signal.aborted || !isAutoModeRunning) return;
+
+  sendLED("cam2", "red_on")
+
+  const time = remainingTime === 0 ? parseInt(currentDelay.value) : parseInt(remainingTime);
+
+  for (let i = time; i >= 0; i--) {
+    if (autoModeController.signal.aborted || !isAutoModeRunning) {
+      console.log("Auto mode aborted during countdown");
+      return;
+    }
+
+    saveTimerState("phase4", i, Date.now());
+    const num = await count(i);
+
+    if(autoModeController.signal.aborted || !isAutoModeRunning) {
+      return;
+    }
+
+    document.getElementById("cam2-count").innerText = num;
+  }
+  document.getElementById("cam2-count").innerText = "0";
+}
 
 /**
  * Start automatic traffic light mode with timer
@@ -1346,220 +1640,52 @@ async function startAutoMode() {
   cam2Count.innerText = "";
 
   try {
-    while (!autoModeController.signal.aborted) {
-      if (autoModeController.signal.aborted) {
+    while (!autoModeController.signal.aborted && isAutoModeRunning) {
+      if (autoModeController.signal.aborted || !isAutoModeRunning) {
         console.log("Auto mode aborted");
         break;
       }
 
-      if (!sendLED("cam1", "green_on")) return;
-      if (!sendLED("cam2", "red_on")) return;
-
-      updateLEDButton("cam1", "green", true, false);
-      updateLEDButton("cam2", "red", true, false);
-
-      let criticalFailures = 0;
-
-      try {
-        const cam1Check = await checkLed("cam1", cams.cam1.ip, "green");
-        if (!cam1Check) {
-          openErrorModal("Camera 1 Green LED is not working");
-          criticalFailures++;
-
-          console.warn("CAM1 green LED check failed");
-        }
-      } catch (error) {
-        if (error.name === "TypeError" || error.message.includes("fetch")) {
-          openErrorModal("Camera 1 connection failure");
-          criticalFailures++;
-          console.error("CAM1 critical connection failure:", error);
-        }
+      await startPhase1();
+      
+      if (autoModeController.signal.aborted || !isAutoModeRunning) {
+        console.log("Auto mode aborted before second phase");
+        break;
       }
+      
+      await startPhase2();
 
-      try {
-        const cam2Check = await checkLed("cam2", cams.cam2.ip, "red");
-        if (!cam2Check) {
-          openErrorModal("Camera 2 Red LED is not working");
-          criticalFailures++;
-          console.warn("CAM2 red LED check failed");
-        }
-      } catch (error) {
-        if (error.name === "TypeError" || error.message.includes("fetch")) {
-          openErrorModal("Camera 2 connection failure");
-          criticalFailures++;
-          console.error("CAM2 critical connection failure:", error);
-        }
-      }
-
-      if (criticalFailures >= 2) {
-        console.error(
-          "Critical failures detected in both cameras, stopping auto mode"
-        );
-        stopAutoMode();
-        openErrorModal(
-          "Auto mode stopped due to critical ESP32/LED failures in both cameras"
-        );
-        return;
-      }
-
-      for (let i = currentDurationA.value; i > 0; i--) {
-        if (autoModeController.signal.aborted) {
-          console.log("Auto mode aborted during countdown");
-          return;
-        }
-
-        saveTimerState("phase1", i, Date.now());
-
-        const num = await count(i);
-        document.getElementById("cam1-count").innerText = num;
-      }
-
-      if (!autoModeController.signal.aborted) {
-        logLightChange(
-          "cam1",
-          "green",
-          "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a")
-        );
-        logLightChange(
-          "cam2",
-          "red",
-          "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a")
-        );
-        document.getElementById("cam1-count").innerText = "0";
-      }
-
-      if (autoModeController.signal.aborted) {
+      if (autoModeController.signal.aborted || !isAutoModeRunning) {
         console.log("Auto mode aborted before second phase");
         break;
       }
 
-      sendLED("cam1", "red_on");
-
-      for (let i = currentDelay.value; i > 0; i--) {
-        if (autoModeController.signal.aborted) {
-          console.log("Auto mode aborted during countdown");
-          return;
-        }
-
-        const num = await count(i);
-        document.getElementById("cam1-count").innerText = num;
-      }
-      document.getElementById("cam1-count").innerText = "0";
-
-      if (!sendLED("cam1", "red_on")) return;
-      if (!sendLED("cam2", "green_on")) return;
-
-      updateLEDButton("cam1", "red", true, false);
-      updateLEDButton("cam2", "green", true, false);
-
-      let criticalFailures2 = 0;
-
-      try {
-        const cam1Check2 = await checkLed("cam1", cams.cam1.ip, "red");
-        if (!cam1Check2) {
-          openErrorModal("Camera 1 Red LED is not working");
-          criticalFailures2++;
-          console.warn("CAM1 red LED check failed in second phase");
-        }
-      } catch (error) {
-        if (error.name === "TypeError" || error.message.includes("fetch")) {
-          criticalFailures2++;
-          openErrorModal("Camera 1 connection failure");
-          console.error(
-            "CAM1 critical connection failure in second phase:",
-            error
-          );
-        }
+      await startPhase3();
+      
+      if (autoModeController.signal.aborted || !isAutoModeRunning) {
+        console.log("Auto mode aborted before second phase");
+        break;
       }
 
-      try {
-        const cam2Check2 = await checkLed("cam2", cams.cam2.ip, "green");
-        if (!cam2Check2) {
-          openErrorModal("Camera 2 Green LED is not working");
-          criticalFailures2++;
-          console.warn("CAM2 green LED check failed in second phase");
-        }
-      } catch (error) {
-        if (error.name === "TypeError" || error.message.includes("fetch")) {
-          openErrorModal("Camera 2 connection failure");
-          criticalFailures2++;
-          console.error(
-            "CAM2 critical connection failure in second phase:",
-            error
-          );
-        }
-      }
-
-      if (criticalFailures2 >= 2) {
-        console.error(
-          "Critical failures detected in both cameras (second phase), stopping auto mode"
-        );
-        stopAutoMode();
-        openErrorModal(
-          "Auto mode stopped due to critical ESP32/LED failures in both cameras"
-        );
-        return;
-      }
-
-      for (let i = currentDurationB.value; i > 0; i--) {
-        if (autoModeController.signal.aborted) {
-          console.log("Auto mode aborted during second countdown");
-          return;
-        }
-
-        saveTimerState("phase2", i, Date.now());
-
-        const num = await count(i);
-        document.getElementById("cam2-count").innerText = num;
-      }
-      if (!autoModeController.signal.aborted) {
-        logLightChange(
-          "cam1",
-          "red",
-          "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
-        );
-        logLightChange(
-          "cam2",
-          "green",
-          "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
-        );
-        document.getElementById("cam2-count").innerText = "0";
-      }
-
-      sendLED("cam2", "red_on")
-
-      for (let i = currentDelay.value; i > 0; i--) {
-        if (autoModeController.signal.aborted) {
-          console.log("Auto mode aborted during countdown");
-          return;
-        }
-
-        const num = await count(i);
-        document.getElementById("cam2-count").innerText = num;
-      }
-      document.getElementById("cam2-count").innerText = "0";
+      await startPhase4();
     }
   } catch (error) {
     console.error("Auto mode error:", error);
     openErrorModal("Auto mode encountered an error and was stopped");
   } finally {
-    stopAutoMode();
+    if(isAutoModeRunning) stopAutoMode();
   }
 }
 
-function stopAutoMode() {
+function stopAutoMode(saved=false) {
   if (autoModeController) {
     autoModeController.abort();
   }
 
   isAutoModeRunning = false;
 
-  saveAutoModeState(false);
-  clearTimerState();
+  saveAutoModeState(saved);
+  if(!saved) clearTimerState();
 
   const cam1Button = document.getElementById("cam1-button");
   const cam2Button = document.getElementById("cam2-button");
@@ -1593,7 +1719,7 @@ function stopAutoMode() {
   document.getElementById("cam2-count").style.display = "none";
 }
 
-async function resumeAutoModeWithTimer() {
+async function resumeAutoModeWithTimer(isEmergency=false) {
   const savedTimer = loadTimerState();
 
   if (!savedTimer) {
@@ -1601,14 +1727,18 @@ async function resumeAutoModeWithTimer() {
     return;
   }
 
-  const remainingTime = calculateRemainingTime(savedTimer);
+  const remainingTime = isEmergency ? calculateRemainingTime(savedTimer, true) : calculateRemainingTime(savedTimer);
 
   if (remainingTime <= 0) {
     clearTimerState();
 
     if (savedTimer.phase === "phase1") {
-      continueAutoModePhase2();
-    } else {
+      continueAutoMode("phase2");
+    } else if (savedTimer.phase === "phase2") {
+      continueAutoMode("phase3");
+    } else if (savedTimer.phase === "phase3") {
+      continueAutoMode("phase4");
+    }else {
       startAutoMode();
     }
     return;
@@ -1638,101 +1768,23 @@ async function resumeAutoModeWithTimer() {
 
   try {
     if (savedTimer.phase === "phase1") {
-      if (!sendLED("cam1", "green_on")) return;
-      if (!sendLED("cam2", "red_on")) return;
-      updateLEDButton("cam1", "green", true, false);
-      updateLEDButton("cam2", "red", true, false);
-
-      cam1Count.innerText = remainingTime;
-      cam2Count.innerText = "";
-
-      for (let i = remainingTime; i > 0; i--) {
-        if (autoModeController.signal.aborted) return;
-        saveTimerState("phase1", i, Date.now());
-        const num = await count(i);
-        cam1Count.innerText = num;
-        cam2Count.innerText = "";
-      }
+      await startPhase1(remainingTime);
 
       if (!autoModeController.signal.aborted) {
-        logLightChange(
-          "cam1",
-          "green",
-          "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a")
-        );
-        logLightChange(
-          "cam2",
-          "red",
-          "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
-        );
-        cam1Count.innerText = "0";
+        await continueAutoMode("phase2");
       }
-
-      for (let i = currentDelay.value; i > 0; i--) {
-        if (autoModeController.signal.aborted) {
-          console.log("Auto mode aborted during countdown");
-          return;
-        }
-
-        const num = await count(i);
-        sendLED("cam1", "red")
-        cam1Count.innerText = num;
-      }
-
-      cam1Count.innerText = "0";
-
+    }else if (savedTimer.phase === "phase2") {
+      await startPhase2(remainingTime);
       if (!autoModeController.signal.aborted) {
-        await continueAutoModePhase2();
+        await continueAutoMode("phase3");
       }
-
+    }else if (savedTimer.phase === "phase3") {
+      await startPhase3(remainingTime);
+      if (!autoModeController.signal.aborted) {
+        await continueAutoMode("phase4");
+      }
     } else {
-      if (!sendLED("cam1", "red_on")) return;
-      if (!sendLED("cam2", "green_on")) return;
-      updateLEDButton("cam1", "red", true, false);
-      updateLEDButton("cam2", "green", true, false);
-
-      cam1Count.innerText = "";
-      cam2Count.innerText = remainingTime;
-
-      for (let i = remainingTime; i > 0; i--) {
-        if (autoModeController.signal.aborted) return;
-        saveTimerState("phase2", i, Date.now());
-        const num = await count(i);
-        cam2Count.innerText = num;
-        cam1Count.innerText = "";
-      }
-
-      if (!autoModeController.signal.aborted) {
-        logLightChange(
-          "cam1",
-          "red",
-          "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
-        );
-        logLightChange(
-          "cam2",
-          "green",
-          "auto",
-          findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
-        );
-        cam2Count.innerText = "0";
-      }
-
-      for (let i = currentDelay.value; i > 0; i--) {
-        if (autoModeController.signal.aborted) {
-          console.log("Auto mode aborted during countdown");
-          return;
-        }
-
-        const num = await count(i);
-        sendLED("cam2", "red")
-        cam2Count.innerText = num;
-      }
-
-      cam2Count.innerText = "0";
-
+      await startPhase4(remainingTime);
     }
 
     clearTimerState();
@@ -1746,7 +1798,7 @@ async function resumeAutoModeWithTimer() {
   }
 }
 
-async function continueAutoModePhase2() {
+async function continueAutoMode(phase) {
   if (!isAutoModeRunning) {
     autoModeController = new AbortController();
     isAutoModeRunning = true;
@@ -1762,54 +1814,16 @@ async function continueAutoModePhase2() {
     cam2Btn.classList.add("disabled");
   }
 
-  if (!sendLED("cam1", "red_on")) return;
-  if (!sendLED("cam2", "green_on")) return;
-  updateLEDButton("cam1", "red", true, false);
-  updateLEDButton("cam2", "green", true, false);
-
-  const cam1Count = document.getElementById("cam1-count");
-  const cam2Count = document.getElementById("cam2-count");
-
-  cam1Count.style.display = "block";
-  cam2Count.style.display = "block";
-  cam1Count.innerText = "";
-
-  for (let i = currentDurationB.value; i > 0; i--) {
-    if (autoModeController.signal.aborted) return;
-    saveTimerState("phase2", i, Date.now());
-    const num = await count(i);
-    cam2Count.innerText = num;
-    cam1Count.innerText = "";
+  if(phase === "phase2") {
+    await startPhase2();
+    await startPhase3();
+    await startPhase4();
+  }else if (phase === "phase3") {
+    await startPhase3();
+    await startPhase4();
+  }else if (phase === "phase4") {
+    await startPhase4();
   }
-
-  if (!autoModeController.signal.aborted) {
-    logLightChange(
-      "cam1",
-      "red",
-      "auto",
-      findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
-    );
-    logLightChange(
-      "cam2",
-      "green",
-      "auto",
-      findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b")
-    );
-    cam2Count.innerText = "0";
-  }
-
-  sendLED("cam2", "red_on")
-
-  for (let i = currentDelay.value; i > 0; i--) {
-    if (autoModeController.signal.aborted) {
-      console.log("Auto mode aborted during countdown");
-      return;
-    }
-
-    const num = await count(i);
-    cam1Count.innerText = num;
-  }
-  cam1Count.innerText = "";
 
   clearTimerState();
   if (!autoModeController.signal.aborted) {
@@ -1819,10 +1833,6 @@ async function continueAutoModePhase2() {
 
 if (autoModeBtn) {
   autoModeBtn.addEventListener("click", async () => {
-    if (!requireAdmin("use automatic mode")) {
-      return;
-    }
-
     if (!isAutoModeRunning) {
       await startAutoMode();
     } else {
@@ -1840,6 +1850,9 @@ if (autoModeBtn) {
  */
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Traffic Light Control System Initializing...");
+  cam1Btn.disabled = true;
+  cam2Btn.disabled = true;
+  let isBtnDisabled;
 
   initializePrivilegeRestrictions();
 
@@ -1882,8 +1895,8 @@ document.addEventListener("DOMContentLoaded", () => {
   })
   .then((data) => {
     const delay = data["delay"] || {};
-
-    delayInput.value = delay;
+    if(IS_ADMIN) delayInput.value = delay;
+    mainDelay = delay;
     currentDelay.value = delay;
   })
   .catch((err) => {
@@ -1903,6 +1916,7 @@ document.addEventListener("DOMContentLoaded", () => {
           overrideDuration();
           currentDurationA.value = overrideDurationState.durationA;
           currentDurationB.value = overrideDurationState.durationB;
+          currentDelay.value = overrideDurationState.delay;
         }else {
           currentDurationA.value = findDuration(
             currentWeekDay === 0 ? 7 : currentWeekDay, "a"
@@ -1944,23 +1958,46 @@ document.addEventListener("DOMContentLoaded", () => {
     updateLEDButton("cam2", "red", false, false);
   }
 
-  // Check if auto mode was running before page reload
-  const autoModeState = loadAutoModeState();
-  if (autoModeState.isRunning) {
-    setTimeout(() => {
+
+  const emergencyState = loadEmergencyState();
+  if(emergencyState && emergencyState.isRunning) {
+    setTimeout(()=> {
+
       if (cams.cam1.connected && cams.cam2.connected) {
         console.log("Resuming auto mode after page reload");
-        resumeAutoModeWithTimer();
+        isBtnDisabled = true;
+        performEmergency();
+        cam1Btn.disabled = true;
+        cam2Btn.disabled = true;
       } else {
         console.log("Cannot resume auto mode - cameras not connected");
-        clearAutoModeState();
-        clearTimerState();
+        clearEmergencyState();
+        cam1Btn.disabled = false;
+        cam2Btn.disabled = false;
       }
-    }, 3000);
-  } else {
-    document.getElementById("cam1-count").style.display = "none";
-    document.getElementById("cam2-count").style.display = "none";
+    }, 2000);
+  }else {
+    const autoModeState = loadAutoModeState();
+    if (autoModeState.isRunning) {
+      setTimeout(() => {
+        if (cams.cam1.connected && cams.cam2.connected) {
+          console.log("Resuming auto mode after page reload");
+          resumeAutoModeWithTimer();
+          cam1Btn.disabled = true;
+          cam2Btn.disabled = true;
+        } else {
+          console.log("Cannot resume auto mode - cameras not connected");
+          clearAutoModeState();
+          clearTimerState();
+          cam1Btn.disabled = false;
+          cam2Btn.disabled = false;
+        }
+      }, 3000);
+    } else {
+      document.getElementById("cam1-count").style.display = "none";
+      document.getElementById("cam2-count").style.display = "none";
+      cam1Btn.disabled = false;
+      cam2Btn.disabled = false;
+    }
   }
-
-
 });
