@@ -3,6 +3,14 @@ $page_title = "Control";
 include "../includes/header.php"; 
 
 redirect_if_not_logged_in();
+if(!is_admin_authenticated()) {
+  if(is_there_operator_login()) {
+    ob_end_clean();
+    logout_user();
+    exit;
+  }
+}
+
 
 $user = get_authenticated_user();
 $userRole = get_user_role();

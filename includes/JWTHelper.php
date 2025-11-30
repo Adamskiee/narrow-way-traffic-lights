@@ -5,11 +5,12 @@ use Firebase\JWT\Key;
 class JWTHelper {
     private $secret = "your-secret-key-change-this";
     
-    public function createToken($userId, $username, $role) {
+    public function createToken($userId, $username, $role, $created_by) {
         $payload = [
             'user_id' => $userId,
             'username' => $username,
             'role' => $role,
+            'created_by' => $created_by,
             'exp' => time() + (60 * 60) 
         ];
         

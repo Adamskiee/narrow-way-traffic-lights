@@ -1,6 +1,24 @@
 <?php 
 
+function is_there_operator_login() {
+    global $conn;
+    $user = get_authenticated_user();
+
+    $stmt = $conn->prepare("SELECT id FROM users WHERE is_active = 1 AND created_by = ? AND role = 'operator' AND id != ?");
+    $stmt->bind_param("ii", $user['created_by'], $user['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if($result->num_rows > 0) {  
+        return true;
+    }else {
+        return false;
+    }
+}
+
 function logout_user() {
+    global $conn;
+    $user = get_authenticated_user();
     setcookie('jwt_token', '', [
         'expires' => time() - 3600,
         'path' => '/',
@@ -8,7 +26,13 @@ function logout_user() {
         'secure' => false,
         'samesite' => 'Lax'
     ]);
-    header('Location: ../index.php');
+
+    $update_active = $conn->prepare("UPDATE users SET is_active = 0 WHERE id = ?");
+    $update_active->bind_param("i", $user["user_id"]);
+    $update_active->execute();
+
+    $conn->close();
+    header("Location: ../index.php");
 }
 
 function get_authenticated_user() {

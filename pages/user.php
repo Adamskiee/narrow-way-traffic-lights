@@ -53,6 +53,9 @@ redirect_if_not_logged_in();
                                 <i class="fas fa-user me-1"></i>Username
                             </th>
                             <th scope="col">
+                                <i class="fas fa-circle me-1"></i>Status
+                            </th>
+                            <th scope="col">
                                 <i class="fas fa-id-card me-1"></i>First Name
                             </th>
                             <th scope="col">

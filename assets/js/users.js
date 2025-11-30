@@ -284,6 +284,7 @@ function loadUsers() {
                             <strong>${user.username}</strong>
                         </div>
                     </td>
+                    <td>${user["is_active"] === 1 ? 'Active' : 'Inactive'} </td>
                     <td>${user["first_name"] || '-'}</td>
                     <td>${user["last_name"] || '-'}</td>
                     <td>
