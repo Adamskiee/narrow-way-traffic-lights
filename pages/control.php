@@ -12,8 +12,9 @@ $canChangeIP = can_access_feature('ip_management');
 $canControlCameras = can_access_feature('camera_control');
 ?>
 <main class="container-fluid" style="padding-top: 70px;">
+  <div class="row">
   <!-- Automatic Mode Control -->
-  <div class="text-center py-3">
+  <div class="text-center py-3 col-12">
     <button id="auto-mode-button" class="btn btn-primary btn-lg px-4">
       <i class="fas fa-play me-2"></i>Start Automatic Mode
     </button>
@@ -23,7 +24,7 @@ $canControlCameras = can_access_feature('camera_control');
   </div>
 
   <!-- Camera with button -->
-  <div class="row row-cols-1 row-cols-sm-2 py-4 g-3">
+  <div class="row row-cols-1 row-cols-sm-2 py-4 g-3 col-12">
     <div class="col">
       <div class="row gap-2">
         <div class="d-flex justify-content-between align-items-center" >
@@ -59,45 +60,53 @@ $canControlCameras = can_access_feature('camera_control');
       </div>
     </div>
   </div>
-  <!-- Current duration card -->
-  <div class=" mb-5 control__card-container">
+  <div class="mb-5 control__card-container col-12">
+    <!-- Current duration card -->
     <div class="control__card ">
       <div>
         <h3>Current duration</h3>
         <div class="mb-3">
-          <label for="" class="form-label">Delay (seconds)</label>
-          <input
-            type="num"
-            class="form-control"
-            name="current-delay"
-            id="current-delay"
-            min="1"
-            disabled
-          />
+          <label for="current-delay" class="form-label">Delay (seconds)</label>
+          <div class="input-group">
+            <input
+              type="num"
+              class="form-control"
+              name="current-delay"
+              id="current-delay"
+              min="1"
+              disabled
+            />
+            <button id="current-delay-btn" class="btn btn-secondary" disabled data-state="edit">Edit</button>
+          </div>
         </div>
         <div class="mb-3">
           <label for="" class="form-label">Duration A (seconds)</label>
-          <input
-            type="num"
-            class="form-control"
-            name="duration-a"
-            id="current-duration-a"
-            aria-describedby="helpId"
-            min="1"
-            disabled
-          />
+          <div class="input-group">
+            <input
+              type="num"
+              class="form-control"
+              name="duration-a"
+              id="current-duration-a"
+              aria-describedby="helpId"
+              min="1"
+              disabled
+            />
+            <button id="current-duration-a-btn" class="btn btn-secondary" disabled data-state="edit">Edit</button>
+          </div>
         </div>
         <div class="mb-3">
-          <label for="" class="form-label">Duration B (seconds)</label>
-          <input
-          type="num"
-          class="form-control"
-          name="duration-b"
-          id="current-duration-b"
-          aria-describedby="helpId"
-          min="1"
-          disabled
-          />
+          <label for="current-duration-b" class="form-label">Duration B (seconds)</label>
+          <div class="input-group">
+            <input
+            type="num"
+            class="form-control"
+            name="duration-b"
+            id="current-duration-b"
+            min="1"
+            disabled
+            />
+            <button id="current-duration-b-btn" class="btn btn-secondary" disabled data-state="edit">Edit</button>
+          </div>
         </div>
         <button class="btn btn-primary" id="override-btn">Override</button>
       </div>
@@ -135,44 +144,48 @@ $canControlCameras = can_access_feature('camera_control');
     <div class="control__card">
       <div class="container-fluid">
         <h3>Change IP Address</h3>
-        <form action="<?= BASE_URL ?>/admin/change-ip.php" method="post" id="change-ip-form" novalidate class="needs-validation">
-        <form action="<?= BASE_URL ?>/admin/change-ip.php" method="post" id="change-ip-form" novalidate class="needs-validation" style="display: none;">
+        <form action="<?= BASE_URL ?>/admin/change-ip.php" method="post" id="change-ip-form">
           <div class="mb-3">
             <div class="input-group">
               <label for="ip_address_cam_1" class="hidden">IP address</label>
-              <input type="text" class="form-control ip-input" placeholder="IP Address Cam A" aria-label="Duration" name="ip_address_cam_1" id="ip_address_cam_2" aria-describedby="connect-cam-1" data-cam="1" required>
-              <button class="btn btn-secondary" type="button" id="connect-cam-1">Connect</button>
+              <input type="text" class="form-control ip-input" placeholder="IP Address Cam A" aria-label="Duration" name="ip_address_cam_1" id="ip_address_cam_1" aria-describedby="connect-cam-1" data-cam="1" required disabled>
+              <button class="btn btn-secondary" type="button" id="connect-cam-1" disabled>Connect</button>
             </div>
             <small id="result_cam_1" class="form-text text-danger"></small>
           </div>
           <div class="mb-3">
             <div class="input-group">
               <label for="ip_address_cam_2" class="hidden">IP address</label>
-              <input type="text" class="form-control ip-input" placeholder="IP Address Cam B" aria-label="Duration" name="ip_address_cam_2" id="ip_address_cam_2" aria-describedby="connect-cam-2" data-cam="2" required>
-              <button class="btn btn-secondary" type="button" id="connect-cam-2">Connect</button>
+              <input type="text" class="form-control ip-input" placeholder="IP Address Cam B" aria-label="Duration" name="ip_address_cam_2" id="ip_address_cam_2" aria-describedby="connect-cam-2" data-cam="2" required disabled>
+              <button class="btn btn-secondary" type="button" id="connect-cam-2" disabled>Connect</button>
             </div>
             <span id="result_cam_2" class="form-text text-danger"></span>
           </div>
-          <button type="submit" class="btn btn-primary">Change</button>
+          <div class="d-flex">
+            <button type="button" class="btn submit-btn" id="change-ip-btn">Change IP Address</button>
+            <button type="button" class="btn btn-secondary" id="cancel-change-ip-btn" disabled>Cancel</button>
+          </div>
           <span id="ip-result"></span>
         </form>
       </div>
     </div>
+    <!-- Change Delay Card -->
     <div class="control__card">
       <div class="container-fluid">
         <h3>Change Delay</h3>
         <form action="<?= BASE_URL ?>/admin/update-delay.php" method="post" id="change-delay-form" novalidate class="needs-validation">
           <div class="mb-3">
               <label for="delay" class="hidden">Delay</label>
-              <input type="text" class="form-control" placeholder="Delay" aria-label="Delay" name="delay" id="delay-input"  data-cam="1" required>
-            <small id="result_cam_1" class="form-text text-danger"></small>
+              <input type="text" class="form-control" placeholder="Delay" aria-label="Delay" name="delay" id="delay-input"  data-cam="1" required disabled>
           </div>
-          <button type="submit" class="btn btn-primary">Change</button>
+          <button type="button" class="btn btn-primary" id="change-delay-btn">Change</button>
+          <button type="button" class="btn btn-secondary" id="close-change-delay-btn" disabled>Close</button>
           <span id="ip-result"></span>
         </form>
       </div>
     </div>
     <?php endif; ?>
+  </div>
   </div>
   <!-- Modal Component -->
   <?php include BASE_PATH . "/components/infoModal.php" ?>

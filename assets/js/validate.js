@@ -188,7 +188,7 @@ function validateEmail(value) {
 /**
  * Show field error
  */
-function showFieldError(field, message) {
+export function showFieldError(field, message) {
     clearFieldError(field);
     
     field.classList.add('is-invalid');
@@ -205,7 +205,7 @@ function showFieldError(field, message) {
 /**
  * Show field success
  */
-function showFieldSuccess(field) {
+export function showFieldSuccess(field) {
     clearFieldError(field);
     
     field.classList.add('is-valid');
@@ -215,7 +215,7 @@ function showFieldSuccess(field) {
 /**
  * Clear field error
  */
-function clearFieldError(field) {
+export function clearFieldError(field) {
     field.classList.remove('is-invalid', 'is-valid');
     
     const errorElement = document.getElementById(`${field.name}-error`);

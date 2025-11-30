@@ -1,4 +1,5 @@
 import { handleFormSubmit } from "../formHandler.js";
+import { showFieldError, showFieldSuccess } from "../validate.js";
 
 const result = document.getElementById("ip-result");
 const weekDays = document.getElementById("week-days");
@@ -9,21 +10,22 @@ export async function checkESP(num) {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), 5000);
     const result = document.getElementById(`result_cam_${num}`);
-    const ip = document.querySelector(`input[name="ip_address_cam_${num}"]`).value;
+    const ipInput = document.querySelector(`input[name="ip_address_cam_${num}"]`);
+    const ip = ipInput.value;
 
     if(!ipRegex.test(ip.trim())) {
-        result.innerText = "Invalid IP address"
+        showFieldError(ipInput, "Invalid IP address");
         return false;
     }
 
-    result.innerText = "Loading...";
+    showFieldError(ipInput, "Loading...");
     try {
         const res = await fetch(`http://${ip}/check`, { method: "GET", mode: "no-cors", signal: controller.signal });
         clearTimeout(id);
-        result.innerText = "Reachable";
+        showFieldError(ipInput, "Reachable");
         return true;
     }catch(err) {
-        result.innerText = "Unreachable";
+        showFieldError(ipInput, "Unreachable");
         return false;
     }
 }
