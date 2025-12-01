@@ -54,6 +54,12 @@ function is_admin_authenticated() {
     return $user && isset($user['role']) && $user['role'] === 'admin';
 }
 
+function is_super_admin_authenticated() {
+    $user = get_authenticated_user();
+    return $user && isset($user['role']) && $user['role'] === 'super_admin';
+}
+
+
 function is_operator() {
     $user = get_authenticated_user();
     return $user && isset($user['role']) && $user['role'] === 'operator';

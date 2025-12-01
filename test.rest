@@ -60,8 +60,8 @@ POST http://localhost/narrow-way-traffic-lights/includes/login-process.php
 Content-Type: application/json
 
 {
-    "password": "admin",
-    "username": "admin"
+    "password": "superadmin",
+    "username": "superadmin"
 }
 
 ###
@@ -103,3 +103,23 @@ Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2Vyb
 {
     "delay": 15
 }
+
+###
+
+POST http://localhost/narrow-way-traffic-lights/admin/update-delay.php
+Content-Type: application/json
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzY0Mzk4MTk4fQ.NZXZ3RN2xGKQ_PLae3tHXZbPlusxWCe2G12p6STOhUI
+
+{
+    "username": "Adamskieee12",
+    "first-name": "Adam1",
+    "email": "tosinomatthew@gmail.com",
+    "password": "adam1",
+    "user_id": 2
+}
+
+###
+
+POST http://localhost/narrow-way-traffic-lights/superadmin/admins.php
+Content-Type: application/json
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMDAsInVzZXJuYW1lIjoic3VwZXJhZG1pbiIsInJvbGUiOiJzdXBlcl9hZG1pbiIsImNyZWF0ZWRfYnkiOjIwMCwiZXhwIjoxNzY0NTU0OTQzfQ.UrcpyVww3qO15EnKZr6MBmQOM32ktIyTF71Whgy09gk
