@@ -786,10 +786,10 @@ if( IS_ADMIN) {
 
   const cancelSaveDurationBtn = document.getElementById("cancel-save-duration-btn");
   cancelSaveDurationBtn.addEventListener("click", () => {
-  const durationA = durationInputA.value;
-  const durationB = durationInputB.value;
-  const durationObj = durations.find(
-    (d) => d.week_day == selectedWeekday
+    const durationA = durationInputA.value;
+    const durationB = durationInputB.value;
+    const durationObj = durations.find(
+      (d) => d.week_day == selectedWeekday
   );
 
   if(durationA == durationObj["duration_a"] && durationB == durationObj["duration_b"]) {
@@ -850,7 +850,7 @@ if( IS_ADMIN) {
     })
   }
 })
-}
+
 if (saveDurationBtn && durationInputA && durationInputB) {
   saveDurationBtn.addEventListener("click", async () => {
     if(saveDurationBtn.dataset.state === "edit") {
@@ -864,6 +864,7 @@ if (saveDurationBtn && durationInputA && durationInputB) {
       validateSaveDuration();
     }
   });
+}
 }
 
 async function validateSaveDuration() {
@@ -2466,6 +2467,10 @@ async function continueAutoMode(phase) {
 
 if (autoModeBtn) {
   autoModeBtn.addEventListener("click", async () => {
+    if (!cams.cam1.connected || !cams.cam2.connected) {
+      openErrorModal("Both cameras must be connected to start automatic mode");
+      return;
+    }
     if (!isAutoModeRunning) {
       openInfoModal({
         title: "Automatic mode activation",
