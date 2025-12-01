@@ -34,27 +34,10 @@ if($result && $result->num_rows > 0) {
             'samesite' => 'Lax'
         ]);
 
-        $update_active = $conn->prepare("UPDATE users SET is_active = 1 WHERE id = ?");
-        $update_active->bind_param("i", $row["id"]);
-        $update_active->execute();
-        
-        $ip_check = $conn->prepare("SELECT * FROM ip_addresses WHERE admin_id = ?");
-        $ip_check->bind_param("i", $row["created_by"]);
-        $ip_check->execute();
-        $ip_result = $ip_check->get_result();
-        
-        $has_ip_address = $ip_result && $ip_result->num_rows > 0;
-        
-        if($row['role'] == "super_admin") {
-            echo json_encode(["success" => true, "redirect" => BASE_URL . "/pages/admin.php", "token" => $token]);
-        }elseif($row['role'] == "admin") {
-            if($has_ip_address) {
-                echo json_encode(["success" => true, "redirect" => BASE_URL . "/pages/control.php", "token" => $token]);
-            }else {
-                echo json_encode(["success" => true, "redirect" => BASE_URL . "/pages/setup-ip.php", "token" => $token]);
-            }
+        if($row['is_2fa_enabled'] == 0) {
+            echo json_encode(["success" => true, "redirect" => BASE_URL . "/setup-twofa.php", "token" => $token]);
         }else {
-            echo json_encode(["success" => true, "redirect" => BASE_URL . "/pages/control.php", "token" => $token]);
+            echo json_encode(["success" => true, "redirect" => BASE_URL . "/verify-twofa.php", "token" => $token]);
         }
     }else {
         echo json_encode(["success" => false, "message"=>"Invalid password"]);
@@ -62,4 +45,6 @@ if($result && $result->num_rows > 0) {
 }else {
     echo json_encode(["success" => false, "message"=>"Username not found"]);
 }
+
+
 ?>

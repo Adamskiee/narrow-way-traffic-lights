@@ -32,7 +32,7 @@ function logout_user() {
     $update_active->execute();
 
     $conn->close();
-    header("Location: ../index.php");
+    header("Location: ". BASE_URL . "/index.php");
 }
 
 function get_authenticated_user() {
@@ -117,5 +117,21 @@ function validateToken($token) {
     $user = $stmt->get_result();
 
     return $user->num_rows > 0;
+}
+
+function is_2fa_enabled(){
+    global $conn;
+    $user = get_authenticated_user();
+    $stmt = $conn->prepare("SELECT is_2fa_enabled FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user['user_id']);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $isEnable = $result->fetch_assoc()['is_2fa_enabled'];
+    if($isEnable == 1) {
+        return true;
+    }else {
+        return false;
+    }
 }
 ?>

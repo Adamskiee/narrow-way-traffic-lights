@@ -123,3 +123,24 @@ Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2Vyb
 POST http://localhost/narrow-way-traffic-lights/superadmin/admins.php
 Content-Type: application/json
 Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMDAsInVzZXJuYW1lIjoic3VwZXJhZG1pbiIsInJvbGUiOiJzdXBlcl9hZG1pbiIsImNyZWF0ZWRfYnkiOjIwMCwiZXhwIjoxNzY0NTU0OTQzfQ.UrcpyVww3qO15EnKZr6MBmQOM32ktIyTF71Whgy09gk
+
+###
+
+POST http://localhost/narrow-way-traffic-lights/includes/verify-setup-twofa.php
+Content-Type: application/json
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY3JlYXRlZF9ieSI6MiwiZXhwIjoxNzY0NTgxMzgzfQ.-jDhtrQs-tK8AqzTjNCEX6XZo-RwJF8Tv69eyT8kuI4
+
+{
+    "secret": "ZH4ZV2JZRY6KOIAF",
+    "code": "699156"
+}
+
+###
+
+POST http://localhost/narrow-way-traffic-lights/includes/verify-twofa.php
+Content-Type: application/json
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY3JlYXRlZF9ieSI6MiwiZXhwIjoxNzY0NTgyNDA0fQ.fqf4uHhMpM4eCHWf7KBf_KnY25TXC9xqUS3LPpMYl68
+
+{
+    "code": "0710451"
+}
