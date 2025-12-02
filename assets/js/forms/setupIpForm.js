@@ -1,5 +1,6 @@
 import { handleFormSubmit } from "../formHandler.js";
-import { clearFieldError, showFieldError, showFieldSuccess } from "../validate.js";
+import { clearFieldError, showFieldError, showFieldSuccess, validateForm } from "../validate.js";
+import { setupRealtimeValidation } from "../validate.js";
 
 const result = document.getElementById("ip-result");
 const weekDays = document.getElementById("week-days");
@@ -44,6 +45,11 @@ if(insertIpForm) {
     insertIpForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
+        const validate = validateForm(insertIpForm);
+        if(!validate.isValid) {
+            return;
+        }
+
         const formData = new FormData(insertIpForm);
         const payload = Object.fromEntries(formData.entries());
         try {
@@ -66,9 +72,16 @@ if(insertIpForm) {
             document.getElementById("result").innerText = err.message
             console.log(err);
         }
-});
+    });
+    setupRealtimeValidation(insertIpForm);
 }
 
+const skipBtn = document.getElementById('skip-ip-btn');
+if(skipBtn){
+    skipBtn.addEventListener("click", ()=> {
+        window.location.href = "./control.php";
+    })
+}
 
 
 document.getElementById("connect-cam-1").addEventListener("click", ()=>checkESP(1));

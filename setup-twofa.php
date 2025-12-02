@@ -22,8 +22,8 @@ $qrCodeUrl = $ga->getQRCodeUrl("Google Authenticator Test App", $secret);
             <div class="login-brand">
                 <h1>Setup Two Factor Authentication</h1>
             </div>
-            <div>
-                <img src="<?= $qrCodeUrl ?>" alt="">
+            <div class="text-center">
+                <img src="<?= $qrCodeUrl ?>" alt="" class="img-fluid">
             </div>
             <form class="validate-form login-form" id="setupTwoFAForm">
                 <span id="result" class = "text-danger mb-3"></span>
@@ -44,5 +44,5 @@ $qrCodeUrl = $ga->getQRCodeUrl("Google Authenticator Test App", $secret);
         </div>
     </div>
 </main>
-<script src="<?= BASE_URL ?>/assets/js/setup-twofa.js"></script>
+<script src="<?= BASE_URL ?>/assets/js/setup-twofa.js" type="module"></script>
 <?php include BASE_PATH . "/includes/footer.php" ?>

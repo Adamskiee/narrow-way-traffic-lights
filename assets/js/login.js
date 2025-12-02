@@ -1,4 +1,5 @@
 import { handleFormSubmit } from "./formHandler.js";
+import { initPasswordToggles } from "./password-toggle.js";
 
 handleFormSubmit(
     "loginForm",
@@ -16,7 +17,7 @@ handleFormSubmit(
         }
     },
     (error) => {
-        document.querySelector('.form-control[type="password"]').value="";
+        document.getElementById('password').value="";
         document.getElementById("result").innerText = error.message;
     }
 );
@@ -28,4 +29,8 @@ document.querySelectorAll(".form-control").forEach(input => {
         "";
         }
     })
+})
+
+document.addEventListener("DOMContentLoaded", () => {
+    initPasswordToggles();
 })

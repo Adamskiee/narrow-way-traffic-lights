@@ -41,7 +41,7 @@ const VALIDATION_RULES = {
         pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?~`-])[A-Za-z\d!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?~`-]{8,}$/,
         message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character'
     },
-    'new_password': {
+    'new-password': {
         required: true,
         minLength: 8,
         maxLength: 100,
@@ -62,12 +62,19 @@ const VALIDATION_RULES = {
         pattern: /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
         message: 'Please enter valid IP address. It must be 0.0.0.0 to 255.255.255.255'
     },
+    'code': {
+        required: true,
+        minLength: 6,
+        maxLength: 6,
+        pattern: /^\d{6}$/,
+        message: 'Please enter a valid 6 digit code.'
+    }
 };
 
 /**
  * Validate a single field
  */
-function validateField(field, showError = true) {
+export function validateField(field, showError = true) {
     const fieldName = field.getAttribute('name');
     const rules = VALIDATION_RULES[fieldName];
     const value = field.value.trim();

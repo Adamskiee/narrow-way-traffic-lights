@@ -24,29 +24,40 @@ if(!$user) {
                 <p>Traffic Light Management System</p>
             </div>
             <span id="result" class = "text-danger mb-3"></span>
-            <form action="<?= BASE_URL ?>/includes/setup-process.php" method="post" class="validate-form login-form" id="setupForm">
+            <form class="validate-form login-form" id="setupForm">
                 <input type="hidden" value="<?= $_GET["token"]?>" name="token" />
                 <div class="mb-3">
                     <label for="new-password" class="form-label">New password</label>
-                    <input
-                        type="password"
-                        class="form-control"
-                        name="new-password"
-                        id="new-password"
-                        placeholder="New Password"
-                        required
-                    />
+                    <div class="input-group">
+                        <input
+                            type="password"
+                            class="form-control"
+                            name="new-password"
+                            id="new-password"
+                            placeholder="New Password"
+                            required
+                        />
+                        <button type="button" class="btn btn-outline-secondary password-toggle" title="Show password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="confirm-password" class="form-label">Confirm Password</label>
-                    <input
-                        type="password"
-                        class="form-control"
-                        name="confirm-password"
-                        id="confirm-password"
-                        placeholder="Confirm Password"
-                        required
-                    />
+                    <div class="input-group">
+                        <input
+                            type="password"
+                            class="form-control"
+                            name="confirm-password"
+                            id="confirm-password"
+                            placeholder="Confirm Password"
+                            required
+                        />
+                        <button type="button" class="btn btn-outline-secondary password-toggle" title="Show password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    
                 </div>
                 <button
                     type="submit"

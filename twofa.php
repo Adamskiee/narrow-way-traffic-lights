@@ -20,11 +20,12 @@ if(!$user) {
                 <div class="mb-3">
                     <label for="code" class="form-label">Code</label>
                     <input
-                        type="text"
+                        type="number"
                         class="form-control"
                         name="code"
                         id="code"
-                        placeholder="Code"
+                        min="1"
+                        placeholder="6 Digit Code"
                         required
                     />
                 </div>
@@ -33,5 +34,5 @@ if(!$user) {
         </div>
     </div>
 </main>
-<script src="<?= BASE_URL ?>/assets/js/setup-twofa.js"></script>
+<script type='module' src="<?= BASE_URL ?>/assets/js/setup-twofa.js"></script>
 <?php include BASE_PATH . "/includes/footer.php" ?>

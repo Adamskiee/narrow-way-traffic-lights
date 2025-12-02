@@ -4,7 +4,11 @@ import {
   closeInfoModal,
   openConfirmModal,
 } from "./infoModal.js";
-import { setupRealtimeValidation, showFieldError, clearFieldError } from "./validate.js";
+import {
+  setupRealtimeValidation,
+  showFieldError,
+  clearFieldError,
+} from "./validate.js";
 
 // ================================================================
 // PRIVILEGE ACCESS CONTROL
@@ -116,7 +120,7 @@ const currentDelayBtn = document.getElementById("current-delay-btn");
 const currentDurationABtn = document.getElementById("current-duration-a-btn");
 const currentDurationBBtn = document.getElementById("current-duration-b-btn");
 const changeIpBtn = document.getElementById("change-ip-btn");
-const cancelChageIpBtn = document.getElementById("cancel-change-ip-btn")
+const cancelChageIpBtn = document.getElementById("cancel-change-ip-btn");
 
 const weekDays = document.getElementById("week-days");
 const currentDurationA = document.getElementById("current-duration-a");
@@ -128,15 +132,14 @@ const durationInputB = document.getElementById("duration-input-b");
 const saveDurationBtn = document.getElementById("save-duration-btn");
 const durationResult = document.getElementById("duration-result");
 
-if(IS_ADMIN) {
-  
+if (IS_ADMIN) {
   if (!cam1Btn || !cam2Btn || !autoModeBtn) {
     console.error(
       "Critical control elements not found - camera buttons or auto mode button missing"
     );
   }
 }
-  
+
 // ================================================================
 // GLOBAL STATE MANAGEMENT
 // ================================================================
@@ -422,21 +425,21 @@ function connectWebSocket(camName) {
 
   cam.ws.onmessage = (event) => {
     if (event.data instanceof Blob) {
-        const url = URL.createObjectURL(event.data);
-        document.getElementById(camName).onload = () => URL.revokeObjectURL(url);
-        document.getElementById(camName).src = url;
+      const url = URL.createObjectURL(event.data);
+      document.getElementById(camName).onload = () => URL.revokeObjectURL(url);
+      document.getElementById(camName).src = url;
     }
   };
 }
 
-function sendLED(camName, cmd, isEmergency=false) {
+function sendLED(camName, cmd, isEmergency = false) {
   const cam = cams[camName];
   if (cam.connected && cam.ws && cam.ws.readyState === WebSocket.OPEN) {
     try {
       cam.ws.send(cmd);
 
       const color = cmd.includes("green") ? "green" : "red";
-      if(!isEmergency) saveLEDState(camName, color, true);
+      if (!isEmergency) saveLEDState(camName, color, true);
       return true;
     } catch (error) {
       cam.connected = false;
@@ -598,17 +601,17 @@ function clearTimerManualState() {
 
 function saveDurationInputState(inputType) {
   let savedDurationsState = loadDurationInputState() ?? currentDurations;
-  savedDurationsState[inputType] = currentDurations[inputType]
-  localStorage.setItem("durationOverride", JSON.stringify(savedDurationsState))
+  savedDurationsState[inputType] = currentDurations[inputType];
+  localStorage.setItem("durationOverride", JSON.stringify(savedDurationsState));
 }
 
 function loadDurationInputState() {
   try {
     const saved = localStorage.getItem("durationOverride");
     return saved ? JSON.parse(saved) : null;
-  }catch (error) {
+  } catch (error) {
     console.warn("Fialed to laod duration input:", error);
-    return null
+    return null;
   }
 }
 
@@ -617,19 +620,21 @@ function clearDurationInputState() {
 }
 
 function saveEmergencyState() {
-  localStorage.setItem("emergencyState",
-     JSON.stringify({
-      isRunning: true
-     }))
+  localStorage.setItem(
+    "emergencyState",
+    JSON.stringify({
+      isRunning: true,
+    })
+  );
 }
 
 function loadEmergencyState() {
   try {
     const saved = localStorage.getItem("emergencyState");
     return saved ? JSON.parse(saved) : null;
-  }catch (error) {
+  } catch (error) {
     console.warn("Fialed to laod duration input:", error);
-    return null
+    return null;
   }
 }
 
@@ -637,13 +642,13 @@ function clearEmergencyState() {
   localStorage.removeItem("emergencyState");
 }
 
-function calculateRemainingTime(savedTimer, isEmergency=false) {
+function calculateRemainingTime(savedTimer, isEmergency = false) {
   if (!savedTimer) return null;
   let remaining;
-  if(!isEmergency) {
+  if (!isEmergency) {
     const elapsed = Math.floor((Date.now() - savedTimer.timestamp) / 1000);
     remaining = savedTimer.timeRemaining - elapsed;
-  }else {
+  } else {
     remaining = savedTimer.timeRemaining;
   }
 
@@ -702,7 +707,7 @@ function updateLEDButton(camName, color, isOn, saveState = true) {
 if (weekDays) {
   weekDays.querySelectorAll("button[data-week]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
-      if(saveDurationBtn.dataset.state === "save") {
+      if (saveDurationBtn.dataset.state === "save") {
         openInfoModal({
           title: "Save duration",
           body: `
@@ -719,42 +724,46 @@ if (weekDays) {
           <i class="fas fa-times me-1"></i>Don't save</button>
           <button class="btn btn-danger" id="save-duration-modal-btn">
           <i class="fas fa-check me-1"></i>Update</button>
-          `
+          `,
         });
         setTimeout(() => {
-          const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-          const cancelOverrideBtn = document.getElementById('save-duration-modal-btn');
-          const dontSaveDurationBtn = document.getElementById('dont-save-duration-modal-btn')
-          
+          const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+          const cancelOverrideBtn = document.getElementById(
+            "save-duration-modal-btn"
+          );
+          const dontSaveDurationBtn = document.getElementById(
+            "dont-save-duration-modal-btn"
+          );
+
           if (modalCloseBtn) {
-              modalCloseBtn.addEventListener('click', () => {
-                  closeInfoModal();
-              });
+            modalCloseBtn.addEventListener("click", () => {
+              closeInfoModal();
+            });
           }
-          if(cancelOverrideBtn) {
+          if (cancelOverrideBtn) {
             cancelOverrideBtn.addEventListener("click", () => {
-              closeInfoModal()
+              closeInfoModal();
               setTimeout(() => {
                 durationInputA.disabled = true;
                 durationInputB.disabled = true;
-                saveDurationBtn.innerText = "edit"
+                saveDurationBtn.innerText = "edit";
                 saveDurationBtn.dataset.state = "edit";
-                performSaveDuration()
-              }, 300)
-            })
+                performSaveDuration();
+              }, 300);
+            });
           }
-          if(dontSaveDurationBtn) {
+          if (dontSaveDurationBtn) {
             dontSaveDurationBtn.addEventListener("click", () => {
-              closeInfoModal()
+              closeInfoModal();
               setTimeout(() => {
                 durationInputA.disabled = true;
                 durationInputB.disabled = true;
-                saveDurationBtn.innerText = "edit"
+                saveDurationBtn.innerText = "edit";
                 saveDurationBtn.dataset.state = "edit";
-              }, 300)
-            })
+              }, 300);
+            });
           }
-          }, 100)
+        }, 100);
         return;
       }
       weekDays
@@ -782,32 +791,34 @@ if (weekDays) {
     });
   });
 }
-if( IS_ADMIN) {
-
-  const cancelSaveDurationBtn = document.getElementById("cancel-save-duration-btn");
+if (IS_ADMIN) {
+  const cancelSaveDurationBtn = document.getElementById(
+    "cancel-save-duration-btn"
+  );
   cancelSaveDurationBtn.addEventListener("click", () => {
     const durationA = durationInputA.value;
     const durationB = durationInputB.value;
-    const durationObj = durations.find(
-      (d) => d.week_day == selectedWeekday
-  );
+    const durationObj = durations.find((d) => d.week_day == selectedWeekday);
 
-  if(durationA == durationObj["duration_a"] && durationB == durationObj["duration_b"]) {
-    setTimeout(() => {
-      durationInputA.disabled = true;
-      durationInputB.disabled = true;
-      saveDurationBtn.innerText = "edit"
-      saveDurationBtn.dataset.state = "edit";
-      cancelSaveDurationBtn.disabled = true;
-      clearFieldError(durationInputA);
-      clearFieldError(durationInputB);
-    }, 100);
-    return;
-  }
-  
-  openInfoModal({
-    title: "Save duration",
-    body: `
+    if (
+      durationA == durationObj["duration_a"] &&
+      durationB == durationObj["duration_b"]
+    ) {
+      setTimeout(() => {
+        durationInputA.disabled = true;
+        durationInputB.disabled = true;
+        saveDurationBtn.innerText = "edit";
+        saveDurationBtn.dataset.state = "edit";
+        cancelSaveDurationBtn.disabled = true;
+        clearFieldError(durationInputA);
+        clearFieldError(durationInputB);
+      }, 100);
+      return;
+    }
+
+    openInfoModal({
+      title: "Save duration",
+      body: `
     <div class="text-center">
         <div class="mb-3">
             <i class="fas fa-circle-info fa-3x"></i>
@@ -815,70 +826,74 @@ if( IS_ADMIN) {
         <h5 class="mb-3">Do you want to save duration?</h5>
     </div>
     `,
-    footer: `
+      footer: `
     <button class="btn btn-secondary" id="dont-save-duration-modal-btn">
     <i class="fas fa-times me-1"></i>Don't Save</button>
     <button class="btn btn-danger" id="save-duration-modal-btn-1">
     <i class="fas fa-check me-1"></i>Save</button>
-    `
-  });
-  const saveDurationBtnModal = document.getElementById("save-duration-modal-btn-1");
-  const dontSaveDurationBtn = document.getElementById("dont-save-duration-modal-btn");
+    `,
+    });
+    const saveDurationBtnModal = document.getElementById(
+      "save-duration-modal-btn-1"
+    );
+    const dontSaveDurationBtn = document.getElementById(
+      "dont-save-duration-modal-btn"
+    );
 
-  if(saveDurationBtnModal) {
-    saveDurationBtnModal.addEventListener("click", () => {
-      closeInfoModal()
-      setTimeout(() => {
-        validateSaveDuration();
-      }, 100)
-    })
-  }
-  if(dontSaveDurationBtn) {
-    dontSaveDurationBtn.addEventListener("click", () => {
-      closeInfoModal();
-      setTimeout(() => {
-        durationInputA.disabled = true;
-        durationInputB.disabled = true;
-        cancelSaveDurationBtn.disabled = true;
-        durationInputA.value = durationObj["duration_a"];
-        durationInputB.value = durationObj["duration_b"];
-        saveDurationBtn.innerText = "edit"
-        saveDurationBtn.dataset.state = "edit";
-        clearFieldError(durationInputA);
-        clearFieldError(durationInputB);
-      }, 100);
-    })
-  }
-})
-
-if (saveDurationBtn && durationInputA && durationInputB) {
-  saveDurationBtn.addEventListener("click", async () => {
-    if(saveDurationBtn.dataset.state === "edit") {
-      durationInputA.disabled = false;
-      durationInputB.disabled = false;
-      cancelSaveDurationBtn.disabled = false;
-      saveDurationBtn.innerText = "save"
-      saveDurationBtn.dataset.state = "save";
-      
-    } else if (saveDurationBtn.dataset.state === "save") {
-      validateSaveDuration();
+    if (saveDurationBtnModal) {
+      saveDurationBtnModal.addEventListener("click", () => {
+        closeInfoModal();
+        setTimeout(() => {
+          validateSaveDuration();
+        }, 100);
+      });
+    }
+    if (dontSaveDurationBtn) {
+      dontSaveDurationBtn.addEventListener("click", () => {
+        closeInfoModal();
+        setTimeout(() => {
+          durationInputA.disabled = true;
+          durationInputB.disabled = true;
+          cancelSaveDurationBtn.disabled = true;
+          durationInputA.value = durationObj["duration_a"];
+          durationInputB.value = durationObj["duration_b"];
+          saveDurationBtn.innerText = "edit";
+          saveDurationBtn.dataset.state = "edit";
+          clearFieldError(durationInputA);
+          clearFieldError(durationInputB);
+        }, 100);
+      });
     }
   });
-}
+
+  if (saveDurationBtn && durationInputA && durationInputB) {
+    saveDurationBtn.addEventListener("click", async () => {
+      if (saveDurationBtn.dataset.state === "edit") {
+        durationInputA.disabled = false;
+        durationInputB.disabled = false;
+        cancelSaveDurationBtn.disabled = false;
+        saveDurationBtn.innerText = "save";
+        saveDurationBtn.dataset.state = "save";
+      } else if (saveDurationBtn.dataset.state === "save") {
+        validateSaveDuration();
+      }
+    });
+  }
 }
 
 async function validateSaveDuration() {
   const durationA = durationInputA.value;
   const durationB = durationInputB.value;
 
-  const durationObj = durations.find(
-    (d) => d.week_day == selectedWeekday
-  );
-  
-  if(durationA == durationObj["duration_a"] && durationB == durationObj["duration_b"]) {
+  const durationObj = durations.find((d) => d.week_day == selectedWeekday);
+
+  if (
+    durationA == durationObj["duration_a"] &&
+    durationB == durationObj["duration_b"]
+  ) {
     durationInputA.disabled = true;
     durationInputB.disabled = true;
-    saveDurationBtn.innerText = "edit"
+    saveDurationBtn.innerText = "edit";
     saveDurationBtn.dataset.state = "edit";
     clearFieldError(durationInputA);
     clearFieldError(durationInputB);
@@ -897,11 +912,9 @@ async function validateSaveDuration() {
     return;
   }
 
-  validateDuration(
-    durationInputA.value,
-    () => validateDuration(
-      durationInputB.value,
-      ()=>{ openInfoModal({
+  validateDuration(durationInputA.value, () =>
+    validateDuration(durationInputB.value, () => {
+      openInfoModal({
         title: "Save duration",
         body: `
         <div class="text-center">
@@ -917,39 +930,41 @@ async function validateSaveDuration() {
         <i class="fas fa-times me-1"></i>Cancel</button>
         <button class="btn btn-danger" id="save-duration-modal-btn">
         <i class="fas fa-check me-1"></i>Save</button>
-        `
+        `,
       });
       setTimeout(() => {
-        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-        const saveDurationModalBtn = document.getElementById('save-duration-modal-btn');
-        const dontSaveDurationBtn = document.getElementById('dont-save-duration-modal-btn')
+        const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+        const saveDurationModalBtn = document.getElementById(
+          "save-duration-modal-btn"
+        );
+        const dontSaveDurationBtn = document.getElementById(
+          "dont-save-duration-modal-btn"
+        );
         if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', () => {
-              closeInfoModal();
-            });
+          modalCloseBtn.addEventListener("click", () => {
+            closeInfoModal();
+          });
         }
-        if(saveDurationModalBtn) {
+        if (saveDurationModalBtn) {
           saveDurationModalBtn.addEventListener("click", () => {
-            closeInfoModal()
+            closeInfoModal();
             setTimeout(() => {
-              performSaveDuration()
-            }, 300)
-          })
+              performSaveDuration();
+            }, 300);
+          });
         }
-        
-      }, 100)}
-    )
-  )
+      }, 100);
+    })
+  );
 }
 
 async function performSaveDuration() {
   durationInputA.disabled = true;
   durationInputB.disabled = true;
-  saveDurationBtn.innerText = "edit"
+  saveDurationBtn.innerText = "edit";
   saveDurationBtn.dataset.state = "edit";
   const durationA = durationInputA.value;
   const durationB = durationInputB.value;
-  
 
   try {
     const requestData = {
@@ -971,16 +986,14 @@ async function performSaveDuration() {
     const result = await response.json();
 
     if (result.success) {
-      durations.forEach( duration=> {
-        if(duration["week_day"] == selectedWeekday) {
+      durations.forEach((duration) => {
+        if (duration["week_day"] == selectedWeekday) {
           duration["duration_a"] = parseInt(durationA);
           duration["duration_b"] = parseInt(durationB);
         }
-      })
+      });
 
-      const durationObj = durations.find(
-        (d) => d.week_day == selectedWeekday
-      );
+      const durationObj = durations.find((d) => d.week_day == selectedWeekday);
       if (durationObj) {
         durationObj.durationA = durationA;
         durationObj.durationB = durationB;
@@ -1004,7 +1017,7 @@ async function performSaveDuration() {
     if (durationResult) durationResult.innerHTML = "";
   }, 3000);
 }
- 
+
 async function checkLed(camName, ip, color) {
   try {
     const res = await fetch(`http://${ip}/check-${color}`, {
@@ -1040,7 +1053,6 @@ let phase3DelayController = null;
 
 if (cam1Btn) {
   cam1Btn.addEventListener("click", async () => {
-    
     if (!requireCameraAccess("control camera 1")) {
       return;
     }
@@ -1056,10 +1068,13 @@ if (cam1Btn) {
       return;
     }
 
-    if(phase1DelayController && !phase1DelayController.signal.aborted || phase3DelayController && !phase3DelayController.signal.aborted) {
+    if (
+      (phase1DelayController && !phase1DelayController.signal.aborted) ||
+      (phase3DelayController && !phase3DelayController.signal.aborted)
+    ) {
       openInfoModal({
-          title: "Ignore Delay",
-          body: `
+        title: "Ignore Delay",
+        body: `
           <div class="text-center">
               <div class="mb-3">
                   <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
@@ -1067,40 +1082,46 @@ if (cam1Btn) {
               <h5 class="mb-3">Are you sure to ignore the delay duration?</h5>
           </div>
           `,
-          footer: `
+        footer: `
           <button class="btn btn-secondary" onclick="closeInfoModal()">
           <i class="fas fa-times me-1"></i>Close</button>
           <button class="btn btn-danger" id="cam1-force">
           <i class="fas fa-check me-1"></i>Yes</button>
-          `
-        });
+          `,
+      });
       setTimeout(() => {
-        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-        const cam1ForceBtn = document.getElementById('cam1-force');
-  
+        const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+        const cam1ForceBtn = document.getElementById("cam1-force");
+
         if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', () => {
-                closeInfoModal();
-            });
+          modalCloseBtn.addEventListener("click", () => {
+            closeInfoModal();
+          });
         }
-        if(cam1ForceBtn) {
+        if (cam1ForceBtn) {
           cam1ForceBtn.addEventListener("click", () => {
             setTimeout(() => {
-              if(phase1DelayController && !phase1DelayController.signal.aborted) {
+              if (
+                phase1DelayController &&
+                !phase1DelayController.signal.aborted
+              ) {
                 phase1DelayController.abort();
                 startManualPhase2();
                 clearTimerManualState();
-              }else if(phase3DelayController && !phase3DelayController.signal.aborted) {
+              } else if (
+                phase3DelayController &&
+                !phase3DelayController.signal.aborted
+              ) {
                 phase3DelayController.abort();
                 startManualPhase4();
                 clearTimerManualState();
-              } 
-              closeInfoModal()
-            }, 300)
-          })
+              }
+              closeInfoModal();
+            }, 300);
+          });
         }
-      }, 100)
-    }else {
+      }, 100);
+    } else {
       const color = cam1Btn.dataset.color;
       if (color === "green") {
         await startManualPhase1();
@@ -1109,7 +1130,6 @@ if (cam1Btn) {
         await startManualPhase3();
       }
     }
-
   });
 }
 
@@ -1117,18 +1137,18 @@ async function resumeDelayModeManual() {
   const manualDelayState = loadTimerManualState();
   const remaningTime = calculateRemainingTime(manualDelayState);
 
-  if(manualDelayState.phase == "phase1") {
-    if(remaningTime <= 0) {
+  if (manualDelayState.phase == "phase1") {
+    if (remaningTime <= 0) {
       clearTimerManualState();
       startManualPhase2();
-    }else {
+    } else {
       startManualPhase1(remaningTime);
     }
-  }else if(manualDelayState.phase == "phase3") {
-    if(remaningTime <= 0) {
+  } else if (manualDelayState.phase == "phase3") {
+    if (remaningTime <= 0) {
       clearTimerManualState();
       startManualPhase4();
-    }else {
+    } else {
       startManualPhase3(remaningTime);
     }
   }
@@ -1332,11 +1352,14 @@ if (cam2Btn) {
     if (isAutoModeRunning) {
       return;
     }
-    
-    if(phase1DelayController && !phase1DelayController.signal.aborted || phase3DelayController && !phase3DelayController.signal.aborted) {
+
+    if (
+      (phase1DelayController && !phase1DelayController.signal.aborted) ||
+      (phase3DelayController && !phase3DelayController.signal.aborted)
+    ) {
       openInfoModal({
-          title: "Ignore Delay",
-          body: `
+        title: "Ignore Delay",
+        body: `
           <div class="text-center">
               <div class="mb-3">
                   <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
@@ -1344,40 +1367,46 @@ if (cam2Btn) {
               <h5 class="mb-3">Are you sure to ignore the delay duration?</h5>
           </div>
           `,
-          footer: `
+        footer: `
           <button class="btn btn-secondary" onclick="closeInfoModal()">
           <i class="fas fa-times me-1"></i>Close</button>
           <button class="btn btn-danger" id="cam1-force">
           <i class="fas fa-check me-1"></i>Yes</button>
-          `
-        });
+          `,
+      });
       setTimeout(() => {
-        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-        const cam1ForceBtn = document.getElementById('cam1-force');
-  
+        const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+        const cam1ForceBtn = document.getElementById("cam1-force");
+
         if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', () => {
-                closeInfoModal();
-            });
+          modalCloseBtn.addEventListener("click", () => {
+            closeInfoModal();
+          });
         }
-        if(cam1ForceBtn) {
+        if (cam1ForceBtn) {
           cam1ForceBtn.addEventListener("click", () => {
             setTimeout(() => {
-              if(phase1DelayController && !phase1DelayController.signal.aborted) {
+              if (
+                phase1DelayController &&
+                !phase1DelayController.signal.aborted
+              ) {
                 phase1DelayController.abort();
                 startManualPhase2();
                 clearTimerManualState();
-              }else if(phase3DelayController && !phase3DelayController.signal.aborted) {
+              } else if (
+                phase3DelayController &&
+                !phase3DelayController.signal.aborted
+              ) {
                 phase3DelayController.abort();
                 startManualPhase4();
                 clearTimerManualState();
-              } 
-              closeInfoModal()
-            }, 300)
-          })
+              }
+              closeInfoModal();
+            }, 300);
+          });
         }
-      }, 100)
-    }else {
+      }, 100);
+    } else {
       const color = cam2Btn.dataset.color;
       if (color === "green") {
         await startManualPhase3();
@@ -1393,10 +1422,9 @@ if (IS_ADMIN) {
   const ipAddCamBInput = document.getElementById("ip_address_cam_2");
   const connectCamABtn = document.getElementById("connect-cam-1");
   const connectCamBBtn = document.getElementById("connect-cam-2");
-  if(changeIpBtn) {
+  if (changeIpBtn) {
     changeIpBtn.addEventListener("click", () => {
-      
-      if(changeIpBtn.type == "button") {
+      if (changeIpBtn.type == "button") {
         changeIpBtn.disabled = true;
         setTimeout(() => {
           changeIpBtn.type = "submit";
@@ -1406,19 +1434,16 @@ if (IS_ADMIN) {
           connectCamABtn.disabled = false;
           connectCamBBtn.disabled = false;
           cancelChageIpBtn.disabled = false;
-
         }, 100);
         changeIpBtn.disabled = false;
-      }else if (changeIpBtn.type == "submit") {
+      } else if (changeIpBtn.type == "submit") {
         changeIpBtn.disabled = true;
-        setTimeout(() => {
-          
-        }, 100);
+        setTimeout(() => {}, 100);
         changeIpBtn.disabled = false;
       }
-    })
+    });
   }
-  if(cancelChageIpBtn) {
+  if (cancelChageIpBtn) {
     cancelChageIpBtn.addEventListener("click", () => {
       setTimeout(() => {
         ipAddCamAInput.value = "";
@@ -1428,14 +1453,12 @@ if (IS_ADMIN) {
         connectCamABtn.disabled = true;
         connectCamBBtn.disabled = true;
         cancelChageIpBtn.disabled = true;
-        changeIpBtn.type = "button"
-        clearFieldError(ipAddCamAInput)
-        clearFieldError(ipAddCamBInput)
+        changeIpBtn.type = "button";
+        clearFieldError(ipAddCamAInput);
+        clearFieldError(ipAddCamBInput);
       }, 100);
-    })
+    });
   }
-
-
 
   document
     .getElementById("change-ip-form")
@@ -1454,13 +1477,13 @@ if (IS_ADMIN) {
         showFieldError(ipAddCamAInput, "Please enter a valid IP address");
 
         if (!ipPattern.test(cam2IP)) {
-          showFieldError(ipAddCamBInput, "Please enter a valid IP address")
+          showFieldError(ipAddCamBInput, "Please enter a valid IP address");
         }
         return;
       }
 
       if (!ipPattern.test(cam2IP)) {
-        showFieldError(ipAddCamBInput, "Pleastrue;e enter a valid IP address")
+        showFieldError(ipAddCamBInput, "Pleastrue;e enter a valid IP address");
         return;
       }
 
@@ -1506,9 +1529,9 @@ if (IS_ADMIN) {
           connectCamABtn.disabled = true;
           connectCamBBtn.disabled = true;
           cancelChageIpBtn.disabled = true;
-          clearFieldError(ipAddCamAInput)
-          clearFieldError(ipAddCamBInput)
-          
+          clearFieldError(ipAddCamAInput);
+          clearFieldError(ipAddCamBInput);
+
           changeIpBtn.type = "button";
         },
         onCancel: () => {
@@ -1518,22 +1541,22 @@ if (IS_ADMIN) {
     });
   setupRealtimeValidation(document.getElementById("change-ip-form"));
 
-  const changeDelayBtn = document.getElementById('change-delay-btn')
-  const closeChangeDelayBtn = document.getElementById('close-change-delay-btn')
-  const delayInput = document.getElementById('delay-input');
+  const changeDelayBtn = document.getElementById("change-delay-btn");
+  const closeChangeDelayBtn = document.getElementById("close-change-delay-btn");
+  const delayInput = document.getElementById("delay-input");
 
   changeDelayBtn.addEventListener("click", () => {
-    if(changeDelayBtn.type == "button") {
+    if (changeDelayBtn.type == "button") {
       changeDelayBtn.disabled = true;
       setTimeout(() => {
-        changeDelayBtn.type = 'submit';
+        changeDelayBtn.type = "submit";
 
         closeChangeDelayBtn.disabled = false;
         delayInput.disabled = false;
       }, 100);
       changeDelayBtn.disabled = false;
     }
-  })
+  });
 
   closeChangeDelayBtn.addEventListener("click", () => {
     setTimeout(() => {
@@ -1543,27 +1566,27 @@ if (IS_ADMIN) {
       delayInput.disabled = true;
       delayInput.value = mainDelay;
     }, 100);
-  })
+  });
 
-  document.getElementById("change-delay-form").addEventListener("submit", (e) => {
-    e.preventDefault();
+  document
+    .getElementById("change-delay-form")
+    .addEventListener("submit", (e) => {
+      e.preventDefault();
 
-    const form = e.target;
-    const formData = new FormData(form);
-    
-    if(delayInput.value == mainDelay) {
-      changeDelayBtn.type = "button";
+      const form = e.target;
+      const formData = new FormData(form);
 
-      closeChangeDelayBtn.disabled = true;
-      delayInput.disabled = true;
-      delayInput.value = mainDelay;
-      return;
-    }
+      if (delayInput.value == mainDelay) {
+        changeDelayBtn.type = "button";
 
-    validateDuration(
-      delayInput.value,
-      () => {
-      openInfoModal({
+        closeChangeDelayBtn.disabled = true;
+        delayInput.disabled = true;
+        delayInput.value = mainDelay;
+        return;
+      }
+
+      validateDuration(delayInput.value, () => {
+        openInfoModal({
           title: "Update Delay",
           body: `
           <div class="text-center">
@@ -1579,29 +1602,28 @@ if (IS_ADMIN) {
           <i class="fas fa-times me-1"></i>Close</button>
           <button class="btn btn-danger" id="delay-modal-btn">
           <i class="fas fa-check me-1"></i>Update</button>
-          `
+          `,
         });
-      setTimeout(() => {
-        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-        const cancelOverrideBtn = document.getElementById('delay-modal-btn');
-  
-        if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', () => {
-                closeInfoModal();
+        setTimeout(() => {
+          const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+          const cancelOverrideBtn = document.getElementById("delay-modal-btn");
+
+          if (modalCloseBtn) {
+            modalCloseBtn.addEventListener("click", () => {
+              closeInfoModal();
             });
-        }
-        if(cancelOverrideBtn) {
-          cancelOverrideBtn.addEventListener("click", () => {
-            closeInfoModal()
-            setTimeout(() => {
-              updateDelay(form, formData)
-              
-            }, 300)
-          })
-        }
-      }, 100)}
-    )
-  })
+          }
+          if (cancelOverrideBtn) {
+            cancelOverrideBtn.addEventListener("click", () => {
+              closeInfoModal();
+              setTimeout(() => {
+                updateDelay(form, formData);
+              }, 300);
+            });
+          }
+        }, 100);
+      });
+    });
 }
 
 async function updateDelay(form, formData) {
@@ -1625,7 +1647,7 @@ async function updateDelay(form, formData) {
 
 if (overrideBtn) {
   overrideBtn.addEventListener("click", (e) => {
-    if(overrideBtn.innerText === "Override") {
+    if (overrideBtn.innerText === "Override") {
       openInfoModal({
         title: "Override durations",
         body: `
@@ -1643,27 +1665,27 @@ if (overrideBtn) {
         <i class="fas fa-times me-1"></i>Close</button>
         <button class="btn btn-danger" id="override-modal-btn">
         <i class="fas fa-edit me-1"></i>Override</button>
-        `
+        `,
       });
       setTimeout(() => {
-        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-        const overrideBtn = document.getElementById('override-modal-btn');
+        const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+        const overrideBtn = document.getElementById("override-modal-btn");
 
         if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', () => {
-                closeInfoModal();
-            });
+          modalCloseBtn.addEventListener("click", () => {
+            closeInfoModal();
+          });
         }
-        if(overrideBtn) {
+        if (overrideBtn) {
           overrideBtn.addEventListener("click", () => {
-            closeInfoModal()
+            closeInfoModal();
             setTimeout(() => {
               overrideDuration();
-            }, 300)
-          })
+            }, 300);
+          });
         }
-      }, 100)
-    }else {
+      }, 100);
+    } else {
       openInfoModal({
         title: "Cancel Override",
         body: `
@@ -1681,112 +1703,105 @@ if (overrideBtn) {
         <i class="fas fa-times me-1"></i>Close</button>
         <button class="btn btn-danger" id="cancel-override-modal-btn">
         <i class="fas fa-times me-1"></i>Cancel Override</button>
-        `
+        `,
       });
       setTimeout(() => {
-        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-        const cancelOverrideBtn = document.getElementById('cancel-override-modal-btn');
+        const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+        const cancelOverrideBtn = document.getElementById(
+          "cancel-override-modal-btn"
+        );
 
         if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', () => {
-                closeInfoModal();
-            });
+          modalCloseBtn.addEventListener("click", () => {
+            closeInfoModal();
+          });
         }
-        if(cancelOverrideBtn) {
+        if (cancelOverrideBtn) {
           cancelOverrideBtn.addEventListener("click", () => {
-            closeInfoModal()
+            closeInfoModal();
             setTimeout(() => {
               backToDefaultDuration();
-            }, 300)
-          })
+            }, 300);
+          });
         }
-      }, 100)
+      }, 100);
     }
-  })
+  });
 }
 
 function overrideDuration() {
   currentDurationABtn.disabled = false;
   currentDurationBBtn.disabled = false;
   currentDelayBtn.disabled = false;
-  
+
   overrideBtn.innerText = "Back to default";
 }
 
-currentDurationABtn.addEventListener('click', () => {
-  if(currentDurationABtn.dataset.state === 'edit') {
-    currentDurationABtn.dataset.state = 'save'
-    currentDurationABtn.innerText = 'Save'
+currentDurationABtn.addEventListener("click", () => {
+  if (currentDurationABtn.dataset.state === "edit") {
+    currentDurationABtn.dataset.state = "save";
+    currentDurationABtn.innerText = "Save";
     currentDurationA.disabled = false;
-  }else if (currentDurationABtn.dataset.state === 'save') {
-    if(currentDurationA.value == currentDurations.durationA) {
-      currentDurationABtn.dataset.state = 'edit';
+  } else if (currentDurationABtn.dataset.state === "save") {
+    if (currentDurationA.value == currentDurations.durationA) {
+      currentDurationABtn.dataset.state = "edit";
       currentDurationA.disabled = true;
-      currentDurationABtn.innerText = 'Edit'
+      currentDurationABtn.innerText = "Edit";
       return;
     }
-    validateDuration(
-      currentDurationA.value, 
-      ()=>{
-        currentDurations.durationA = currentDurationA.value; 
-        currentDurationABtn.dataset.state = 'edit';
-        currentDurationA.disabled = true;
-        currentDurationABtn.innerText = 'Edit'
-        saveDurationInputState("durationA");
-      }
-    );
+    validateDuration(currentDurationA.value, () => {
+      currentDurations.durationA = currentDurationA.value;
+      currentDurationABtn.dataset.state = "edit";
+      currentDurationA.disabled = true;
+      currentDurationABtn.innerText = "Edit";
+      saveDurationInputState("durationA");
+    });
   }
-})
-currentDurationBBtn.addEventListener('click', () => {
-  if(currentDurationBBtn.dataset.state === 'edit') {
-    currentDurationBBtn.dataset.state = 'save'
+});
+currentDurationBBtn.addEventListener("click", () => {
+  if (currentDurationBBtn.dataset.state === "edit") {
+    currentDurationBBtn.dataset.state = "save";
     currentDurationB.disabled = false;
-    currentDurationBBtn.innerText = 'Save'
-  }else if (currentDurationBBtn.dataset.state === 'save') {
-    if(currentDurationB.value == currentDurations.durationB) {
-      currentDurationBBtn.dataset.state = 'edit';
+    currentDurationBBtn.innerText = "Save";
+  } else if (currentDurationBBtn.dataset.state === "save") {
+    if (currentDurationB.value == currentDurations.durationB) {
+      currentDurationBBtn.dataset.state = "edit";
       currentDurationB.disabled = true;
-      currentDurationBBtn.innerText = 'Edit'
+      currentDurationBBtn.innerText = "Edit";
       return;
     }
-    validateDuration(
-      currentDurationB.value,
-      () => {
-        currentDurations.durationB = currentDurationB.value; 
-        currentDurationBBtn.dataset.state = 'edit';
-        currentDurationB.disabled = true;
-        currentDurationBBtn.innerText = 'Edit'
-        saveDurationInputState("durationB");
-      }
-    )
+    validateDuration(currentDurationB.value, () => {
+      currentDurations.durationB = currentDurationB.value;
+      currentDurationBBtn.dataset.state = "edit";
+      currentDurationB.disabled = true;
+      currentDurationBBtn.innerText = "Edit";
+      saveDurationInputState("durationB");
+    });
   }
-})
-currentDelayBtn.addEventListener('click', () => {
-  if(currentDelayBtn.dataset.state === 'edit') {
-    currentDelayBtn.dataset.state = 'save'
+});
+currentDelayBtn.addEventListener("click", () => {
+  if (currentDelayBtn.dataset.state === "edit") {
+    currentDelayBtn.dataset.state = "save";
     currentDelay.disabled = false;
-    currentDelayBtn.innerText = 'Save'
-  }else if (currentDelayBtn.dataset.state === 'save') {
-    if(currentDelay.value == currentDurations.delay) {
-      currentDelayBtn.dataset.state = 'edit';
+    currentDelayBtn.innerText = "Save";
+  } else if (currentDelayBtn.dataset.state === "save") {
+    if (currentDelay.value == currentDurations.delay) {
+      currentDelayBtn.dataset.state = "edit";
       currentDelay.disabled = true;
-      currentDelayBtn.innerText = 'Edit'
+      currentDelayBtn.innerText = "Edit";
       return;
     }
-    validateDuration(
-      currentDelay.value,
-      () => {
-        currentDurations.delay = currentDelay.value; 
-        currentDelayBtn.dataset.state = 'edit';
-        currentDelay.disabled = true;
-        currentDelayBtn.innerText = 'Edit'
-        saveDurationInputState("delay");
-      }
-    )
+    validateDuration(currentDelay.value, () => {
+      currentDurations.delay = currentDelay.value;
+      currentDelayBtn.dataset.state = "edit";
+      currentDelay.disabled = true;
+      currentDelayBtn.innerText = "Edit";
+      saveDurationInputState("delay");
+    });
   }
-})
+});
 function validateDuration(duration, onSuccess) {
-  if(duration >= 60) {
+  if (duration >= 60) {
     openInfoModal({
       title: "Duration update",
       body: `
@@ -1802,54 +1817,65 @@ function validateDuration(duration, onSuccess) {
       <i class="fas fa-times me-1"></i>No</button>
       <button class="btn btn-danger" id="validate-duration-modal-btn">
       <i class="fas fa-check me-1"></i>Yes</button>
-      `
+      `,
     });
     setTimeout(() => {
-      const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-      const cancelOverrideBtn = document.getElementById('validate-duration-modal-btn');
+      const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+      const cancelOverrideBtn = document.getElementById(
+        "validate-duration-modal-btn"
+      );
 
       if (modalCloseBtn) {
-          modalCloseBtn.addEventListener('click', () => {
-            closeInfoModal();
-          });
+        modalCloseBtn.addEventListener("click", () => {
+          closeInfoModal();
+        });
       }
-      if(cancelOverrideBtn) {
+      if (cancelOverrideBtn) {
         cancelOverrideBtn.addEventListener("click", () => {
-          closeInfoModal()
+          closeInfoModal();
           setTimeout(() => {
             onSuccess();
-          }, 300)
-        })
+          }, 300);
+        });
       }
-    }, 100)
-  }else {
+    }, 100);
+  } else {
     onSuccess();
   }
 }
 
 function backToDefaultDuration() {
-  currentDurationA.disabled = true;  
+  currentDurationA.disabled = true;
   currentDurationB.disabled = true;
   currentDelay.disabled = true;
   currentDurationABtn.disabled = true;
   currentDurationBBtn.disabled = true;
   currentDelayBtn.disabled = true;
-  
-  overrideBtn.innerText = "Override"
-  
+
+  overrideBtn.innerText = "Override";
+
   currentDelay.value = mainDelay;
-  currentDurationB.value = findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "b");
-  currentDurationA.value = findDuration(currentWeekDay === 0 ? 7 : currentWeekDay, "a");
+  currentDurations.delay = mainDelay;
+  currentDurationB.value = findDuration(
+    currentWeekDay === 0 ? 7 : currentWeekDay,
+    "b"
+  );
+  currentDurations.durationA = currentDurationB.value;
+  currentDurationA.value = findDuration(
+    currentWeekDay === 0 ? 7 : currentWeekDay,
+    "a"
+  );
+  currentDurations.durationA = currentDurationA.value;
   clearDurationInputState();
 }
 
-if(emergencyBtn) {
+if (emergencyBtn) {
   emergencyBtn.addEventListener("click", () => {
     if (!cams.cam1.connected || !cams.cam2.connected) {
       openErrorModal("Both cameras must be connected to start emergency mode");
       return;
     }
-    if(emergencyBtn.innerText === "EMERGENCY") {
+    if (emergencyBtn.innerText === "EMERGENCY") {
       openInfoModal({
         title: "Emergency Mode Activation",
         body: `
@@ -1867,27 +1893,29 @@ if(emergencyBtn) {
         <i class="fas fa-times me-1"></i>Close</button>
         <button class="btn btn-danger" id="emergency-modal-btn">
         <i class="fas fa-times me-1"></i>Activate</button>
-        `
+        `,
       });
       setTimeout(() => {
-        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-        const cancelOverrideBtn = document.getElementById('emergency-modal-btn');
+        const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+        const cancelOverrideBtn = document.getElementById(
+          "emergency-modal-btn"
+        );
 
         if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', () => {
-                closeInfoModal();
-            });
+          modalCloseBtn.addEventListener("click", () => {
+            closeInfoModal();
+          });
         }
-        if(cancelOverrideBtn) {
+        if (cancelOverrideBtn) {
           cancelOverrideBtn.addEventListener("click", () => {
-            closeInfoModal()
+            closeInfoModal();
             setTimeout(() => {
               performEmergency();
-            }, 300)
-          })
+            }, 300);
+          });
         }
-      }, 100)
-    }else {
+      }, 100);
+    } else {
       openInfoModal({
         title: "Emergency Mode Cancellation",
         body: `
@@ -1905,32 +1933,34 @@ if(emergencyBtn) {
         <i class="fas fa-times me-1"></i>Close</button>
         <button class="btn btn-danger" id="cancel-emergency-modal-btn">
         <i class="fas fa-times me-1"></i>Cancel Emergency</button>
-        `
+        `,
       });
       setTimeout(() => {
-        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-        const cancelOverrideBtn = document.getElementById('cancel-emergency-modal-btn');
+        const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+        const cancelOverrideBtn = document.getElementById(
+          "cancel-emergency-modal-btn"
+        );
 
         if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', () => {
-                closeInfoModal();
-            });
+          modalCloseBtn.addEventListener("click", () => {
+            closeInfoModal();
+          });
         }
-        if(cancelOverrideBtn) {
+        if (cancelOverrideBtn) {
           cancelOverrideBtn.addEventListener("click", () => {
-            closeInfoModal()
+            closeInfoModal();
             setTimeout(() => {
               cancelEmergency();
-            }, 300)
-          })
+            }, 300);
+          });
         }
-      }, 100)
+      }, 100);
     }
-  })
+  });
 }
 
 function performEmergency() {
-  if(isAutoModeRunning) {
+  if (isAutoModeRunning) {
     stopAutoMode(true);
   }
   cam1Btn.disabled = true;
@@ -1940,11 +1970,11 @@ function performEmergency() {
 
   autoModeBtn.disabled = true;
   emergencyBtn.innerText = "Cancel Emergency";
-  
+
   sendLED("cam1", "red_on", true);
   sendLED("cam2", "red_on", true);
-  updateLEDButton("cam1", "red", true, false)
-  updateLEDButton("cam2", "red", true, false)
+  updateLEDButton("cam1", "red", true, false);
+  updateLEDButton("cam2", "red", true, false);
   saveEmergencyState();
 }
 
@@ -1965,19 +1995,23 @@ function cancelEmergency() {
         cam2Btn.classList.remove("disabled");
       }
     }, 3000);
-  }else{
+  } else {
     const cam1SavedState = loadLEDState("cam1");
     const cam2SavedState = loadLEDState("cam2");
 
     if (cam1SavedState && cam1SavedState.isOn) {
+      sendLED("cam1", "red_on");
       updateLEDButton("cam1", cam1SavedState.color, true, false);
     } else {
+      sendLED("cam1", "green_on");
       updateLEDButton("cam1", "green", false, false);
     }
 
     if (cam2SavedState && cam2SavedState.isOn) {
+      sendLED("cam2", "green_on");
       updateLEDButton("cam2", cam2SavedState.color, true, false);
     } else {
+      sendLED("cam2", "red_on");
       updateLEDButton("cam2", "red", false, false);
     }
     cam1Btn.disabled = false;
@@ -2009,13 +2043,11 @@ async function updateCameraIP(form, formData) {
   }
 }
 
-
-
 // ================================================================
 // AUTO MODE SYSTEM
 // ================================================================
 
-async function startPhase1(remainingTime = 0){
+async function startPhase1(remainingTime = 0) {
   if (!sendLED("cam1", "green_on")) return;
   if (!sendLED("cam2", "red_on")) return;
 
@@ -2066,7 +2098,10 @@ async function startPhase1(remainingTime = 0){
     return;
   }
 
-  let time = remainingTime === 0 ? parseInt(currentDurations.durationA) : parseInt(remainingTime);
+  let time =
+    remainingTime === 0
+      ? parseInt(currentDurations.durationA)
+      : parseInt(remainingTime);
 
   for (let i = time; i >= 0; i--) {
     if (autoModeController.signal.aborted || !isAutoModeRunning) {
@@ -2106,8 +2141,14 @@ async function startPhase2(remainingTime = 0) {
   if (autoModeController.signal.aborted || !isAutoModeRunning) return;
 
   sendLED("cam1", "red_on");
+  sendLED("cam2", "red_on");
+  updateLEDButton("cam1", "red", true, false);
+  updateLEDButton("cam2", "red", true, false);
 
-  const time = remainingTime === 0 ? parseInt(currentDurations.delay) : parseInt(remainingTime);
+  const time =
+    remainingTime === 0
+      ? parseInt(currentDurations.delay)
+      : parseInt(remainingTime);
 
   for (let i = time; i >= 0; i--) {
     if (autoModeController.signal.aborted || !isAutoModeRunning) {
@@ -2128,7 +2169,7 @@ async function startPhase2(remainingTime = 0) {
 
 async function startPhase3(remainingTime = 0) {
   if (autoModeController.signal.aborted || !isAutoModeRunning) return;
-  
+
   if (!sendLED("cam1", "red_on")) return;
   if (!sendLED("cam2", "green_on")) return;
 
@@ -2148,10 +2189,7 @@ async function startPhase3(remainingTime = 0) {
     if (error.name === "TypeError" || error.message.includes("fetch")) {
       criticalFailures++;
       openErrorModal("Camera 1 connection failure");
-      console.error(
-        "CAM1 critical connection failure in second phase:",
-        error
-      );
+      console.error("CAM1 critical connection failure in second phase:", error);
     }
   }
 
@@ -2166,10 +2204,7 @@ async function startPhase3(remainingTime = 0) {
     if (error.name === "TypeError" || error.message.includes("fetch")) {
       openErrorModal("Camera 2 connection failure");
       criticalFailures++;
-      console.error(
-        "CAM2 critical connection failure in second phase:",
-        error
-      );
+      console.error("CAM2 critical connection failure in second phase:", error);
     }
   }
 
@@ -2184,8 +2219,11 @@ async function startPhase3(remainingTime = 0) {
     return;
   }
 
-  const time = remainingTime === 0 ? parseInt(currentDurations.durationB) : parseInt(remainingTime);
-  
+  const time =
+    remainingTime === 0
+      ? parseInt(currentDurations.durationB)
+      : parseInt(remainingTime);
+
   for (let i = time; i >= 0; i--) {
     if (autoModeController.signal.aborted || !isAutoModeRunning) {
       console.log("Auto mode aborted during second countdown");
@@ -2194,7 +2232,7 @@ async function startPhase3(remainingTime = 0) {
 
     saveTimerAutoState("phase3", i, Date.now());
     const num = await count(i);
-    
+
     if (autoModeController.signal.aborted || !isAutoModeRunning) {
       return;
     }
@@ -2221,9 +2259,15 @@ async function startPhase3(remainingTime = 0) {
 async function startPhase4(remainingTime = 0) {
   if (autoModeController.signal.aborted || !isAutoModeRunning) return;
 
-  sendLED("cam2", "red_on")
+  sendLED("cam1", "red_on");
+  sendLED("cam2", "red_on");
+  updateLEDButton("cam1", "red", true, false);
+  updateLEDButton("cam2", "red", true, false);
 
-  const time = remainingTime === 0 ? parseInt(currentDurations.delay) : parseInt(remainingTime);
+  const time =
+    remainingTime === 0
+      ? parseInt(currentDurations.delay)
+      : parseInt(remainingTime);
 
   for (let i = time; i >= 0; i--) {
     if (autoModeController.signal.aborted || !isAutoModeRunning) {
@@ -2234,7 +2278,7 @@ async function startPhase4(remainingTime = 0) {
     saveTimerAutoState("phase4", i, Date.now());
     const num = await count(i);
 
-    if(autoModeController.signal.aborted || !isAutoModeRunning) {
+    if (autoModeController.signal.aborted || !isAutoModeRunning) {
       return;
     }
 
@@ -2281,12 +2325,12 @@ async function startAutoMode() {
       }
 
       await startPhase1();
-      
+
       if (autoModeController.signal.aborted || !isAutoModeRunning) {
         console.log("Auto mode aborted before second phase");
         break;
       }
-      
+
       await startPhase2();
 
       if (autoModeController.signal.aborted || !isAutoModeRunning) {
@@ -2295,7 +2339,7 @@ async function startAutoMode() {
       }
 
       await startPhase3();
-      
+
       if (autoModeController.signal.aborted || !isAutoModeRunning) {
         console.log("Auto mode aborted before second phase");
         break;
@@ -2307,11 +2351,11 @@ async function startAutoMode() {
     console.error("Auto mode error:", error);
     openErrorModal("Auto mode encountered an error and was stopped");
   } finally {
-    if(isAutoModeRunning) stopAutoMode();
+    if (isAutoModeRunning) stopAutoMode();
   }
 }
 
-function stopAutoMode(saved=false) {
+function stopAutoMode(saved = false) {
   if (autoModeController) {
     autoModeController.abort();
   }
@@ -2319,7 +2363,7 @@ function stopAutoMode(saved=false) {
   isAutoModeRunning = false;
 
   saveAutoModeState(saved);
-  if(!saved) clearTimerAutoState();
+  if (!saved) clearTimerAutoState();
 
   const cam1Button = document.getElementById("cam1-button");
   const cam2Button = document.getElementById("cam2-button");
@@ -2353,7 +2397,7 @@ function stopAutoMode(saved=false) {
   document.getElementById("cam2-count").style.display = "none";
 }
 
-async function resumeAutoModeWithTimer(isEmergency=false) {
+async function resumeAutoModeWithTimer(isEmergency = false) {
   const savedTimer = loadTimerAutoState();
 
   if (!savedTimer) {
@@ -2361,7 +2405,9 @@ async function resumeAutoModeWithTimer(isEmergency=false) {
     return;
   }
 
-  const remainingTime = isEmergency ? calculateRemainingTime(savedTimer, true) : calculateRemainingTime(savedTimer);
+  const remainingTime = isEmergency
+    ? calculateRemainingTime(savedTimer, true)
+    : calculateRemainingTime(savedTimer);
 
   if (remainingTime <= 0) {
     clearTimerAutoState();
@@ -2372,7 +2418,7 @@ async function resumeAutoModeWithTimer(isEmergency=false) {
       continueAutoMode("phase3");
     } else if (savedTimer.phase === "phase3") {
       continueAutoMode("phase4");
-    }else {
+    } else {
       startAutoMode();
     }
     return;
@@ -2407,12 +2453,12 @@ async function resumeAutoModeWithTimer(isEmergency=false) {
       if (!autoModeController.signal.aborted) {
         await continueAutoMode("phase2");
       }
-    }else if (savedTimer.phase === "phase2") {
+    } else if (savedTimer.phase === "phase2") {
       await startPhase2(remainingTime);
       if (!autoModeController.signal.aborted) {
         await continueAutoMode("phase3");
       }
-    }else if (savedTimer.phase === "phase3") {
+    } else if (savedTimer.phase === "phase3") {
       await startPhase3(remainingTime);
       if (!autoModeController.signal.aborted) {
         await continueAutoMode("phase4");
@@ -2448,14 +2494,14 @@ async function continueAutoMode(phase) {
     cam2Btn.classList.add("disabled");
   }
 
-  if(phase === "phase2") {
+  if (phase === "phase2") {
     await startPhase2();
     await startPhase3();
     await startPhase4();
-  }else if (phase === "phase3") {
+  } else if (phase === "phase3") {
     await startPhase3();
     await startPhase4();
-  }else if (phase === "phase4") {
+  } else if (phase === "phase4") {
     await startPhase4();
   }
 
@@ -2489,27 +2535,29 @@ if (autoModeBtn) {
         <i class="fas fa-times me-1"></i>Close</button>
         <button class="btn btn-danger" id="activate-auto-modal-btn">
         <i class="fas fa-times me-1"></i>Activate</button>
-        `
+        `,
       });
       setTimeout(() => {
-        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-        const cancelOverrideBtn = document.getElementById('activate-auto-modal-btn');
+        const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+        const cancelOverrideBtn = document.getElementById(
+          "activate-auto-modal-btn"
+        );
 
         if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', () => {
-                closeInfoModal();
-            });
+          modalCloseBtn.addEventListener("click", () => {
+            closeInfoModal();
+          });
         }
-        if(cancelOverrideBtn) {
+        if (cancelOverrideBtn) {
           cancelOverrideBtn.addEventListener("click", () => {
-            closeInfoModal()
+            closeInfoModal();
             setTimeout(async () => {
               await startAutoMode();
-            }, 300)
-          })
+            }, 300);
+          });
         }
-      }, 100)
-    }else {
+      }, 100);
+    } else {
       openInfoModal({
         title: "Automatic mode cancellation",
         body: `
@@ -2526,28 +2574,29 @@ if (autoModeBtn) {
         <i class="fas fa-times me-1"></i>Close</button>
         <button class="btn btn-danger" id="activate-auto-modal-btn">
         <i class="fas fa-times me-1"></i>Cancel Automatic Mode</button>
-        `
+        `,
       });
       setTimeout(() => {
-        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
-        const cancelOverrideBtn = document.getElementById('activate-auto-modal-btn');
+        const modalCloseBtn = document.querySelector("#infoModal .btn-close");
+        const cancelOverrideBtn = document.getElementById(
+          "activate-auto-modal-btn"
+        );
 
         if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', () => {
-              closeInfoModal();
-            });
+          modalCloseBtn.addEventListener("click", () => {
+            closeInfoModal();
+          });
         }
-        if(cancelOverrideBtn) {
+        if (cancelOverrideBtn) {
           cancelOverrideBtn.addEventListener("click", () => {
-            closeInfoModal()
+            closeInfoModal();
             setTimeout(() => {
               stopAutoMode();
-            }, 300)
-          })
+            }, 300);
+          });
         }
-      }, 100)
+      }, 100);
     }
-    
   });
 }
 
@@ -2597,25 +2646,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   fetch("../user/get-delay.php", { credentials: "include" })
-  .then((res) => {
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    return res.json();
-  })
-  .then((data) => {
-    const delay = data["delay"] || {};
-    if(IS_ADMIN) delayInput.value = delay;
-    mainDelay = delay;
-    currentDelay.value = delay;
-    currentDurations.delay = delay;
-  })
-  .catch((err) => {
-    console.error("Failed to fetch camera IP addresses:", err);
-    openErrorModal(
-      "Failed to load camera configuration. Please refresh the page."
-    );
-  });
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then((data) => {
+      const delay = data["delay"] || {};
+      if (IS_ADMIN) delayInput.value = delay;
+      mainDelay = delay;
+      currentDelay.value = delay;
+      currentDurations.delay = delay;
+    })
+    .catch((err) => {
+      console.error("Failed to fetch camera IP addresses:", err);
+      openErrorModal(
+        "Failed to load camera configuration. Please refresh the page."
+      );
+    });
 
   fetch("../user/get_durations.php", { credentials: "include" })
     .then((res) => res.json())
@@ -2631,32 +2680,32 @@ document.addEventListener("DOMContentLoaded", () => {
         currentDurations.durationA = overrideDurationState.durationA;
         currentDurations.durationB = overrideDurationState.durationB;
         overrideDuration();
-      }else {
+      } else {
         currentDurationA.value = findDuration(
-          currentWeekDay === 0 ? 7 : currentWeekDay, "a"
+          currentWeekDay === 0 ? 7 : currentWeekDay,
+          "a"
         );
         currentDurationB.value = findDuration(
-          currentWeekDay === 0 ? 7 : currentWeekDay, "b"
+          currentWeekDay === 0 ? 7 : currentWeekDay,
+          "b"
         );
         currentDurations.durationA = findDuration(
-          currentWeekDay === 0 ? 7 : currentWeekDay, "a"
+          currentWeekDay === 0 ? 7 : currentWeekDay,
+          "a"
         );
         currentDurations.durationB = findDuration(
-          currentWeekDay === 0 ? 7 : currentWeekDay, "b"
+          currentWeekDay === 0 ? 7 : currentWeekDay,
+          "b"
         );
       }
 
       if (durationInputA) {
-        const defaultDuration = findDuration(
-          1, "a"
-        );
+        const defaultDuration = findDuration(1, "a");
         durationInputA.value = defaultDuration || "";
         durationInputA.placeholder = "Duration for today";
       }
       if (durationInputB) {
-        const defaultDuration = findDuration(
-          1, "b"
-        );
+        const defaultDuration = findDuration(1, "b");
         durationInputB.value = defaultDuration || "";
         durationInputB.placeholder = "Duration for today";
       }
@@ -2679,19 +2728,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const manualDelayState = loadTimerManualState();
-  if(manualDelayState) {
-    setTimeout(
-      ()=>{
-        resumeDelayModeManual();
-      },
-      3000
-    )
+  if (manualDelayState) {
+    setTimeout(() => {
+      resumeDelayModeManual();
+    }, 3000);
   }
 
   const emergencyState = loadEmergencyState();
-  if(emergencyState && emergencyState.isRunning) {
-    setTimeout(()=> {
-
+  if (emergencyState && emergencyState.isRunning) {
+    setTimeout(() => {
       if (cams.cam1.connected && cams.cam2.connected) {
         console.log("Resuming auto mode after page reload");
         isBtnDisabled = true;
@@ -2705,7 +2750,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cam2Btn.disabled = false;
       }
     }, 2000);
-  }else {
+  } else {
     const autoModeState = loadAutoModeState();
     if (autoModeState.isRunning) {
       setTimeout(() => {

@@ -35,7 +35,7 @@ redirect_if_not_logged_in();
                     <button type="submit" class="btn submit-btn" id="change-ip-btn">Add IP Address</button>
                 </div>
                 <div class="d-flex mt-3">
-                    <button type="button" class="btn submit-btn btn-secondary" id="change-ip-btn">Skip</button>
+                    <button type="button" class="btn submit-btn btn-secondary" id="skip-ip-btn">Skip</button>
                 </div>
                 <span id="ip-result"></span>
             </form>
