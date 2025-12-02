@@ -4,7 +4,8 @@ header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
 require_once "../includes/config.php";
 
-if(!is_logged_in()) {
+$user = get_authenticated_user();
+if(!is_verified_logged_in()) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Authentication required']);
     exit;
@@ -23,9 +24,9 @@ try {
     
     $ip_address_1 = $input["ip_address_cam_1"];
     $ip_address_2 = $input["ip_address_cam_2"];
-    $admin_id = $input["user_id"];
+    $admin_id = $user["user_id"];
 
-    $stmt = $conn->prepare("SELECT * from ip_addresses WHERE admin_id = ?");
+    $stmt = $conn->prepare(query: "SELECT * from ip_addresses WHERE admin_id = ?");
     $stmt->bind_param("i", $admin_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -33,8 +34,8 @@ try {
     if($result->num_rows > 0 ) {
         echo json_encode([
             "success" => false,
-            "message" => "IP Address already exist",
-            "redirect" => BASE_URL . "/pages/setup-ips.php"
+            "message" => "IP Address already configured",
+            "redirect" => BASE_URL . "/pages/control.php"
         ]);
     }else{
         $ins = $conn->prepare("INSERT INTO ip_addresses(ip_address_1, ip_address_2, admin_id) VALUES(?, ?, ?)");

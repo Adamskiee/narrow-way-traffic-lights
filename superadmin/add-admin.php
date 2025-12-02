@@ -43,7 +43,7 @@ try {
     $username = $input["username"];
     $password = $input["password"];
     $phone_number = $input["phone"] ?? "";
-    $user_id = $input["user_id"] ??"";
+    $user_id = $user['user_id'];
     $role = "admin";
 
     $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
@@ -58,11 +58,21 @@ try {
         $tokenExpires = date('Y-m-d H:i:s', strtotime('+24 hours'));
 
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $ins = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by, token_expires, setup_token, role) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $ins->bind_param("ssssssisss", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $user_id, $tokenExpires, $token, $role);
-        $ins->execute();
+        $ins_user = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by, token_expires, setup_token, role) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $ins_user->bind_param("ssssssisss", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $user_id, $tokenExpires, $token, $role);
+        $ins_user->execute();
 
         $redis->del($cacheKey);
+
+        $admin_id = $conn->insert_id;
+
+        $ins_schedule = $conn->prepare("INSERT INTO schedules(admin_id, week_day) VALUES (?,1), (?,2),(?,3), (?,4), (?,5), (?,6), (?,7)");
+        $ins_schedule->bind_param("iiiiiii", $admin_id, $admin_id, $admin_id, $admin_id, $admin_id, $admin_id, $admin_id);
+        $ins_schedule->execute();
+
+        $ins_delay = $conn->prepare("INSERT INTO delays(admin_id) VALUES (?)");
+        $ins_delay->bind_param('i', $admin_id);
+        $ins_delay->execute();
 
         echo json_encode(["success" => true, "message" => "User created successfully"]);
 

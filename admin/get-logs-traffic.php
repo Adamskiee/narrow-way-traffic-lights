@@ -1,9 +1,12 @@
 <?php
 require_once "../includes/config.php";
-
+ini_set('display_errors', 1); 
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 header('Content-Type: application/json');
 
-if(!is_logged_in()) {
+$user = get_authenticated_user();
+if(!is_verified_logged_in()) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Authentication required']);
     exit;
@@ -37,7 +40,7 @@ try {
                 u.email as user_email
             FROM traffic_logs tl
             LEFT JOIN users u ON tl.user_id = u.id
-            WHERE tl.id = ?
+            WHERE tl.id = ? 
         ";
         
         $stmt = $conn->prepare($sql);
@@ -61,7 +64,7 @@ try {
     }
     
     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-    $limit = isset($_GET['limit']) ? max(1, min(100, intval($_GET['limit']))) : 20;
+    $limit = isset($_GET['limit']) ? max(1, min(100, intval(value: $_GET['limit']))) : 20;
     $offset = ($page - 1) * $limit;
     
     $camera_filter = isset($_GET['camera']) ? $_GET['camera'] : '';
@@ -96,6 +99,10 @@ try {
         $params[] = $date_to;
         $types .= 's';
     }
+
+    $where_conditions[] = "u.created_by = ?";
+    $params[] = $user['user_id'];
+    $types .= 'i';
     
     $where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
     
@@ -105,17 +112,15 @@ try {
         LEFT JOIN users u ON tl.user_id = u.id 
         $where_clause
     ";
+
     
+    $count_stmt = $conn->prepare($count_sql);
     if (!empty($params)) {
-        $count_stmt = $conn->prepare($count_sql);
         $count_stmt->bind_param($types, ...$params);
-        $count_stmt->execute();
-        $count_result = $count_stmt->get_result();
-        $total_records = $count_result->fetch_assoc()['total'];
-    } else {
-        $count_result = $conn->query($count_sql);
-        $total_records = $count_result->fetch_assoc()['total'];
     }
+    $count_stmt->execute();
+    $count_result = $count_stmt->get_result();
+    $total_records = $count_result->fetch_assoc()['total'];
     
     $sql = "
         SELECT 
@@ -131,7 +136,7 @@ try {
             u.email
         FROM traffic_logs tl
         LEFT JOIN users u ON tl.user_id = u.id
-        $where_clause
+        $where_clause 
         ORDER BY tl.timestamp DESC
         LIMIT ? OFFSET ?
     ";
@@ -141,10 +146,7 @@ try {
     $types .= 'ii';
     
     $stmt = $conn->prepare($sql);
-    if (!empty($params)) {
-        $stmt->bind_param($types, ...$params);
-    }
-    
+    $stmt->bind_param($types, ...$params);
     $stmt->execute();
     $result = $stmt->get_result();
     

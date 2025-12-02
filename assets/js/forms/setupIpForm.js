@@ -1,5 +1,5 @@
 import { handleFormSubmit } from "../formHandler.js";
-import { showFieldError, showFieldSuccess } from "../validate.js";
+import { clearFieldError, showFieldError, showFieldSuccess } from "../validate.js";
 
 const result = document.getElementById("ip-result");
 const weekDays = document.getElementById("week-days");
@@ -35,13 +35,40 @@ inputs.forEach(input => {
         const camNum = e.target.dataset.cam;
 
         document.getElementById(`result_cam_${camNum}`).innerText = "";
+        clearFieldError(input)
     })
 })
+const insertIpForm = document.getElementById("insert-ip-form")
 
-handleFormSubmit("insert-ip-form",
-    (data)=>(window.location.href = data.redirect),
-    (error) => (result.innerText = error.message),
-);
+if(insertIpForm) {
+    insertIpForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(insertIpForm);
+        const payload = Object.fromEntries(formData.entries());
+        try {
+            const response = await fetch("../admin/insert-ip.php", {
+            credentials: 'include',
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+            if (data.success) window.location.href = data.redirect
+            else {
+                document.getElementById("result").innerText = data.message
+                if(data.redirect) {
+                    window.location.href = data.redirect
+                }
+            }
+        } catch (err) {
+            document.getElementById("result").innerText = err.message
+            console.log(err);
+        }
+});
+}
+
 
 
 document.getElementById("connect-cam-1").addEventListener("click", ()=>checkESP(1));

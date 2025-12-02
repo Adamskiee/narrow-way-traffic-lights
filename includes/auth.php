@@ -1,5 +1,6 @@
 <?php 
 
+session_start();
 function is_there_operator_login() {
     global $conn;
     $user = get_authenticated_user();
@@ -17,6 +18,7 @@ function is_there_operator_login() {
 }
 
 function logout_user() {
+    session_destroy();
     global $conn;
     $user = get_authenticated_user();
     setcookie('jwt_token', '', [
@@ -31,11 +33,29 @@ function logout_user() {
     $update_active->bind_param("i", $user["user_id"]);
     $update_active->execute();
 
+    // Delete caches
+    $redis = new Predis\Client([
+        'scheme' => 'tcp',
+        'host'   => '127.0.0.1',
+        'port'   => 6379,
+    ]);
+    $redis->flushdb();
+    $redis->flushall();
+
     $conn->close();
     header("Location: ". BASE_URL . "/index.php");
 }
 
 function get_authenticated_user() {
+    $user = get_user();
+    if($user['verified'] === true) {
+        return $user;
+    }else {
+        return null;
+    }
+}
+
+function get_user() {
     $token = $_COOKIE['jwt_token'] ?? null;
     if(!$token) {
         return null;
@@ -45,8 +65,12 @@ function get_authenticated_user() {
     return $jwt->validateToken($token);
 }
 
-function is_logged_in() {
+function is_verified_logged_in() {
     return get_authenticated_user() !== null;
+}
+
+function is_logged_in() {
+    return get_user() !== null || isset($_SESSION['pending_2fa_verification']);
 }
 
 function is_admin_authenticated() {
@@ -78,7 +102,7 @@ function require_admin() {
 }
 
 function require_login() {
-    if (!is_logged_in()) {
+    if (!is_verified_logged_in()) {
         http_response_code(401);
         die(json_encode(['success' => false, 'message' => 'Login required']));
     }
@@ -100,7 +124,7 @@ function can_access_feature($feature) {
 }
 
 function redirect_if_not_logged_in($redirect_url = null) {
-    if (!is_logged_in()) {
+    if (!is_verified_logged_in()) {
         $redirect_url = $redirect_url ?: BASE_URL . "/login.php";
         header("Location: " . $redirect_url);
         exit;
@@ -120,18 +144,8 @@ function validateToken($token) {
 }
 
 function is_2fa_enabled(){
-    global $conn;
-    $user = get_authenticated_user();
-    $stmt = $conn->prepare("SELECT is_2fa_enabled FROM users WHERE id = ?");
-    $stmt->bind_param("i", $user['user_id']);
-    $stmt->execute();
+    $user = get_user();
 
-    $result = $stmt->get_result();
-    $isEnable = $result->fetch_assoc()['is_2fa_enabled'];
-    if($isEnable == 1) {
-        return true;
-    }else {
-        return false;
-    }
+    return $user['is_2fa_enabled'] == 1;
 }
 ?>

@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 require_once "./config.php";
 require_once "./JWTHelper.php";
 
-$user = get_authenticated_user();
+$user = get_user();
 if(!$user) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Authentication required']);
@@ -33,6 +33,17 @@ if($check_result) {
     $stmt = $conn->prepare("UPDATE users SET totp_secret = ?, is_2fa_enabled = ? WHERE id = ?");
     $stmt->bind_param("sii", $secret, $enabled, $id);
     $stmt->execute();
+
+    $jwt = new JWTHelper();
+    $token = $jwt->createToken($user['user_id'], $user['username'], $user['role'], $user['created_by'], 1, true);
+
+    setcookie('jwt_token', $token, [
+        'expires' => time() + (60 * 60), 
+        'path' => '/',
+        'httponly' => true,
+        'secure' => false, 
+        'samesite' => 'Lax'
+    ]);
     
     echo json_encode(["success"=> true,"message"=> "Setup successfully", "redirect"=>redirectLink($user['role'])]);
 }else {
@@ -40,7 +51,9 @@ if($check_result) {
 }
 
 function redirectLink($role) {
-    if($role === "admin" || $role === "operator") {
+    if($role === "admin") {
+        return BASE_URL . "/pages/setup-ip.php";
+    }else if($role === "operator") {
         return BASE_URL . "/pages/control.php";
     }else if($role === "super_admin") {
         return BASE_URL . "/pages/admin.php";

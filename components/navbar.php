@@ -1,12 +1,13 @@
 <?php
 
 $current = basename($_SERVER['REQUEST_URI']);
-
 if(isset($_GET["logout"])) {
     logout_user();
 }
 if(!is_logged_in()) {
     $navbarFile = BASE_PATH . "/components/guestNavbar.php";
+} elseif(isset($_SESSION['pending_2fa_verification'])) {
+    $navbarFile = BASE_PATH . "/components/setupNavbar.php";
 } elseif(!is_2fa_enabled()) {
     $navbarFile = BASE_PATH . "/components/setupNavbar.php";
 } elseif(is_super_admin_authenticated()) {

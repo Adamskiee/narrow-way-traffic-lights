@@ -23,21 +23,28 @@ if($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
 
     if(password_verify($password, $row["password"])) {
-        $jwt = new JWTHelper();
-        $token = $jwt->createToken($row['id'], $row['username'], $row['role'], $row['created_by']);
-
-        setcookie('jwt_token', $token, [
-            'expires' => time() + (60 * 60), 
-            'path' => '/',
-            'httponly' => true,
-            'secure' => false, 
-            'samesite' => 'Lax'
-        ]);
-
         if($row['is_2fa_enabled'] == 0) {
-            echo json_encode(["success" => true, "redirect" => BASE_URL . "/setup-twofa.php", "token" => $token]);
+            $jwt = new JWTHelper();
+            $token = $jwt->createToken($row['id'], $row['username'], $row['role'], $row['created_by'], $row['is_2fa_enabled']);
+    
+            setcookie('jwt_token', $token, [
+                'expires' => time() + (60 * 60), 
+                'path' => '/',
+                'httponly' => true,
+                'secure' => false, 
+                'samesite' => 'Lax'
+            ]);
+            echo json_encode(["success" => true, "redirect" => BASE_URL . "/setup-twofa.php"]);
         }else {
-            echo json_encode(["success" => true, "redirect" => BASE_URL . "/verify-twofa.php", "token" => $token]);
+            $_SESSION['pending_2fa_verification'] = [
+                'user_id' => $row['id'],
+                'username' => $row['username'],
+                'role' => $row['role'],
+                'created_by' => $row['created_by'],
+                'is_2fa_enabled' => $row['is_2fa_enabled']
+            ];
+
+            echo json_encode(["success" => true, "redirect" => BASE_URL . "/twofa.php"]);
         }
     }else {
         echo json_encode(["success" => false, "message"=>"Invalid password"]);

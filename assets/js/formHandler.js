@@ -18,6 +18,7 @@ export async function handleFormSubmit(formId, onSuccess, onError, extendedLogic
     console.log(payload);    
     try {
       const response = await fetch(form.action, {
+        credentials: 'include',
         method: form.method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

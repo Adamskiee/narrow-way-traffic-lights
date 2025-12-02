@@ -128,19 +128,32 @@ Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMDAsInVzZ
 
 POST http://localhost/narrow-way-traffic-lights/includes/verify-setup-twofa.php
 Content-Type: application/json
-Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY3JlYXRlZF9ieSI6MiwiZXhwIjoxNzY0NTgxMzgzfQ.-jDhtrQs-tK8AqzTjNCEX6XZo-RwJF8Tv69eyT8kuI4
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMDQsInVzZXJuYW1lIjoiYWRtaW4zIiwicm9sZSI6ImFkbWluIiwiY3JlYXRlZF9ieSI6MCwidmVyaWZpZWQiOmZhbHNlLCJpc18yZmFfZW5hYmxlZCI6MCwiZXhwIjoxNzY0NTg3Mzc2fQ.MHmkZPTeUjEfAIy-fV4wQEvUG_bro26e3SleXHFyVa4
 
 {
-    "secret": "ZH4ZV2JZRY6KOIAF",
-    "code": "699156"
+    "secret": "SAW76YHMETGLKPNP",
+    "code": "367316"
 }
 
 ###
 
 POST http://localhost/narrow-way-traffic-lights/includes/verify-twofa.php
 Content-Type: application/json
-Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY3JlYXRlZF9ieSI6MiwiZXhwIjoxNzY0NTgyNDA0fQ.fqf4uHhMpM4eCHWf7KBf_KnY25TXC9xqUS3LPpMYl68
+Cookie: PHPSESSID=aecle5ffkfhke2gru3evlc06gt;
 
 {
-    "code": "0710451"
+    "code": "919531"
 }
+
+###
+
+GET http://localhost/narrow-way-traffic-lights/admin/get-logs-traffic.php?page=1&limit=20
+Content-Type: application/json
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY3JlYXRlZF9ieSI6MiwidmVyaWZpZWQiOmZhbHNlLCJpc18yZmFfZW5hYmxlZCI6MSwiZXhwIjoxNzY0NTk2NTUyfQ.dxWJ-zchsuY0FRswwitns4_vJ1Vbk3Ft86A4JWxJcDg
+
+###
+
+@setSession
+POST http://localhost/narrow-way-traffic-lights/includes/.php
+
+> {% client.global.set("session", response.headers['set-cookie'][0]); %}

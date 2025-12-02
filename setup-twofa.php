@@ -3,8 +3,10 @@
 $page_title = "Setup 2FA";
 include "./includes/header.php";
 
-redirect_if_not_logged_in();
-$user = get_authenticated_user();
+$user = get_user();
+if(!$user) {
+    header("Location: " . BASE_URL . "/login.php");
+}
 
 use Vectorface\GoogleAuthenticator;
 

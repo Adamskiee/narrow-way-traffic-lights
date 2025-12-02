@@ -19,7 +19,7 @@ redirect_if_not_logged_in();
         </div>
         <div class="col-auto">
             <div class="btn-group" role="group">
-                <button id="add-user-btn" class="btn btn-primary">
+                <button id="add-admin-btn" class="btn btn-primary">
                     <i class="fas fa-plus-circle me-2"></i>Add Admin
                 </button>
                 <button class="btn btn-outline-primary" id="refresh-users" title="Refresh Admins">

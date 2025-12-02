@@ -15,17 +15,35 @@ $data = $redis->get($cacheKey);
 if(!$data) {
     try {
         $input = json_decode(file_get_contents("php://input"), true);
-
-        $sel = $conn->prepare("SELECT created_by FROM users WHERE id = ?");
-        $sel->bind_param("i", $user["user_id"]);
-        $sel->execute();
-        $result = $sel->get_result();
-        if($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            $admin_id = $row["created_by"];
+        if($user['role'] === 'operator') {
+            $sel = $conn->prepare("SELECT created_by FROM users WHERE id = ?");
+            $sel->bind_param("i", $user["user_id"]);
+            $sel->execute();
+            $result = $sel->get_result();
+            if($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $admin_id = $row["created_by"];
+                
+                $stmt = $conn->prepare("SELECT ip_address_1, ip_address_2 FROM ip_addresses WHERE admin_id = ?");
+                $stmt->bind_param("i", $admin_id);
+                $stmt->execute();
             
+                $ip_addresses = $stmt->get_result();
+                $res = json_encode([
+                    "success" => true,
+                    "ip_addresses" => $ip_addresses->fetch_assoc()
+                ]);
+                $redis->setex($cacheKey, 600, $res);
+                echo $res;
+            }else{
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Invalid User"
+                ]);
+            }
+        }else if ($user['role'] === 'admin') {
             $stmt = $conn->prepare("SELECT ip_address_1, ip_address_2 FROM ip_addresses WHERE admin_id = ?");
-            $stmt->bind_param("i", $admin_id);
+            $stmt->bind_param("i", $user['user_id']);
             $stmt->execute();
         
             $ip_addresses = $stmt->get_result();
@@ -34,12 +52,7 @@ if(!$data) {
                 "ip_addresses" => $ip_addresses->fetch_assoc()
             ]);
             $redis->setex($cacheKey, 600, $res);
-            echo $res;
-        }else{
-            echo json_encode([
-                "success" => false,
-                "message" => "Invalid User"
-            ]);
+                echo $res;
         }
     }catch(Error $e){
         echo json_encode([

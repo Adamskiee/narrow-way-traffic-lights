@@ -15,8 +15,11 @@ $data = $redis->get($cacheKey);
 if(!$data) {
     try {
         $user_id = $user["user_id"];
-
-        $stmt = $conn->prepare("SELECT delay FROM users u JOIN delays d ON u.created_by = d.admin_id WHERE u.id = ?");
+        if($user['role'] === 'operator') {
+            $stmt = $conn->prepare("SELECT delay FROM users u JOIN delays d ON u.created_by = d.admin_id WHERE u.id = ?");
+        }else if ($user['role'] === 'admin') {
+            $stmt = $conn->prepare("SELECT delay FROM delays WHERE admin_id = ?");
+        }
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
         $result = $stmt->get_result();

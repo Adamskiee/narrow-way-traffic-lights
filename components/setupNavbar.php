@@ -6,7 +6,7 @@ if(isset($_GET["logout"])) {
     logout_user();
 }
 
-$user = get_authenticated_user() ?? null;
+$user = $_SESSION['pending_2fa_verification'] ?? null;
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-glassmorphism <?= $user ? 'navbar-authenticated' : 'navbar-guest' ?>">

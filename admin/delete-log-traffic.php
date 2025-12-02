@@ -3,7 +3,7 @@ require_once "../includes/config.php";
 
 header('Content-Type: application/json');
 
-if(!is_logged_in()) {
+if(!is_verified_logged_in()) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Authentication required']);
     exit;

@@ -31,21 +31,21 @@ const VALIDATION_RULES = {
         required: true,
         minLength: 3,
         maxLength: 30,
-        pattern: /^[a-zA-Z0-9_-]+$/,
+        pattern: /^[a-zA-Z0-9_]{3,20}$/,
         message: 'Username must be 3-30 characters and contain only letters, numbers, underscores, and hyphens'
     },
     'password': {
         required: true,
         minLength: 8,
         maxLength: 100,
-        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?~`-])[A-Za-z\d!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?~`-]{8,}$/,
         message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character'
     },
     'new_password': {
         required: true,
         minLength: 8,
         maxLength: 100,
-        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?~`-])[A-Za-z\d!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?~`-]{8,}$/,
         message: 'New password must be at least 8 characters with uppercase, lowercase, number, and special character'
     },
     'ip_address_cam_2': {
@@ -143,7 +143,7 @@ function getFieldLabel(field) {
  * Validate username for reserved words
  */
 function validateUsername(value) {
-    const reservedNames = ['admin', 'administrator', 'root', 'system', 'guest', 'user', 'test', 'demo'];
+    const reservedNames = ['administrator', 'root', 'system', 'guest', 'user', 'test', 'demo'];
     
     if (reservedNames.includes(value.toLowerCase())) {
         return {
@@ -227,7 +227,7 @@ export function clearFieldError(field) {
 /**
  * Validate entire form
  */
-function validateForm(form) {
+export function validateForm(form) {
     const errors = [];
     const fields = form.querySelectorAll('input[name], select[name], textarea[name]');
     

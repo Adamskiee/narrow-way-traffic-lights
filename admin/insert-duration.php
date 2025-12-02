@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: POST");
 require_once "../includes/config.php";
 require_once "../includes/privilege-middleware.php";
 
-if(!is_logged_in()) {
+if(!is_verified_logged_in()) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Authentication required']);
     exit;

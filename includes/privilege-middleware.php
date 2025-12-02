@@ -5,7 +5,7 @@ require_once '../includes/auth.php';
 function check_admin_access() {
     session_start();
     
-    if (!is_logged_in()) {
+    if (!is_verified_logged_in()) {
         http_response_code(401);
         echo json_encode(['success' => false, 'message' => 'Authentication required']);
         exit();
@@ -21,7 +21,7 @@ function check_admin_access() {
 function check_camera_access() {
     session_start();
     
-    if (!is_logged_in()) {
+    if (!is_verified_logged_in()) {
         http_response_code(401);
         echo json_encode(['success' => false, 'message' => 'Authentication required']);
         exit();

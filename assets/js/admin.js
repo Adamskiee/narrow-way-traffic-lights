@@ -1,7 +1,8 @@
 import { openModal, closeModal } from "./modal.js";
 import { openInfoModal, closeInfoModal } from "./infoModal.js";
 import { handleFormSubmit } from "./formHandler.js";
-import { setupRealtimeValidation } from "./validate.js";
+import { setupRealtimeValidation, showFieldError, clearFieldError, validateForm } from "./validate.js";
+import { createPasswordInputWithToggle, initPasswordToggles } from "./password-toggle.js";
 
 function attachEvents() {
     document.querySelectorAll(".delete-btn").forEach(btn => {
@@ -11,13 +12,6 @@ function attachEvents() {
         });
     });
 
-    document.querySelectorAll(".edit-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const id = btn.dataset.id;
-            openEditModal(id);
-        });
-    });
-    
     document.querySelectorAll(".view-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const id = btn.dataset.id;
@@ -82,28 +76,14 @@ async function deleteAdmin(id) {
     }
 }
 
+let editUserData = {};
+
 function openEditModal(id) {
     fetch(`../superadmin/get-admin.php?id=${id}`, {credentials: "include"})
     .then(res => res.json())
     .then(data => {
         const user = data.user;
-        const modalForm = document.querySelector(".modalForm");
-
-        modalForm.onsubmit = null;
-        modalForm.removeAttribute('data-form-handler');
-        
-        modalForm.action = "../superadmin/edit-admin.php";
-        modalForm.method = "post";
-        modalForm.id = "user-edit";
-        
-        handleFormSubmit(
-            "user-edit", 
-            (data) => {
-                openSuccessModal(data.message);
-            },
-            (error) => openErrorModal(error.message)
-        );
-
+        console.log(user);
         openModal({
             title: "Edit User",
             body: `
@@ -163,16 +143,99 @@ function openEditModal(id) {
             <button type="button" class="btn btn-secondary" onclick="closeModal()"> 
                 <i class="fas fa-times me-1"></i>Close
             </button>
-            <button type="submit" class="btn btn-primary"> 
+            <button type="submit" class="btn btn-primary" id="edit-user-submit-btn"> 
                 <i class="fas fa-trash me-1"></i>Edit
             </button>
             `
         });
 
         setTimeout(() => {
-            setupRealtimeValidation(modalForm);
+            const form = document.querySelector(".modalForm");
+            setupRealtimeValidation(form);
         }, 100);
     })
+}
+
+function setupEditUserButton() {
+    const editUserBtn = document.querySelectorAll(".edit-btn");
+    editUserBtn.forEach(btn => {
+        if (btn && !btn.hasAttribute('data-listener-attached')) {
+            btn.setAttribute('data-listener-attached', 'true');
+            btn.addEventListener("click", () => {
+                const modalForm = document.querySelector(".modalForm");
+                
+                modalForm.action = "../superadmin/edit-admin.php";
+                modalForm.method = "post";
+                modalForm.id = "user-edit";
+                
+                if (!modalForm.hasAttribute('data-form-handler')) {
+                    modalForm.setAttribute('data-form-handler', 'true');
+                    modalForm.addEventListener("submit", async (e) => {
+                        e.preventDefault();
+                        
+                        const validation = validateForm(modalForm);
+                        if(!validation.isValid) {
+                            return;
+                        }
+
+                        showEditUserLoading(true);
+                        const formData = new FormData(modalForm);
+                        const payload = Object.fromEntries(formData.entries());
+
+                        try {
+                            const response = await fetch(modalForm.action, {
+                            method: modalForm.method,
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(payload),
+                            });
+
+                            showEditUserLoading(false);
+                            
+                            const data = await response.json();
+                            if (data.success) openSuccessModal(data.message);
+                            else showFieldError(document.getElementById("username"), data.message);
+                        } catch (err) {
+                            openErrorModal(err.message);
+                            showEditUserLoading(false);
+                            console.log(err);
+                        }
+                    });
+                }
+                
+                openEditModal(btn.dataset.id);
+            });
+        }
+    });
+}
+
+function showEditUserLoading(isLoading) {
+    const submitBtn = document.getElementById("edit-user-submit-btn");
+    const modal = document.querySelector("#modal .modal-content");
+    
+    if (isLoading) {
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                Adding User...
+            `;
+        }
+        
+        if (modal) {
+            modal.style.opacity = "0.7";
+            modal.style.pointerEvents = "none";
+        }
+    } else {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `Add User`;
+        }
+        
+        if (modal) {
+            modal.style.opacity = "1";
+            modal.style.pointerEvents = "auto";
+        }
+    }
 }
 
 function openSuccessModal(message) {
@@ -323,6 +386,7 @@ function loadUsers() {
         updateUserStatistics(data.users);
         
         attachEvents();
+        setupEditUserButton();
     })
     .catch(error => {
         console.error('Error loading users:', error);
@@ -417,7 +481,7 @@ function openAddModal() {
             />
         </div>
         <div class="mb-3">
-            <label for="username" class="form-label">Username*</label>
+            <label for="username" class="form-label" >Username*</label>
             <input
                 type="text"
                 class="form-control"
@@ -430,22 +494,19 @@ function openAddModal() {
         <div class="mb-3">
             <label for="password" class="form-label">Password*</label>
             <div class="input-group">
-                <input
-                    type="password"
-                    class="form-control"
-                    name="password"
-                    id="password"
-                    placeholder="Password"
-                    aria-describedby="generate-btn"
-                    required
-                />
-                <button type="button" class="btn btn-secondary" id="generate-btn">Generate</button>
+                ${createPasswordInputWithToggle({
+                    name: 'password',
+                    id: 'password',
+                    placeholder: 'Password',
+                    required: true,
+                    showGenerate: true
+                })}
             </div>
         </div>
         `,
         footer: `
-        <button type="button" class="btn btn-secondary">
-            <i class="fas fa-times me-1"></i>Add User
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">
+            <i class="fas fa-times me-1"></i>Close
         </button>
         <button type="submit" class="btn btn-primary" id="add-user-submit-btn">
             <i class="fas fa-plus me-1"></i>Add User
@@ -455,10 +516,9 @@ function openAddModal() {
     
     setTimeout(() => {
         const form = document.querySelector(".modalForm");
-
         setupRealtimeValidation(form);
 
-        const generateBtn = document.getElementById("generate-btn");
+        const generateBtn = document.querySelector(".generate-password");
         if (generateBtn && !generateBtn.hasAttribute('data-listener-attached')) {
             generateBtn.setAttribute('data-listener-attached', 'true');
             generateBtn.addEventListener("click", () => {
@@ -659,7 +719,7 @@ function openViewModal(id) {
 }
 
 function setupAddUserButton() {
-    const addUserBtn = document.getElementById("add-user-btn");
+    const addUserBtn = document.getElementById("add-admin-btn");
     if (addUserBtn && !addUserBtn.hasAttribute('data-listener-attached')) {
         addUserBtn.setAttribute('data-listener-attached', 'true');
         addUserBtn.addEventListener("click", () => {
@@ -673,10 +733,16 @@ function setupAddUserButton() {
                 modalForm.setAttribute('data-form-handler', 'true');
                 modalForm.addEventListener("submit", async (e) => {
                     e.preventDefault();
-                
+                    
+                    const validation = validateForm(modalForm);
+                    if(!validation.isValid) {
+                        return;
+                    }
+
                     showAddUserLoading(true);
                     const formData = new FormData(modalForm);
                     const payload = Object.fromEntries(formData.entries());
+
                     try {
                         const response = await fetch(modalForm.action, {
                         method: modalForm.method,
@@ -688,7 +754,7 @@ function setupAddUserButton() {
                         
                         const data = await response.json();
                         if (data.success) openSuccessModal(data.message);
-                        else openErrorModal(data.message);
+                        else showFieldError(document.getElementById("username"), data.message);
                     } catch (err) {
                         openErrorModal(err.message);
                         showAddUserLoading(false);
@@ -733,6 +799,7 @@ function showAddUserLoading(isLoading) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    initPasswordToggles();
     loadUsers();
     
     const refreshBtn = document.getElementById('refresh-users');

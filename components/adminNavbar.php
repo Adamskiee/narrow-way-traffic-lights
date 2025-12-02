@@ -52,12 +52,12 @@ $user = get_authenticated_user() ?? null;
                         <span>Logs</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link <?= $current === 'settings.php' ? 'active' : '' ?>" href="<?=BASE_URL?>/pages/settings.php">
                         <i class="fas fa-cog nav-icon"></i>
                         <span>Settings</span>
-                    </a>
-                </li>
+                    </a> -->
+                <!-- </li> -->
             </ul>
 
             <!-- User Menu -->
