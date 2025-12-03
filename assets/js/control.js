@@ -707,65 +707,10 @@ function updateLEDButton(camName, color, isOn, saveState = true) {
 if (weekDays) {
   weekDays.querySelectorAll("button[data-week]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
-      if (saveDurationBtn.dataset.state === "save") {
-        openInfoModal({
-          title: "Save duration",
-          body: `
-          <div class="text-center">
-              <div class="mb-3">
-                  <i class="fas fa-circle-info fa-3x"></i>
-              </div>
-              <h5 class="mb-3">Confirm to save duration</h5>
-              <p class="mb-0">Are you sure you want to update duration?</p>
-          </div>
-          `,
-          footer: `
-          <button class="btn btn-secondary" id="dont-save-duration-modal-btn">
-          <i class="fas fa-times me-1"></i>Don't save</button>
-          <button class="btn btn-danger" id="save-duration-modal-btn">
-          <i class="fas fa-check me-1"></i>Update</button>
-          `,
-        });
-        setTimeout(() => {
-          const modalCloseBtn = document.querySelector("#infoModal .btn-close");
-          const cancelOverrideBtn = document.getElementById(
-            "save-duration-modal-btn"
-          );
-          const dontSaveDurationBtn = document.getElementById(
-            "dont-save-duration-modal-btn"
-          );
-
-          if (modalCloseBtn) {
-            modalCloseBtn.addEventListener("click", () => {
-              closeInfoModal();
-            });
-          }
-          if (cancelOverrideBtn) {
-            cancelOverrideBtn.addEventListener("click", () => {
-              closeInfoModal();
-              setTimeout(() => {
-                durationInputA.disabled = true;
-                durationInputB.disabled = true;
-                saveDurationBtn.innerText = "edit";
-                saveDurationBtn.dataset.state = "edit";
-                performSaveDuration();
-              }, 300);
-            });
-          }
-          if (dontSaveDurationBtn) {
-            dontSaveDurationBtn.addEventListener("click", () => {
-              closeInfoModal();
-              setTimeout(() => {
-                durationInputA.disabled = true;
-                durationInputB.disabled = true;
-                saveDurationBtn.innerText = "edit";
-                saveDurationBtn.dataset.state = "edit";
-              }, 300);
-            });
-          }
-        }, 100);
-        return;
-      }
+      durationInputA.disabled = true;
+      durationInputB.disabled = true;
+      saveDurationBtn.innerText = "edit";
+      saveDurationBtn.dataset.state = "edit";
       weekDays
         .querySelectorAll("button[data-week]")
         .forEach((b) => b.classList.remove("active"));

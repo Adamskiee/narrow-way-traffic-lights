@@ -44,9 +44,15 @@ try {
             "message" => "IP Addresses successfully changed"
         ]);
     }else{
+        $ins = $conn->prepare("INSERT ip_addresses(ip_address_1, ip_address_2, admin_id) VALUES(?,?,?) ");
+        $ins->bind_param("ssi", $ip_address_1, $ip_address_2, $admin_id);
+        $ins->execute();
+
+        $redis->del($cacheKey);
+        
         echo json_encode([
-            "success" => false,
-            "message" => "Updating Error"
+            "success" => true,
+            "message" => "IP Addresses successfully changed"
         ]);
     }
 

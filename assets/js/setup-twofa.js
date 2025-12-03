@@ -1,3 +1,4 @@
+import { openInfoModal, closeInfoModal } from "./infoModal.js";
 import { validateForm, validateField } from "./validate.js";
 
 const result = document.getElementById("result");

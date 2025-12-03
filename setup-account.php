@@ -73,6 +73,7 @@ if(!$user) {
             <?php endif; ?>
         </div>
     </div>
+    <?php include BASE_PATH . "/components/infoModal.php" ?>
 </main>
 <script src="<?= BASE_URL ?>/assets/js/setupAccount.js" type="module"></script>
 <?php

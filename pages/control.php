@@ -27,7 +27,7 @@ $canControlCameras = can_access_feature('camera_control');
       <i class="fas fa-play me-2"></i>Start Automatic Mode
     </button>
     <button id="emergency-btn" class="btn btn-primary btn-lg px-4">
-      <i class="fas fa-play me-2"></i>Emergency
+      <i class="fas fa-kit-medical me-2"></i>Emergency
     </button>
   </div>
 
@@ -45,7 +45,7 @@ $canControlCameras = can_access_feature('camera_control');
             <span id="cam1-count" class="badge bg-secondary fs-6"></span>
           </div>
         <div class="position-relative row justify-content-center m-0" id="cam1-container">
-          <img src="<?= BASE_URL ?>/assets/images/gray.png" id="cam1" alt="Camera 1 Stream" class="img-fluid rounded px-0">
+          <img src="<?= BASE_URL ?>/assets/images/gray.png" id="cam1" alt="Camera 1 Stream" class="img-fluid rounded px-0" style="transform: scaleY(-1);">
           <img class="position-absolute top-50 start-50 translate-middle w-25 h-25" src="<?= BASE_URL ?>/assets/images/camera_backward.png" id="cam1-error-icon" >
         </div>
       </div>
@@ -62,7 +62,7 @@ $canControlCameras = can_access_feature('camera_control');
           </div>
         </div>
         <div class="position-relative row justify-content-center m-0" id="cam1-container">
-          <img src="<?= BASE_URL ?>/assets/images/gray.png" id="cam2" alt="Camera 2 Stream" class="img-fluid rounded px-0">
+          <img src="<?= BASE_URL ?>/assets/images/gray.png" id="cam2" alt="Camera 2 Stream" class="img-fluid rounded px-0" style="transform: scaleY(-1);">
           <img class="position-absolute top-50 start-50 translate-middle w-25 h-25" src="<?= BASE_URL ?>/assets/images/camera_backward.png" id="cam2-error-icon">
         </div>
       </div>

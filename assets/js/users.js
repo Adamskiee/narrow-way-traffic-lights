@@ -141,7 +141,7 @@ function openEditModal(id) {
                 <i class="fas fa-times me-1"></i>Close
             </button>
             <button type="submit" class="btn btn-primary"> 
-                <i class="fas fa-trash me-1"></i>Edit
+                <i class="fas fa-edit me-1"></i>Edit
             </button>
             `
         });
@@ -263,6 +263,7 @@ function loadUsers() {
                         </div>
                     </td>
                     <td>${user["is_active"] === 1 ? 'Active' : 'Inactive'} </td>
+                    <td>${user["is_2fa_enabled"] === 1 ? 'Verified' : 'Unverified'} </td>
                     <td>${user["first_name"] || '-'}</td>
                     <td>${user["last_name"] || '-'}</td>
                     <td>
@@ -407,27 +408,39 @@ function showEditUserLoading(isLoading) {
 function updateUserStatistics(users) {
     const totalUsersEl = document.getElementById('total-users-count');
     const activeUsersEl = document.getElementById('active-users-count');
-    const recentUsersEl = document.getElementById('recent-users-count');
+    const verifiedUsersEl = document.getElementById('verified-users-count');
     
     if (totalUsersEl) {
         totalUsersEl.textContent = users.length;
     }
     
     if (activeUsersEl) {
-        activeUsersEl.textContent = users.length;
+        activeUsersEl.textContent = calculateActiveUsers(users);
     }
     
-    if (recentUsersEl) {
-        // Count users created in the last 30 days
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        
-        const recentCount = users.filter(user => 
-            new Date(user.created_at) > thirtyDaysAgo
-        ).length;
-        
-        recentUsersEl.textContent = recentCount;
+    if (verifiedUsersEl) {
+        verifiedUsersEl.textContent = calculateVerifiedUsers(users);
     }
+}
+
+function calculateActiveUsers(users) {
+    let total = 0;
+    users.forEach(user => {
+        if(user.active == 1) {
+            total+=1;
+        }
+    })
+    return total;
+}
+
+function calculateVerifiedUsers(users) {
+    let total = 0;
+    users.forEach(user => {
+        if(user['is_2fa_enabled'] == 1) {
+            total+=1;
+        }   
+    })
+    return total;
 }
 
 

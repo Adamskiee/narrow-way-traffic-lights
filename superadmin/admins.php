@@ -21,7 +21,7 @@ $data = $redis->get($cacheKey);
 
 if(!$data) {
     try {
-        $stmt = $conn->prepare("SELECT id, username, email, first_name, last_name, created_at, phone_number, is_active FROM users WHERE role = 'admin'");
+        $stmt = $conn->prepare("SELECT id, username, email, first_name, last_name, created_at, phone_number, is_active, is_2fa_enabled FROM users WHERE role = 'admin'");
         $stmt->execute();
         
         $result = $stmt->get_result();

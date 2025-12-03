@@ -56,6 +56,9 @@ redirect_if_not_logged_in();
                                 <i class="fas fa-circle me-1"></i>Status
                             </th>
                             <th scope="col">
+                                <i class="fas fa-certificate me-1"></i>Verified
+                            </th>
+                            <th scope="col">
                                 <i class="fas fa-id-card me-1"></i>First Name
                             </th>
                             <th scope="col">
@@ -119,10 +122,10 @@ redirect_if_not_logged_in();
             <div class="card-dark py-5 text-center">
                 <div class="card-body">
                     <div class="text-info">
-                        <i class="fas fa-user-plus fa-2x mb-2"></i>
+                        <i class="fas fa-user-shield fa-2x mb-2"></i>
                     </div>
-                    <h5 class="card-title">Recent Users</h5>
-                    <p class="card-text fs-4 fw-bold" id="recent-users-count">-</p>
+                    <h5 class="card-title">Verified Users</h5>
+                    <p class="card-text fs-4 fw-bold" id="verified-users-count">-</p>
                 </div>
             </div>
         </div>

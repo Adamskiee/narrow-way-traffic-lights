@@ -632,6 +632,16 @@ function showLogDetailsModal(logData) {
             body: modalBody,
             footer: modalFooter
         });
+
+        setTimeout(() => {
+            const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+            
+            if (modalCloseBtn) {
+                modalCloseBtn.addEventListener('click', () => {
+                    closeInfoModal();
+                });
+            }
+        }, 100)
     } else {
         // Fallback to built-in modal if info modal is not available
         const modal = document.getElementById('logDetailsModal');
@@ -717,6 +727,16 @@ async function deleteLog(logId) {
             body: modalBody,
             footer: modalFooter
         });
+
+        setTimeout(() => {
+            const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+            
+            if (modalCloseBtn) {
+                modalCloseBtn.addEventListener('click', () => {
+                    closeInfoModal();
+                });
+            }
+        }, 100)
     } else {
         if (confirm(`Are you sure you want to delete ${logInfo}?`)) {
             await performDeleteLog(logId);
