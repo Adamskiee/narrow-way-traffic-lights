@@ -68,6 +68,13 @@ const VALIDATION_RULES = {
         maxLength: 6,
         pattern: /^\d{6}$/,
         message: 'Please enter a valid 6 digit code.'
+    },
+    'recovery-code': {
+        required: true,
+        minLength: 9,
+        maxLength: 9,
+        pattern: /^[0-9A-F]{4}-[0-9A-F]{4}$/,
+        message: 'Please enter a valid recovery code.'
     }
 };
 

@@ -50,4 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-const logoutBtn = document.getElementById("logout-btn")
+const logoutBtn = document.querySelector("a[href='?logout']");
+logoutBtn.addEventListener("click", () => {
+    localStorage.clear();
+})

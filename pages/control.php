@@ -171,7 +171,7 @@ $canControlCameras = can_access_feature('camera_control');
             </div>
             <span id="result_cam_2" class="form-text text-danger"></span>
           </div>
-          <div class="d-flex">
+          <div class="d-flex gap-2">
             <button type="button" class="btn submit-btn" id="change-ip-btn">Change IP Address</button>
             <button type="button" class="btn btn-secondary" id="cancel-change-ip-btn" disabled>Cancel</button>
           </div>

@@ -9,7 +9,12 @@ error_reporting(E_ALL);
 require_once "./config.php";
 require_once "./JWTHelper.php";
 
-$user = get_user();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$user = $_SESSION['pending_2fa_verification'];
 if(!$user) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Authentication required']);
@@ -28,12 +33,9 @@ $secret = $input["secret"];
 $check_result = $ga->verifyCode($secret, $code, 2 );
 if($check_result) {
     $id = $user['user_id'];
-    $stmt = $conn->prepare("UPDATE users SET totp_secret = ?, is_2fa_enabled = 1 WHERE id = ?");
+    $stmt = $conn->prepare("UPDATE users SET totp_secret = ? WHERE id = ?");
     $stmt->bind_param("si", $secret, $id);
     $stmt->execute();
-
-    $codes = generateRecoveryCodes();
-    storeRecoveryCodes($id, $codes);
 
     $jwt = new JWTHelper();
     $token = $jwt->createToken($user['user_id'], $user['username'], $user['role'], $user['created_by'], 1, true);
@@ -46,7 +48,7 @@ if($check_result) {
         'samesite' => 'Lax'
     ]);
     
-    echo json_encode(["success"=> true,"message"=> "Setup successfully", "codes"=>$codes, "redirect" => redirectLink($user['role'])]);
+    echo json_encode(["success"=> true,"message"=> "Recover successfully", "redirect" => redirectLink($user['role'])]);
 }else {
     echo json_encode(["success"=> false,"message"=> "Code is wrong"]);
 }
@@ -63,28 +65,4 @@ function redirectLink($role) {
     }
 }
 
-function generateRecoveryCodes() {
-    $codes = [];
-
-    for ($i = 0; $i < 10; $i++) {
-        // Generate a safe 10-char code with hyphen
-        $raw = strtoupper(bin2hex(random_bytes(4))); // 8 hex chars
-        $code = substr($raw, 0, 4) . '-' . substr($raw, 4, 4);
-
-        $codes[] = $code;
-    }
-
-    return $codes;
-}
-
-function storeRecoveryCodes($id, $codes) {
-    global $conn;
-    $stmt = $conn->prepare("INSERT INTO user_recovery_codes (user_id, code, used) VALUES (?, ?, 0)");
-
-    foreach ($codes as $code) {
-        $code_hash = password_hash($code, PASSWORD_DEFAULT);
-        $stmt->bind_param("is", $id, $code_hash);
-        $stmt->execute();
-    }
-}
 ?>

@@ -128,10 +128,10 @@ Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMDAsInVzZ
 
 POST http://localhost/narrow-way-traffic-lights/includes/verify-setup-twofa.php
 Content-Type: application/json
-Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMDQsInVzZXJuYW1lIjoiYWRtaW4zIiwicm9sZSI6ImFkbWluIiwiY3JlYXRlZF9ieSI6MCwidmVyaWZpZWQiOmZhbHNlLCJpc18yZmFfZW5hYmxlZCI6MCwiZXhwIjoxNzY0NTg3Mzc2fQ.MHmkZPTeUjEfAIy-fV4wQEvUG_bro26e3SleXHFyVa4
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyNDksInVzZXJuYW1lIjoib3BlcmF0b3IyIiwicm9sZSI6Im9wZXJhdG9yIiwiY3JlYXRlZF9ieSI6MiwidmVyaWZpZWQiOmZhbHNlLCJpc18yZmFfZW5hYmxlZCI6MCwiZXhwIjoxNzY1MDkxMzg4fQ.H4i4NcGcW4Dlhbi_5mw7cao4XdmhUuQjuzjZNa77J80
 
 {
-    "secret": "SAW76YHMETGLKPNP",
+    "secret": "HW4Q6RZYZ34X37BZ",
     "code": "367316"
 }
 

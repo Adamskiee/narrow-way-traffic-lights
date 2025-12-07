@@ -31,6 +31,7 @@ if(!$user) {
                 </div>
                 <button type="submit" class="btn btn-login" name="submit">Submit</button>
             </form>
+            <a href="<?= BASE_URL ?>/recover-twofa.php">Use a recovery code</a>
         </div>
     </div>
 </main>
