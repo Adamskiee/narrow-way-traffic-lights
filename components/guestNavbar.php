@@ -2,7 +2,7 @@
 
 $current = basename($_SERVER['REQUEST_URI']);
 ?>
-<nav class="navbar navbar-expand-lg navbar-glassmorphism <?= $user ? 'navbar-authenticated' : 'navbar-guest' ?>">
+<nav class="navbar navbar-expand-lg navbar-glassmorphism navbar-guest">
     <div class="container-fluid">
         <!-- Brand -->
         <a href="<?=BASE_URL . '/index.php' ?>" class="navbar-brand">

@@ -1,12 +1,29 @@
 <?php 
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 function is_there_operator_login() {
     global $conn;
     $user = get_authenticated_user();
 
-    $stmt = $conn->prepare("SELECT id FROM users WHERE is_active = 1 AND created_by = ? AND role = 'operator' AND id != ?");
-    $stmt->bind_param("ii", $user['created_by'], $user['user_id']);
+    if(!$user['login_time']) {
+        return true;
+    }
+
+    $login_time = date('Y-m-d H:i:s', strtotime($user['login_time']));
+
+    $stmt = $conn->prepare("
+        SELECT id 
+        FROM users 
+        WHERE is_active = 1 
+            AND created_by = ? 
+            AND role = 'operator' 
+            AND login_time <= ? 
+            AND id != ?
+            ");
+            
+    $stmt->bind_param("isi", $user['created_by'], $login_time, $user['user_id']);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -18,7 +35,6 @@ function is_there_operator_login() {
 }
 
 function logout_user() {
-    session_destroy();
     global $conn;
     $user = get_authenticated_user();
     setcookie('jwt_token', '', [
@@ -29,8 +45,10 @@ function logout_user() {
         'samesite' => 'Lax'
     ]);
 
-    $update_active = $conn->prepare("UPDATE users SET is_active = 0 WHERE id = ?");
-    $update_active->bind_param("i", $user["user_id"]);
+    $id = $user["user_id"] ?? $_SESSION['pending_2fa_verification']["user_id"];
+
+    $update_active = $conn->prepare("UPDATE users SET is_active = 0, login_time = NULL WHERE id = ?");
+    $update_active->bind_param("i", $id);
     $update_active->execute();
 
     // Delete caches
@@ -41,14 +59,16 @@ function logout_user() {
     ]);
     $redis->flushdb();
     $redis->flushall();
-
-    $conn->close();
+    // Only destroy session if one is active
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_destroy();
+    }
     header("Location: ". BASE_URL . "/index.php");
 }
 
 function get_authenticated_user() {
     $user = get_user();
-    if($user['verified'] === true) {
+    if($user && $user['verified'] === true) {
         return $user;
     }else {
         return null;

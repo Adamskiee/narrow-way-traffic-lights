@@ -38,7 +38,7 @@ if($check_result) {
     $stmt->execute();
 
     $jwt = new JWTHelper();
-    $token = $jwt->createToken($user['user_id'], $user['username'], $user['role'], $user['created_by'], 1, true);
+    $token = $jwt->createToken($user['user_id'], $user['username'], $user['role'], $user['created_by'],1, $user['login_time'], true);
 
     setcookie('jwt_token', $token, [
         'expires' => time() + (60 * 60), 

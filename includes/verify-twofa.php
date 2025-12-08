@@ -54,10 +54,8 @@ try {
     if($check_result) {
         
         $jwt = new JWTHelper();
-        $token = $jwt->createToken($user['user_id'], $user['username'], $user['role'], $user['created_by'], $user['is_2fa_enabled'], true);
+        $token = $jwt->createToken($user['user_id'], $user['username'], $user['role'], $user['created_by'], $user['is_2fa_enabled'], $user['login_time'], true);
 
-        error_log("Setting JWT cookie for user: " . $user['user_id']);
-        
         $cookie_set = setcookie('jwt_token', $token, [
             'expires' => time() + (60 * 60), 
             'path' => '/',

@@ -23,9 +23,19 @@ if($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
 
     if(password_verify($password, $row["password"])) {
+        $update_login_time = $conn->prepare("UPDATE users SET login_time = NOW() WHERE id = ?");
+        $update_login_time->bind_param("i", $row['id']);
+        $update_login_time->execute();
+
+        $get_time = $conn->prepare("SELECT login_time FROM users WHERE id = ?");
+        $get_time->bind_param("i", $row['id']);
+        $get_time->execute();
+        $time_result = $get_time->get_result();
+        $current_login_time = $time_result->fetch_assoc()['login_time'];
+
         if($row['is_2fa_enabled'] == 0) {
             $jwt = new JWTHelper();
-            $token = $jwt->createToken($row['id'], $row['username'], $row['role'], $row['created_by'], $row['is_2fa_enabled']);
+            $token = $jwt->createToken($row['id'], $row['username'], $row['role'], $row['created_by'], $row['is_2fa_enabled'], (new DateTime())->format('Y-m-d H:i:s'));
     
             setcookie('jwt_token', $token, [
                 'expires' => time() + (60 * 60), 
@@ -41,6 +51,7 @@ if($result && $result->num_rows > 0) {
                 'username' => $row['username'],
                 'role' => $row['role'],
                 'created_by' => $row['created_by'],
+                'login_time' => $current_login_time,
                 'is_2fa_enabled' => $row['is_2fa_enabled']
             ];
 

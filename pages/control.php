@@ -6,7 +6,7 @@ redirect_if_not_logged_in();
 if(!is_admin_authenticated()) {
   if(is_there_operator_login()) {
     ob_end_clean();
-    logout_user();
+    header("Location: ".BASE_URL."/pages/notice.php");
     exit;
   }
 }
