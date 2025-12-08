@@ -3,6 +3,8 @@
 $page_title = 'Landing page';
 include './includes/header.php';
 
+redirect_if_logged_in();
+
 $cacheKey = "page:index";
 $cacheTime = 60;
 $cached = $redis->get($cacheKey);

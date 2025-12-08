@@ -1,5 +1,4 @@
 <?php
-
 $current = basename($_SERVER['REQUEST_URI']);
 
 if(isset($_GET["logout"])) {

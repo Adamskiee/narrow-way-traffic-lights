@@ -56,6 +56,7 @@ try {
         $jwt = new JWTHelper();
         $token = $jwt->createToken($user['user_id'], $user['username'], $user['role'], $user['created_by'], $user['is_2fa_enabled'], $user['login_time'], true);
 
+        // token avaliable for 1 hour
         $cookie_set = setcookie('jwt_token', $token, [
             'expires' => time() + (60 * 60), 
             'path' => '/',
@@ -64,6 +65,26 @@ try {
             'samesite' => 'Lax'
         ]);
 
+        // refresh token available for 30 days
+        if($jwt->validateRefreshToken($_COOKIE['refresh_token']) != $user['user_id']) {
+            $select_refresh_token = $conn->prepare("SELECT token FROM refresh_tokens WHERE user_id = ? AND expires_at > NOW()");
+            $select_refresh_token->bind_param("i", $user['user_id']);
+            $select_refresh_token->execute();
+
+            $result = $select_refresh_token->get_result();
+            if($result && $result->num_rows > 0) {
+                $refresh_token = $result->fetch_assoc()['token'];
+            }else {
+                $refresh_token = $jwt->createRefreshToken($user['user_id']);
+            }
+            setcookie('refresh_token', $refresh_token, [
+                'expires' => time() + (60 * 60 * 24 * 30),
+                'path' => '/',
+                'httponly' => true,
+                'secure' => false,
+                'samesite' => 'Lax'
+            ]);
+        }
         
         unset($_SESSION['pending_2fa_verification']);
         

@@ -175,6 +175,12 @@ function redirect_if_not_logged_in($redirect_url = null) {
     }
 }
 
+function redirect_if_logged_in() {
+    if(is_logged_in()) {
+        header("Location: ".BASE_URL."/pages/control.php");
+    }
+}
+
 function validateToken($token) {
     global $conn;
     $token = trim($token);
@@ -190,6 +196,88 @@ function validateToken($token) {
 function is_2fa_enabled(){
     $user = get_user();
 
-    return $user['is_2fa_enabled'] == 1;
+    return $user['is_2fa_enabled'] ?? 0 == 1;
 }
+
+function checkAndRefreshToken() {
+    $jwt = new JWTHelper();
+    
+    // Get the access token
+    $jwtToken = $_COOKIE['jwt_token'] ?? null;
+    
+    $user = get_authenticated_user();
+    if ($jwtToken) {
+        try {
+            // Check if access token expires in less than 10 minutes
+            $timeUntilExpiry = $user['exp'] - time();
+            if ($timeUntilExpiry < 600) { // 10 minutes
+                // Get the refresh token
+                $refreshToken = $_COOKIE['refresh_token'] ?? null;
+                
+                if ($refreshToken) {
+                    $userId = $jwt->validateRefreshToken($refreshToken);
+                    
+                    if ($userId) {
+                        // Create new access token
+                        $newToken = $jwt->createToken(
+                            $user['user_id'], 
+                            $user['username'], 
+                            $user['role'], 
+                            $user['created_by'], 
+                            $user['is_2fa_enabled'], 
+                            $user['login_time'], 
+                            true
+                        );
+                        
+                        // Set new cookie
+                        setcookie('jwt_token', $newToken, [
+                            'expires' => time() + 3600,
+                            'path' => '/',
+                            'httponly' => true,
+                            'secure' => false,
+                            'samesite' => 'Lax'
+                        ]);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            $refreshToken = $_COOKIE['refresh_token'] ?? null;
+            
+            if ($refreshToken) {
+                $userId = $jwt->validateRefreshToken($refreshToken);
+                
+                if ($userId) {
+                    $userId = $jwt->validateRefreshToken($refreshToken);
+                    // Create new access token
+                    $newToken = $jwt->createToken(
+                        $user['id'], 
+                        $user['username'], 
+                        $user['role'], 
+                        $user['created_by'], 
+                        $user['is_2fa_enabled'], 
+                        $user['login_time'], 
+                        true
+                    );
+                    
+                    // Set new cookie
+                    setcookie('jwt_token', $newToken, [
+                        'expires' => time() + 3600,
+                        'path' => '/',
+                        'httponly' => true,
+                        'secure' => false,
+                        'samesite' => 'Lax'
+                    ]);
+                } else {
+                    // Clear invalid cookies
+                    setcookie('jwt_token', '', time() - 3600, '/');
+                    setcookie('refresh_token', '', time() - 3600, '/');
+                    setcookie('is_authenticated', '', time() - 3600, '/');
+                }
+            }
+        }
+    }
+}
+
+// Auto-run refresh token
+checkAndRefreshToken();
 ?>

@@ -171,3 +171,9 @@ Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2Vyb
 {
     "user-id": 4
 }
+
+### 
+
+POST http://localhost/narrow-way-traffic-lights/includes/refresh-token.php
+Content-Type: application/json
+Cookie: refresh_token=948432a09411b07826ea2b51df7c0d90207722f4fb0afc441bf1d4582a5ad284
