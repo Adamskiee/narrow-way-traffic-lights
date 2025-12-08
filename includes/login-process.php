@@ -35,7 +35,7 @@ if($result && $result->num_rows > 0) {
 
         if($row['is_2fa_enabled'] == 0) {
             $jwt = new JWTHelper();
-            $token = $jwt->createToken($row['id'], $row['username'], $row['role'], $row['created_by'], $row['is_2fa_enabled'], (new DateTime())->format('Y-m-d H:i:s'));
+            $token = $jwt->createToken($row['id'], $row['username'], $row['role'], $row['created_by'], $row['is_2fa_enabled'], $current_login_time);
     
             setcookie('jwt_token', $token, [
                 'expires' => time() + (60 * 60), 

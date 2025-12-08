@@ -69,7 +69,7 @@ try {
             fastcgi_finish_request();
         }
 
-        sendSetupEmail($email, $first_name, $token);
+        sendSetupEmail($username, $email, $first_name, $token);
     }
 }catch(Error $e){
     echo json_encode([
@@ -82,7 +82,7 @@ function generateToken($length = 32) {
     return bin2hex(string: random_bytes($length));
 }
 
-function sendSetupEmail($email, $name, $token) {
+function sendSetupEmail($username, $email, $name, $token) {
     $setupLink = BASE_URL . "/setup-account.php?token=" . $token;
 
     global $mail;
@@ -107,7 +107,7 @@ function sendSetupEmail($email, $name, $token) {
         <div class='container'>
             <h2>Welcome to FlowSync!</h2>
             <p>Hello " . htmlspecialchars($name) . ",</p>
-            <p>An account has been created for you. Click the button below to set up your account and create your password:</p>
+            <p>An account has been created for you with the username of " . htmlspecialchars($username) . ". Click the button below to set up your account and create your password:</p>
             
             <div style='text-align: center; margin: 25px 0;'>
                 <a href='" . $setupLink . "' class='button'>Set Up Your Account</a>

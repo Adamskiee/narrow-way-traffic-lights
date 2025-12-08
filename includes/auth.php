@@ -205,7 +205,7 @@ function checkAndRefreshToken() {
     // Get the access token
     $jwtToken = $_COOKIE['jwt_token'] ?? null;
     
-    $user = get_authenticated_user();
+    $user = get_user();
     if ($jwtToken) {
         try {
             // Check if access token expires in less than 10 minutes
@@ -279,5 +279,7 @@ function checkAndRefreshToken() {
 }
 
 // Auto-run refresh token
-checkAndRefreshToken();
+if(get_user()) {
+    checkAndRefreshToken();
+}
 ?>
