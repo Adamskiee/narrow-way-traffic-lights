@@ -107,7 +107,7 @@ function sendSetupEmail($username, $email, $name, $token) {
         <div class='container'>
             <h2>Welcome to FlowSync!</h2>
             <p>Hello " . htmlspecialchars($name) . ",</p>
-            <p>An account has been created for you with the username of " . htmlspecialchars($username) . ". Click the button below to set up your account and create your password:</p>
+            <p>An account has been created for you with the username of <strong>" . htmlspecialchars($username) . "</strong>. Click the button below to set up your account and create your password:</p>
             
             <div style='text-align: center; margin: 25px 0;'>
                 <a href='" . $setupLink . "' class='button'>Set Up Your Account</a>
