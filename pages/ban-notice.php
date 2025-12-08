@@ -1,5 +1,5 @@
 <?php 
-$page_title = "Notice";
+$page_title = "Ban Notice";
 include "../includes/header.php";
 redirect_if_not_logged_in();
  ?>
@@ -8,9 +8,9 @@ redirect_if_not_logged_in();
     <div class="login-container">
         <div class="login-form-container">
             <div class="login-brand">
-                <h1>Some operator is using the control panel</h1>
+                <h1>Your account has been suspended by the adminstrator</h1>
             </div>
-            <p>This system is currently in use by an authorized operator. Due to security and audit compliance requirements, only one active session is permitted at a time.</p>
+            <p>You will not be able to access the system until the suspension is lifted.</p>
             <a href="<?=BASE_URL?>/pages/control.php" class="btn btn-login">Retry Access</a>
         </div>
     </div>

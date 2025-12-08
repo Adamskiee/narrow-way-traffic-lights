@@ -4,6 +4,11 @@ include "../includes/header.php";
 
 redirect_if_not_logged_in();
 if(!is_admin_authenticated()) {
+  if(is_this_operator_ban()) {
+    ob_end_clean();
+    header("Location: ".BASE_URL."/pages/ban-notice.php");
+    exit;
+  }
   if(is_there_operator_login()) {
     ob_end_clean();
     header("Location: ".BASE_URL."/pages/notice.php");

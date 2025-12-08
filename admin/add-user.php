@@ -57,7 +57,7 @@ try {
         $tokenExpires = date('Y-m-d H:i:s', strtotime('+24 hours'));
 
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $ins = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by, token_expires, setup_token) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $ins = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by, token_expires, setup_token, is_banned) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
         $ins->bind_param("ssssssiss", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $user_id, $tokenExpires, $token);
         $ins->execute();
 

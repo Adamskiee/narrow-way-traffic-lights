@@ -156,4 +156,18 @@ Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2Vyb
 @setSession
 POST http://localhost/narrow-way-traffic-lights/includes/.php
 
-> {% client.global.set("session", response.headers['set-cookie'][0]); %}
+###
+
+POST http://localhost/narrow-way-traffic-lights/admin/ban-user.php
+Content-Type: application/json
+Cookie: jwt_token=###
+
+### 
+
+POST http://localhost/narrow-way-traffic-lights/admin/ban-user.php
+Content-Type: application/json
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiY3JlYXRlZF9ieSI6MjAwLCJ2ZXJpZmllZCI6dHJ1ZSwiaXNfMmZhX2VuYWJsZWQiOjEsImxvZ2luX3RpbWUiOiIyMDI1LTEyLTA4IDA5OjI4OjI4IiwiZXhwIjoxNzY1MTYwOTIzfQ.oTFAC07wKKXo73A5eeX9DBwB8txmvYUK0rSrqQN4pJs
+
+{
+    "user-id": 4
+}

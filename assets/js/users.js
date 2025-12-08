@@ -12,6 +12,20 @@ function attachEvents() {
         });
     });
 
+    document.querySelectorAll(".ban-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const id = btn.dataset.id;
+            openBanModal(id);
+        });
+    });
+
+    document.querySelectorAll(".unban-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const id = btn.dataset.id;
+            openUnbanModal(id);
+        });
+    });
+
     document.querySelectorAll(".view-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const id = btn.dataset.id;
@@ -61,6 +75,102 @@ function openDeleteModal(id) {
 async function deleteUser(id) {
     try {
       const response = await fetch("../admin/delete-user.php", {
+        method: "post",
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({"user-id": id}),
+      });
+
+      const data = await response.json();
+      if (data.success) openSuccessModal(data.message);
+      else openErrorModal(data.message)
+    } catch (err) {
+      openErrorModal(err.message)
+      console.log(err);
+    }
+}
+
+function openBanModal(id) {
+    openInfoModal({
+        title: "Ban User",
+        body: `
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Confirm Ban</h5>
+            <p class="mb-0">Are you sure you want to ban this user?</p>
+        </div>
+        `,
+        footer: `
+        <button class="btn btn-secondary" onclick="closeInfoModal()">
+        <i class="fas fa-times me-1"></i>Close</button>
+        <button class="btn btn-danger" onclick="banUser(${id})">
+        <i class="fas fa-ban me-1"></i>Ban</button>
+        `
+    });
+    setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+                closeInfoModal();
+            });
+        }
+    }, 100)
+}
+
+async function banUser(id) {
+    try {
+      const response = await fetch("../admin/ban-user.php", {
+        method: "post",
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({"user-id": id}),
+      });
+
+      const data = await response.json();
+      if (data.success) openSuccessModal(data.message);
+      else openErrorModal(data.message)
+    } catch (err) {
+      openErrorModal(err.message)
+      console.log(err);
+    }
+}
+
+function openUnbanModal(id) {
+    openInfoModal({
+        title: "Unban User",
+        body: `
+        <div class="text-center">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+            </div>
+            <h5 class="mb-3">Confirm Unban</h5>
+            <p class="mb-0">Are you sure you want to unban this user?</p>
+        </div>
+        `,
+        footer: `
+        <button class="btn btn-secondary" onclick="closeInfoModal()">
+        <i class="fas fa-times me-1"></i>Close</button>
+        <button class="btn btn-danger" onclick="unbanUser(${id})">
+        <i class="fas fa-check me-1"></i>Unban</button>
+        `
+    });
+    setTimeout(() => {
+        const modalCloseBtn = document.querySelector('#infoModal .btn-close');
+        
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', () => {
+                closeInfoModal();
+            });
+        }
+    }, 100)
+}
+
+async function unbanUser(id) {
+    try {
+      const response = await fetch("../admin/unban-user.php", {
         method: "post",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
@@ -287,6 +397,9 @@ function loadUsers() {
                             </button>
                             <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${user.id}" title="Delete User">
                                 <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger ${user['is_banned'] ? 'unban-btn' : 'ban-btn' }" data-id="${user.id}" title="Ban User">
+                                <i class="fas ${user['is_banned'] ? 'fa-check' : 'fa-ban' }"></i>
                             </button>
                         </div>
                     </td>
@@ -834,6 +947,8 @@ document.addEventListener("DOMContentLoaded", () => {
 window.loadUsers = loadUsers;
 window.exportUsers = exportUsers;
 window.deleteUser = deleteUser;
+window.banUser = banUser;
+window.unbanUser = unbanUser;
 window.closeModal = closeModal;
 window.closeInfoModal = closeInfoModal;
 window.phoneInputChange = phoneInputChange;

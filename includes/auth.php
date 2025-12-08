@@ -20,6 +20,7 @@ function is_there_operator_login() {
             AND created_by = ? 
             AND role = 'operator' 
             AND login_time <= ? 
+            AND is_banned = 0
             AND id != ?
             ");
             
@@ -28,6 +29,29 @@ function is_there_operator_login() {
     $result = $stmt->get_result();
 
     if($result->num_rows > 0) {  
+        return true;
+    }else {
+        return false;
+    }
+}
+
+function is_this_operator_ban() {
+    global $conn;
+    $user = get_authenticated_user();
+
+
+    $stmt = $conn->prepare("
+        SELECT is_banned 
+        FROM users 
+        WHERE id = ?");
+            
+    $stmt->bind_param("i", $user['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $is_banned = $result->fetch_assoc()['is_banned'];
+
+    if($is_banned) {
         return true;
     }else {
         return false;
