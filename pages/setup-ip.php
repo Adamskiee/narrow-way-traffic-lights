@@ -1,10 +1,10 @@
-<?php 
+<?php
 $page_title = "Setup IP";
 include "../includes/header.php";
 redirect_if_not_logged_in();
- ?>
+?>
 
-<main >
+<main>
     <div class="login-container">
         <div class="login-form-container">
             <div class="login-brand">
@@ -17,17 +17,17 @@ redirect_if_not_logged_in();
             <form class="validate-form login-form" id="insert-ip-form">
                 <div class="mb-3">
                     <div class="input-group">
-                    <label for="ip_address_cam_1" class="hidden">IP address</label>
-                    <input type="text" class="form-control ip-input" placeholder="IP Address Cam A" aria-label="Duration" name="ip_address_cam_1" id="ip_address_cam_1" aria-describedby="connect-cam-1" data-cam="1" required>
-                    <button class="btn btn-secondary" type="button" id="connect-cam-1">Connect</button>
+                        <label for="ip_address_cam_1" class="hidden">IP address</label>
+                        <input type="text" class="form-control ip-input" placeholder="IP Address Cam A" aria-label="Duration" name="ip_address_cam_1" id="ip_address_cam_1" aria-describedby="connect-cam-1" data-cam="1" required>
+                        <button class="btn btn-secondary" type="button" id="connect-cam-1">Connect</button>
                     </div>
                     <small id="result_cam_1" class="form-text text-danger"></small>
                 </div>
                 <div class="mb-3">
                     <div class="input-group">
-                    <label for="ip_address_cam_2" class="hidden">IP address</label>
-                    <input type="text" class="form-control ip-input" placeholder="IP Address Cam B" aria-label="Duration" name="ip_address_cam_2" id="ip_address_cam_2" aria-describedby="connect-cam-2" data-cam="2" required>
-                    <button class="btn btn-secondary" type="button" id="connect-cam-2">Connect</button>
+                        <label for="ip_address_cam_2" class="hidden">IP address</label>
+                        <input type="text" class="form-control ip-input" placeholder="IP Address Cam B" aria-label="Duration" name="ip_address_cam_2" id="ip_address_cam_2" aria-describedby="connect-cam-2" data-cam="2" required>
+                        <button class="btn btn-secondary" type="button" id="connect-cam-2">Connect</button>
                     </div>
                     <span id="result_cam_2" class="form-text text-danger"></span>
                 </div>

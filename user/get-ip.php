@@ -34,7 +34,7 @@ if (!$data) {
                 "success" => true,
                 "ip_addresses" => $ip_addresses->fetch_assoc()
             ];
-            $redis->setex($cacheKey, 600, $res);
+            $redis->setex($cacheKey, 600, json_encode($res));
             json_response($res);
         } else {
             json_response([
@@ -52,10 +52,10 @@ if (!$data) {
             "success" => true,
             "ip_addresses" => $ip_addresses->fetch_assoc()
         ];
-        $redis->setex($cacheKey, 600, $res);
+        $redis->setex($cacheKey, 600, json_encode($res));
 
         json_response($res);
     }
 } else {
-    json_response($data);
+    json_response(json_decode($data, true));
 }

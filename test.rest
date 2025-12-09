@@ -177,3 +177,16 @@ Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2Vyb
 POST http://localhost/narrow-way-traffic-lights/includes/refresh-token.php
 Content-Type: application/json
 Cookie: refresh_token=948432a09411b07826ea2b51df7c0d90207722f4fb0afc441bf1d4582a5ad284
+
+###
+
+POST http://flowsync.local/admin/insert-ip.php
+Content-Type: application/json
+Cookie: jwt_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyNjQsInVzZXJuYW1lIjoiYWRtaW40Iiwicm9sZSI6ImFkbWluIiwiY3JlYXRlZF9ieSI6MjAwLCJ2ZXJpZmllZCI6dHJ1ZSwiaXNfMmZhX2VuYWJsZWQiOjEsImxvZ2luX3RpbWUiOiIyMDI1LTEyLTA5IDE2OjA2OjQzIiwiZXhwIjoxNzY1MjcxMjI0fQ.XnOxrEE4wwS0b0psQZwcm1kY43gV86xlbL6ss8jiW3k
+
+{
+    "ip_address_cam_1": "2.2.2.2", 
+    "ip_address_cam_2": "1.1.1.1",
+}
+
+###
