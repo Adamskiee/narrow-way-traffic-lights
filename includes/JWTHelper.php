@@ -1,9 +1,18 @@
 <?php
+
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 class JWTHelper {
-    private $secret = "your-secret-key-change-this";
+    private $secret;
+
+    public function __construct() {
+        $this->secret = get_env_var("JWT_SECRET_KEY");
+
+        if (empty($this->secret)) {
+            throw new Exception('JWT_SECRET not configured in environment variables');
+        }
+    }
     
     public function createToken($userId, $username, $role, $created_by, $twofa_enabled, $login_time, $verified = false) {
         $payload = [

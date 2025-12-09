@@ -9,6 +9,7 @@ if( $conn->connect_error ) {
 }
 
 require BASE_PATH ."/vendor/autoload.php";
+require BASE_PATH ."/includes/env.php";
 require BASE_PATH ."/includes/helpers.php";
 require BASE_PATH ."/includes/JWTHelper.php";
 require BASE_PATH ."/includes/auth.php";
