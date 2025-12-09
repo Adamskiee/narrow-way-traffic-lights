@@ -104,7 +104,7 @@ if($check_result) {
             $redirect = BASE_URL . "/pages/setup-ip.php";
         }
     }else {
-        echo json_encode(["success" => true, "redirect" => BASE_URL . "/pages/control.php"]);
+        json_response(["success" => true, "redirect" => BASE_URL . "/pages/control.php"]);
         $redirect = BASE_URL . "/pages/control.php";
     }
     json_response(["success" => true, "redirect" => $redirect]);
