@@ -3,12 +3,6 @@ set_exception_handler(function($e) {
     json_response(["success" => false, "message" => "An error occurred"], 500);
 });
 
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Origin: http://localhost");
-header("Access-Control-Allow-Credentials: true"); // ✅ Required for cookies
-header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Allow-Headers: Content-Type");
-
 require_once "./config.php";
 require_once "./JWTHelper.php";
 

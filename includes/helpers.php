@@ -20,7 +20,6 @@ function get_json_input() {
 function json_response($data, int $status = 200)
 {
     http_response_code($status);
-    header('Content-Type: application/json; charset=utf-8');
 
     echo json_encode(
         $data,
@@ -30,6 +29,15 @@ function json_response($data, int $status = 200)
     );
 
     exit; 
+}
+
+function headers() {
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization");
+    header("X-Content-Type-Options: nosniff");
+    header("X-Frame-Options: DENY");
+    header("X-XSS-Protection: 1; mode=block");
 }
 
 ?>

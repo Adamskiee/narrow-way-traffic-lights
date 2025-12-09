@@ -1,14 +1,10 @@
 <?php
 
-use Illuminate\Database\Eloquent\JsonEncodingException;
-
 set_exception_handler(function ($e) {
     json_response(["success" => false, "message" => "An error occurred"], 500);
 });
 
 require_once "../includes/config.php";
-
-header("Content-Type: application/json");
 
 $user = get_authenticated_user();
 if (!is_verified_logged_in()) {

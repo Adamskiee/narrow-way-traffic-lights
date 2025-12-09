@@ -3,10 +3,6 @@ set_exception_handler(function($e) {
     json_response(["success" => false, "message" => "An error occurred"], 500);
 });
 
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
-header("Access-Control-Allow-Methods: POST");
-
 require_once "./config.php";
 
 $input = get_json_input();

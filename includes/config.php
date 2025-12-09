@@ -1,12 +1,13 @@
 <?php
 define("BASE_PATH", realpath(__DIR__ . '/..'));
 define( "BASE_URL", get_env_var('BASE_URL'));
-
 require BASE_PATH ."/vendor/autoload.php";
 require BASE_PATH ."/includes/env.php";
 require BASE_PATH ."/includes/helpers.php";
 require BASE_PATH ."/includes/JWTHelper.php";
 require BASE_PATH ."/includes/auth.php";
+
+headers();
 
 $redis = new Predis\Client([
     'scheme' => 'tcp',

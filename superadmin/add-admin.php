@@ -3,9 +3,6 @@ set_exception_handler(function ($e) {
     json_response(["success" => false, "message" => "An error occurred"], 500);
 });
 
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
-header("Access-Control-Allow-Methods: POST");
 require_once "../includes/config.php";
 
 $user = get_authenticated_user();
@@ -82,7 +79,7 @@ function generateToken($length = 32)
 
 function sendSetupEmail($username, $email, $name, $token)
 {
-    $setupLink = BASE_URL . "/setup-account.php?token=" . $token;
+    $setupLink = get_env_var("BASE_URL") . "/setup-account.php?token=" . $token;
 
     global $mail;
 

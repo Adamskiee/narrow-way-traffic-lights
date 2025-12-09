@@ -3,7 +3,6 @@ set_exception_handler(function ($e) {
     json_response(["success" => false, "message" => "An error occurred"], 500);
 });
 
-header('Content-Type: application/json');
 require_once "../includes/config.php";
 
 if (!is_verified_logged_in()) {
