@@ -51,6 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const logoutBtn = document.querySelector("a[href='?logout']");
-logoutBtn.addEventListener("click", () => {
-    localStorage.clear();
-})
+if(logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+        localStorage.clear();
+    })
+}
