@@ -74,7 +74,7 @@ function generateToken($length = 32) {
 }
 
 function sendSetupEmail($username, $email, $name, $token) {
-    $setupLink = BASE_URL . "/setup-account.php?token=" . $token;
+    $setupLink = get_env_var('BASE_URL') . "/setup-account.php?token=" . $token;
 
     global $mail;
 

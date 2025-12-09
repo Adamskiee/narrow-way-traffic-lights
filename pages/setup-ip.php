@@ -8,10 +8,7 @@ redirect_if_not_logged_in();
     <div class="login-container">
         <div class="login-form-container">
             <div class="login-brand">
-                <div class="brand-logo">
-                    <i class="fas fa-traffic-light"></i>
-                </div>
-                <h1>Set up <span>IP Address</span></h1>
+                <h1>Set up IP Address</span></h1>
             </div>
             <span id="result" class="text-danger mb-3"></span>
             <form class="validate-form login-form" id="insert-ip-form">
@@ -35,7 +32,7 @@ redirect_if_not_logged_in();
                     <button type="submit" class="btn submit-btn" id="change-ip-btn">Add IP Address</button>
                 </div>
                 <div class="d-flex mt-3">
-                    <button type="button" class="btn submit-btn btn-secondary" id="skip-ip-btn">Skip</button>
+                    <button type="button" class="btn btn-secondary skip-btn" id="skip-ip-btn">Skip</button>
                 </div>
                 <span id="ip-result"></span>
             </form>

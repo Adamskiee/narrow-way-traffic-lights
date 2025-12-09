@@ -13601,6 +13601,17 @@ auto mode .led-toggle-btn:disabled .led-text,
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.9rem;
 }
+.login-form-container .login-form .btn-secondary.skip-btn {
+  width: 100%;
+  border: none;
+  color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 .login-form-container .login-form .btn-login {
   width: 100%;
   background: linear-gradient(135deg, var(--bs-red) 0%, #cc1f1f 100%);
@@ -13811,6 +13822,14 @@ result spacing .login-form-container #result + .login-form {
 }
 .setup-form-container .btn-secondary {
   width: 100%;
+  border: none;
+  color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 .setup-form-container::before {
   content: "";

@@ -190,6 +190,17 @@
             }
         }
         
+        .btn-secondary.skip-btn {
+            width: 100%;
+            border: none;
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
         
         .btn-login {
             width: 100%;

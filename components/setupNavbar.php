@@ -6,10 +6,10 @@ if(isset($_GET["logout"])) {
     logout_user();
 }
 
-$user = $_SESSION['pending_2fa_verification'] ?? null;
+$user = get_user() ?? $_SESSION['pending_2fa_verification'] ?? null;
 ?>
 
-<nav class="navbar navbar-expand-lg navbar-glassmorphism <?= $user ? 'navbar-authenticated' : 'navbar-guest' ?>">
+<nav class="navbar navbar-expand-lg navbar-glassmorphism navbar-authenticated">
     <div class="container-fluid">
         <!-- Brand -->
         <a href="<?= BASE_URL . '/pages/control.php'?>" class="navbar-brand">

@@ -63,8 +63,7 @@ $qrCodeUrl = $ga->getQRCodeUrl("Google Authenticator Test App", $secret);
                 <li>Do not share these codes with anyone.</li>
                 <li>If you use all codes or lose them, you can generate new ones in your account security settings (this will invalidate all previous codes).</li>
             </ul>
-
-            <button class="btn btn-secondary" id="download-code">Download code as .txt</button>
+            <button class="btn btn-secondary mb-3" id="download-code">Download code as .txt</button>
             <button class="btn btn-login" id="continue-btn">Continue</button>
         </div>
     </div>
