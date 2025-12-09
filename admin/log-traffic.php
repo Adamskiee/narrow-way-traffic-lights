@@ -1,16 +1,22 @@
 <?php
+set_exception_handler(function ($e) {
+    json_response(["success" => false, "message" => "An error occurred"], 500);
+});
+
 require_once "../includes/config.php";
 
 header('Content-Type: application/json');
 
 $user = get_authenticated_user();
-if(!$user) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Authentication required']);
-    exit;
+if (!is_verified_logged_in()) {
+    json_response(['success' => false, 'message' => 'Authentication required'], 401);
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+if (!is_admin_authenticated()) {
+    json_response(['success' => false, 'message' => 'Admin access required'], 403);
+}
+
+$input = get_json_input();
 if (!$input) {
     $input = $_POST;
 }
@@ -22,34 +28,20 @@ $mode_type = $input['mode'] ?? $input['mode_type'] ?? null;
 $duration_seconds = $input['duration'] ?? $input['duration_seconds'] ?? null;
 
 if (!$camera_id || !$light_state || !$mode_type) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Missing required fields']);
-    exit;
+    json_response(['success' => false, 'message' => 'Missing required fields'], 400);
 }
 
-try {
-    $stmt = $conn->prepare("
-        INSERT INTO traffic_logs (user_id, camera_id, light_state, mode_type, duration_seconds) 
-        VALUES (?, ?, ?, ?, ?)
-    ");
-    $stmt->bind_param("isssi", $user_id, $camera_id, $light_state, $mode_type, $duration_seconds);
-    
-    if ($stmt->execute()) {
-        $log_id = $stmt->insert_id;
-    } else {
-        throw new Exception("Failed to execute statement: " . $stmt->error);
-    }
-    
-} catch (Exception $e) {
-    error_log("Traffic log error: " . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
-    exit;
-}
+$stmt = $conn->prepare("
+    INSERT INTO traffic_logs (user_id, camera_id, light_state, mode_type, duration_seconds) 
+    VALUES (?, ?, ?, ?, ?)
+");
+$stmt->bind_param("isssi", $user_id, $camera_id, $light_state, $mode_type, $duration_seconds);
+$stmt->execute();
+
+$log_id = $stmt->insert_id;
 
 if ($log_id) {
-    echo json_encode(['success' => true, 'log_id' => $log_id]);
+    json_response(['success' => true, 'log_id' => $log_id]);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Failed to create log']);
+    json_response(['success' => false, 'message' => 'Failed to create log']);
 }
-?>

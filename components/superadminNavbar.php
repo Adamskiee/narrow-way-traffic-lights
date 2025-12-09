@@ -8,10 +8,10 @@ if(isset($_GET["logout"])) {
 $user = get_authenticated_user() ?? null;
 ?>
 
-<nav class="navbar navbar-expand-lg navbar-glassmorphism <?= $user ? 'navbar-authenticated' : 'navbar-guest' ?>">
+<nav class="navbar navbar-expand-lg navbar-glassmorphism navbar-authenticated">
     <div class="container-fluid">
         <!-- Brand -->
-        <a href="<?= $user ? BASE_URL . '/pages/control.php' : BASE_URL . '/index.php' ?>" class="navbar-brand">
+        <a href="<?=BASE_URL?>/pages/admin.php" class="navbar-brand">
             <div class="brand-container">
                 <div class="brand-icon">
                     <i class="fas fa-traffic-light"></i>

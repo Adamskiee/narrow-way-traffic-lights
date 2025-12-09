@@ -1,10 +1,11 @@
 <?php 
+set_exception_handler(function($e) {
+    json_response(["success" => false, "message" => "An error occurred"], 500);
+});
+
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 require_once "../includes/config.php";
 
@@ -14,12 +15,10 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $user = $_SESSION['pending_2fa_verification'];
 if(!$user) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Authentication required']);
-    exit;
+    json_response(['success' => false, 'message' => 'Authentication required'], 401);
 }
 
-$input = json_decode(file_get_contents("php://input"), true);
+$input = get_json_input();
 
 $id = $user['user_id'];
 $code = $input['recovery-code'];
@@ -40,8 +39,9 @@ while ($row = $result->fetch_assoc()) {
         ");
         $usedStmt->bind_param("i", $row['id']);
         $usedStmt->execute();
-        echo json_encode(["success"=> true, "message" => "recover successfully"]);
-        exit;
+        json_response(["success"=> true, "message" => "recover successfully"]);
     }
 }
-echo json_encode(value: ["success"=> false, "message" => "Recovery code is wrong"]);
+
+// If recovery code is not found
+json_response(["success"=> false, "message" => "Recovery code is wrong"]);

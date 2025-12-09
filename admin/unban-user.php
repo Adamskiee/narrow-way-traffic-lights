@@ -1,4 +1,8 @@
-<?php 
+<?php
+set_exception_handler(function ($e) {
+    json_response(["success" => false, "message" => "An error occurred"], 500);
+});
+
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
@@ -6,35 +10,29 @@ header("Access-Control-Allow-Methods: POST");
 require_once "../includes/config.php";
 
 $user = get_authenticated_user();
-if($user['role'] != "admin") {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Admin access required']);
-    exit;
+if (!is_verified_logged_in()) {
+    json_response(['success' => false, 'message' => 'Authentication required'], 401);
+}
+
+if (!is_admin_authenticated()) {
+    json_response(['success' => false, 'message' => 'Admin access required'], 403);
 }
 
 $cacheKey = "db:users";
 
-try {
-    $input = json_decode(file_get_contents("php://input"), true);
-    
-    $user_id = $input['user-id'];
+$input = get_json_input();
 
-    $stmt = $conn->prepare("UPDATE users SET is_banned = 0 WHERE id = ? AND created_by = ?");
-    $stmt->bind_param("ii",$user_id, $user['user_id']);
-    $stmt->execute();
+$user_id = $input['user-id'];
 
-    $redis->del($cacheKey);
-    $redis->del("db:user:".$user_id);
+$stmt = $conn->prepare("UPDATE users SET is_banned = 0 WHERE id = ? AND created_by = ?");
+$stmt->bind_param("ii", $user_id, $user['user_id']);
+$stmt->execute();
 
-    echo json_encode([
-        "success" => true,
-        "message" => "Unban successfully"
-    ]);
-}catch(Error $e){
-    echo json_encode([
-        "success" => false,
-        "message" => "Unban failed",
-        "error" => "Database error: " . $e->getMessage()
-    ]);
-}
+$redis->del($cacheKey);
+$redis->del("db:user:" . $user_id);
+
+json_response([
+    "success" => true,
+    "message" => "Unban successfully"
+]);
 ?>

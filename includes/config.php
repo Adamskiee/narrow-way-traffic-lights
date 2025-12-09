@@ -1,12 +1,6 @@
 <?php
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 define("BASE_PATH", realpath(__DIR__ . '/..'));
-
-// Define base URL (useful for linking assets)
-define( "BASE_URL", "http://localhost/narrow-way-traffic-lights");
-
+define( "BASE_URL", "http://flowsync.local");
 
 $conn = new mysqli("localhost", "root", "", "narrowway_traffic_db");
 
@@ -31,9 +25,5 @@ $dotenv->load();
 function get_env_var($key, $default = null) {
     return $_ENV[$key] ?? $default;
 }
-
-// $conn = new mysqli($_ENV["DATABASE_HOSTNAME"], $_ENV["DATABASE_USERNAME"], $_ENV["DATABASE_PASSWORD"], $_ENV["DATABASE_NAME"]);
-
-
 
 ?>

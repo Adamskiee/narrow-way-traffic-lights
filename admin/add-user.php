@@ -1,26 +1,24 @@
 <?php 
+
+set_exception_handler(function($e) {
+    json_response(["success" => false, "message" => "An error occurred"], 500);
+});
+
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
 require_once "../includes/config.php";
-require_once "../includes/privilege-middleware.php";
 
 $user = get_authenticated_user();
 if(!$user) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Authentication required']);
-    exit;
+    json_response(['success' => false, 'message' => 'Authentication required'], 401);
 }
 
 if(!is_admin_authenticated()) {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Admin access required']);
-    exit;
+    json_response(['success' => false, 'message' => 'Admin access required'], 403);
 }
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
 $mail = new PHPMailer(true);
 
@@ -35,7 +33,7 @@ $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 $mail->Port       = get_env_var("SMTP_PORT");  
 
 try {
-    $input = json_decode(file_get_contents("php://input"), true);
+    $input = get_json_input();
     
     $first_name = $input["first-name"];
     $last_name = $input["last-name"] ?? "";
@@ -51,7 +49,7 @@ try {
     $result = $stmt->get_result();
 
     if($result && $result->num_rows > 0) {
-        echo json_encode(["success" => false, "message"=>"Username exist"]);
+        json_response(["success" => false, "message"=>"Username exist"]);
     }else {
         $token = generateToken();
         $tokenExpires = date('Y-m-d H:i:s', strtotime('+24 hours'));
@@ -63,19 +61,15 @@ try {
 
         $redis->del($cacheKey);
 
-        echo json_encode(["success" => true, "message" => "User created successfully"]);
-
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        }
-
         sendSetupEmail($username, $email, $first_name, $token);
+
+        json_response(["success" => true, "message" => "User created successfully"], 201);
     }
 }catch(Error $e){
-    echo json_encode([
+    json_response([
         "success" => false,
-        "error" => "Database error: " . $e->getMessage()
-    ]);
+        "error" => "Unexpected error: " . $e->getMessage()
+    ], 500);
 }
 
 function generateToken($length = 32) {

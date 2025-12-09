@@ -16,8 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (targetSection && isHomePage) {
                 scrollToSection(targetSection, targetId);
             } else {
-                const baseUrl = getBaseUrl();
-                window.location.href = `${baseUrl}index.php${targetId}`;
+                window.location.href = `/index.php${targetId}`;
             }
         });
     });
@@ -84,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const path = window.location.pathname;
         const segments = path.split('/');
         
-        const projectIndex = segments.findIndex(segment => segment === 'narrow-way-traffic-lights');
+        const projectIndex = segments.findIndex(segment => segment === 'flowsync.local');
         
         if (projectIndex !== -1) {
             const baseSegments = segments.slice(0, projectIndex + 1);
@@ -92,6 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Fallback
-        return window.location.origin + '/narrow-way-traffic-lights/';
+        return window.location.origin + '/flowsync.local/';
     }
 });

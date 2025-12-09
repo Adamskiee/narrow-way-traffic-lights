@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -11,7 +8,7 @@ require_once './config.php';
 $mail = new PHPMailer(true);
 
 try {
-    $input = json_decode(file_get_contents("php://input"), true);
+    $input = get_json_input();
     
     $name = $input["name"] ?? "";
     $email = $input["email"] ?? "";
@@ -28,8 +25,7 @@ try {
     $mail->Port       = get_env_var("SMTP_PORT");         
     
     if(!$mail->smtpConnect()) {
-        echo json_encode(["success"=> false, "message"=>'Message has not been sent']);
-        exit;
+        json_response(["success"=> false, "message"=>'Message has not been sent'], 500);
     }
 
     $mail->setFrom($email, $name);
@@ -44,11 +40,10 @@ try {
         <p><strong>Message:</strong>$message</p>
     ";
     if($mail->send()) {
-        echo json_encode(["success"=> true, "message"=>'Message has been sent']);
+        json_response(["success"=> true, "message"=>"Message has been sent"], 200);
     }else {
-        echo json_encode(["success"=> false, "message"=>'Message has not been sent']);
+        json_response(["success"=> false, "message"=>"Message has not been sent"], 500);
     }
 } catch (Exception $e) {
-    echo json_encode(["success"=> false, "message"=>"Message could not be sent. Mailer Error: {$mail->ErrorInfo}"]);
-    echo "";
+    json_response(["success"=> false, "message"=>"Message could not be sent. Mailer Error: {$mail->ErrorInfo}"], 500);
 }

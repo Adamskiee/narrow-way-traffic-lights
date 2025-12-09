@@ -1,9 +1,12 @@
 <?php 
+set_exception_handler(function($e) {
+    json_response(["success" => false, "message" => "An error occurred"], 500);
+});
+
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
 require_once "../includes/config.php";
-require_once "../includes/privilege-middleware.php";
 
 $user = get_authenticated_user();
 if(!$user) {
@@ -21,7 +24,7 @@ if(!is_admin_authenticated()) {
 $cacheKey = "db:ipaddresses";
 
 try {
-    $input = json_decode(file_get_contents("php://input"), true);
+    $input = get_json_input();
     
     $ip_address_1 = $input["ip_address_cam_1"];
     $ip_address_2 = $input["ip_address_cam_2"];

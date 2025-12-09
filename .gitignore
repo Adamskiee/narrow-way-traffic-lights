@@ -2,5 +2,5 @@ vendor
 .env
 composer*
 node_modules
-custom.css
+custom.scss
 custom.css.map

@@ -1,21 +1,24 @@
 <?php
+set_exception_handler(function ($e) {
+    json_response(["success" => false, "message" => "An error occurred"], 500);
+});
+
 require_once "../includes/config.php";
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 header('Content-Type: application/json');
 
 $user = get_authenticated_user();
-if(!is_verified_logged_in()) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Authentication required']);
-    exit;
+if (!$user) {
+    json_response(['success' => false, 'message' => 'Authentication required'], 401);
+}
+
+if (!is_admin_authenticated()) {
+    json_response(['success' => false, 'message' => 'Admin access required'], 403);
 }
 
 try {
     if (isset($_GET['log_id'])) {
         $log_id = intval($_GET['log_id']);
-        
+
         $sql = "
             SELECT 
                 tl.id,
@@ -42,58 +45,58 @@ try {
             LEFT JOIN users u ON tl.user_id = u.id
             WHERE tl.id = ? 
         ";
-        
+
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $log_id);
         $stmt->execute();
         $result = $stmt->get_result();
-        
+
         if ($result->num_rows > 0) {
             $log = $result->fetch_assoc();
-            echo json_encode([
+            json_response([
                 'success' => true,
                 'logs' => [$log]
             ]);
         } else {
-            echo json_encode([
+            json_response([
                 'success' => false,
                 'message' => 'Log not found'
             ]);
         }
         exit;
     }
-    
+
     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $limit = isset($_GET['limit']) ? max(1, min(100, intval(value: $_GET['limit']))) : 20;
     $offset = ($page - 1) * $limit;
-    
+
     $camera_filter = isset($_GET['camera']) ? $_GET['camera'] : '';
     $mode_filter = isset($_GET['mode']) ? $_GET['mode'] : '';
     $date_from = isset($_GET['date_from']) ? $_GET['date_from'] : '';
     $date_to = isset($_GET['date_to']) ? $_GET['date_to'] : '';
-    
+
     $where_conditions = [];
     $params = [];
     $types = '';
-    
+
     if (!empty($camera_filter)) {
         $where_conditions[] = "tl.camera_id = ?";
         $params[] = $camera_filter;
         $types .= 's';
     }
-    
+
     if (!empty($mode_filter)) {
         $where_conditions[] = "tl.mode_type = ?";
         $params[] = $mode_filter;
         $types .= 's';
     }
-    
+
     if (!empty($date_from)) {
         $where_conditions[] = "DATE(tl.timestamp) >= ?";
         $params[] = $date_from;
         $types .= 's';
     }
-    
+
     if (!empty($date_to)) {
         $where_conditions[] = "DATE(tl.timestamp) <= ?";
         $params[] = $date_to;
@@ -103,9 +106,9 @@ try {
     $where_conditions[] = "u.created_by = ?";
     $params[] = $user['user_id'];
     $types .= 'i';
-    
+
     $where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
-    
+
     $count_sql = "
         SELECT COUNT(*) as total 
         FROM traffic_logs tl 
@@ -113,7 +116,7 @@ try {
         $where_clause
     ";
 
-    
+
     $count_stmt = $conn->prepare($count_sql);
     if (!empty($params)) {
         $count_stmt->bind_param($types, ...$params);
@@ -121,7 +124,7 @@ try {
     $count_stmt->execute();
     $count_result = $count_stmt->get_result();
     $total_records = $count_result->fetch_assoc()['total'];
-    
+
     $sql = "
         SELECT 
             tl.id,
@@ -140,16 +143,16 @@ try {
         ORDER BY tl.timestamp DESC
         LIMIT ? OFFSET ?
     ";
-    
+
     $params[] = $limit;
     $params[] = $offset;
     $types .= 'ii';
-    
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param($types, ...$params);
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     $logs = [];
     while ($row = $result->fetch_assoc()) {
         $logs[] = [
@@ -167,9 +170,9 @@ try {
             'user_email' => $row['email'] ?? 'N/A'
         ];
     }
-    
+
     $total_pages = ceil($total_records / $limit);
-    
+
     $response = [
         'success' => true,
         'logs' => $logs,
@@ -188,16 +191,10 @@ try {
             'date_to' => $date_to
         ]
     ];
-    
-    echo json_encode($response);
 
+    json_response($response);
 } catch (Exception $e) {
-    error_log("Get traffic logs error: " . $e->getMessage());
-    http_response_code(500);
-    echo json_encode([
-        'success' => false, 
-        'message' => 'Failed to retrieve logs: ' . $e->getMessage()
-    ]);
+    json_response(['success' => false, 'message' => 'Failed to retrieve logs: ' . $e->getMessage()], 500);
 }
 
 /**
@@ -205,7 +202,8 @@ try {
  * @param int $seconds
  * @return string
  */
-function formatDuration($seconds) {
+function formatDuration($seconds)
+{
     if ($seconds < 60) {
         return $seconds . 's';
     } elseif ($seconds < 3600) {
@@ -219,4 +217,3 @@ function formatDuration($seconds) {
         return $hours . 'h ' . $minutes . 'm ' . $remainingSeconds . 's';
     }
 }
-?>

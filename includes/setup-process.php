@@ -1,22 +1,22 @@
 <?php
+set_exception_handler(function($e) {
+    json_response(["success" => false, "message" => "An error occurred"], 500);
+});
+
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 require_once "./config.php";
 
-$input = json_decode(file_get_contents("php://input"), true);
+$input = get_json_input();
 
 $new_pass = $input["new-password"] ?? "";
 $confirm_pass = $input["confirm-password"] ?? "";
 $token = $input["token"] ?? "";
 
 if($new_pass !== $confirm_pass) {
-    echo json_encode(["success"=> false, "message"=>"Confirm password is not the same"]);
-    exit;
+    json_response(["success"=> false, "message"=>"Confirm password is not the same"]);
 }
 
 try{

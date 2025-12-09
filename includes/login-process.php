@@ -1,15 +1,17 @@
-<?php 
+<?php
+
+set_exception_handler(function($e) {
+    json_response(["success" => false, "message" => "An error occurred"], 500);
+});
+
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 require_once "./config.php";
 require_once "./JWTHelper.php";
-  
-$input = json_decode(file_get_contents("php://input"), true);
+
+$input = get_json_input();
 
 $username = $input["username"] ?? "";
 $password = $input["password"] ?? "";
@@ -44,7 +46,8 @@ if($result && $result->num_rows > 0) {
                 'secure' => false, 
                 'samesite' => 'Lax'
             ]);
-            echo json_encode(["success" => true, "redirect" => BASE_URL . "/setup-twofa.php"]);
+            
+            json_response(["success" => true, "redirect" => BASE_URL . "/setup-twofa.php"]);
         }else {
             $_SESSION['pending_2fa_verification'] = [
                 'user_id' => $row['id'],
@@ -55,14 +58,12 @@ if($result && $result->num_rows > 0) {
                 'is_2fa_enabled' => $row['is_2fa_enabled']
             ];
 
-            echo json_encode(["success" => true, "redirect" => BASE_URL . "/twofa.php"]);
+            json_response(["success" => true, "redirect" => BASE_URL . "/twofa.php"]);
         }
     }else {
-        echo json_encode(["success" => false, "message"=>"Invalid password"]);
+        json_response(["success" => false, "message"=>"Invalid password"]);
     }
 }else {
-    echo json_encode(["success" => false, "message"=>"Username not found"]);
+    json_response(["success" => false, "message"=>"Username not found"]);
 }
-
-
 ?>

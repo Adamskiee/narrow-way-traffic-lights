@@ -1,61 +1,50 @@
-<?php 
+<?php
+set_exception_handler(function ($e) {
+    json_response(["success" => false, "message" => "An error occurred"], 500);
+});
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); // for CORS (adjust for security)
 header("Access-Control-Allow-Methods: POST");
 require_once "../includes/config.php";
 
 $user = get_authenticated_user();
-if(!is_verified_logged_in()) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Authentication required']);
-    exit;
+if (!is_verified_logged_in()) {
+    json_response(['success' => false, 'message' => 'Authentication required'], 401);
 }
 
-if(!is_admin_authenticated()) {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Admin access required']);
-    exit;
+if (!is_admin_authenticated()) {
+    json_response(['success' => false, 'message' => 'Admin access required'], 403);
 }
 
 $cacheKey = "db:ipaddresses";
 
-try {
-    $input = json_decode(file_get_contents("php://input"), true);
-    
-    $ip_address_1 = $input["ip_address_cam_1"];
-    $ip_address_2 = $input["ip_address_cam_2"];
-    $admin_id = $user["user_id"];
+$input = get_json_input();
 
-    $stmt = $conn->prepare(query: "SELECT * from ip_addresses WHERE admin_id = ?");
-    $stmt->bind_param("i", $admin_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+$ip_address_1 = $input["ip_address_cam_1"];
+$ip_address_2 = $input["ip_address_cam_2"];
+$admin_id = $user["user_id"];
 
-    if($result->num_rows > 0 ) {
-        echo json_encode([
-            "success" => false,
-            "message" => "IP Address already configured",
-            "redirect" => BASE_URL . "/pages/control.php"
-        ]);
-    }else{
-        $ins = $conn->prepare("INSERT INTO ip_addresses(ip_address_1, ip_address_2, admin_id) VALUES(?, ?, ?)");
-        $ins->bind_param("ssi", $ip_address_1, $ip_address_2, $admin_id);
-        $ins->execute();
+$stmt = $conn->prepare(query: "SELECT * from ip_addresses WHERE admin_id = ?");
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-        $redis->del($cacheKey);
-
-        echo json_encode([
-            "success" => true,
-            "message" => "IP Addresses successfully inserted",
-            "redirect" => BASE_URL . "/pages/control.php"
-        ]);
-    }
-
-
-}catch(Error $e){
-    echo json_encode([
+if ($result->num_rows > 0) {
+    json_response([
         "success" => false,
-        "error" => "Database error: " . $e->getMessage()
+        "message" => "IP Address already configured",
+        "redirect" => BASE_URL . "/pages/control.php"
+    ]);
+} else {
+    $ins = $conn->prepare("INSERT INTO ip_addresses(ip_address_1, ip_address_2, admin_id) VALUES(?, ?, ?)");
+    $ins->bind_param("ssi", $ip_address_1, $ip_address_2, $admin_id);
+    $ins->execute();
+
+    $redis->del($cacheKey);
+
+    json_response([
+        "success" => true,
+        "message" => "IP Addresses successfully inserted",
+        "redirect" => BASE_URL . "/pages/control.php"
     ]);
 }
-?>
