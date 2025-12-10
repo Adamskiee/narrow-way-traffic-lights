@@ -102,7 +102,7 @@ try {
         $types .= 's';
     }
 
-    $where_conditions[] = "u.created_by = ?";
+    $where_conditions[] = "tl.user_id = ?";
     $params[] = $user['user_id'];
     $types .= 'i';
 
