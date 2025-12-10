@@ -470,7 +470,14 @@ function setupEditUserButton() {
                             
                             const data = await response.json();
                             if (data.success) openSuccessModal(data.message);
-                            else showFieldError(document.getElementById("username"), data.message);
+                            else {
+                                if(data.message === "Email exist") {
+                                    showFieldError(document.getElementById("email"), data.message);
+                                }
+                                if(data.message === "Username exist") {
+                                    showFieldError(document.getElementById("username"), data.message);
+                                }
+                            } 
                         } catch (err) {
                             openErrorModal(err.message);
                             showEditUserLoading(false);
@@ -627,7 +634,7 @@ function openAddModal() {
         </div>
         `,
         footer: `
-        <button type="button" class="btn btn-secondary">
+        <button type="button" class="btn btn-secondary" id="cancel-user-submit-btn">
             <i class="fas fa-times me-1"></i>Cancel
         </button>
         <button type="submit" class="btn btn-primary" id="add-user-submit-btn">
@@ -638,16 +645,20 @@ function openAddModal() {
     
     setTimeout(() => {
         const form = document.querySelector(".modalForm");
+        const generateBtn = document.querySelector(".generate-password");
 
         setupRealtimeValidation(form);
 
-        const generateBtn = document.querySelector(".generate-password");
         if (generateBtn && !generateBtn.hasAttribute('data-listener-attached')) {
             generateBtn.setAttribute('data-listener-attached', 'true');
             generateBtn.addEventListener("click", () => {
                 document.getElementById("password").value = generatePassword();
             });
         }
+
+        document.getElementById("cancel-user-submit-btn").addEventListener("click", () => {
+            closeModal();
+        });
     }, 100);
 }
 
@@ -876,7 +887,14 @@ function setupAddUserButton() {
                         
                         const data = await response.json();
                         if (data.success) openSuccessModal(data.message);
-                        else showFieldError(document.getElementById("username"), data.message);
+                        else {
+                            if(data.message === "Username exist") {
+                                showFieldError(document.getElementById("username"), data.message);
+                            }
+                            if(data.message === "Email exist") {
+                                showFieldError(document.getElementById("email"), data.message);
+                            }
+                        }
                     } catch (err) {
                         openErrorModal(err.message);
                         showAddUserLoading(false);

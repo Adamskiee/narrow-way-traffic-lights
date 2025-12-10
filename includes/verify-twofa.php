@@ -54,7 +54,7 @@ if($check_result) {
     ]);
 
     // refresh token available for 30 days
-    if($jwt->validateRefreshToken($_COOKIE['refresh_token']) != $user['user_id']) {
+    if(isset($_COOKIE['refresh_token']) && $jwt->validateRefreshToken($_COOKIE['refresh_token']) != $user['user_id']) {
         $select_refresh_token = $conn->prepare("SELECT token FROM refresh_tokens WHERE user_id = ? AND expires_at > NOW()");
         $select_refresh_token->bind_param("i", $user['user_id']);
         $select_refresh_token->execute();

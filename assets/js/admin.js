@@ -193,7 +193,14 @@ function setupEditUserButton() {
                             
                             const data = await response.json();
                             if (data.success) openSuccessModal(data.message);
-                            else showFieldError(document.getElementById("username"), data.message);
+                            else {
+                                if(data.message === "Email exist") {
+                                    showFieldError(document.getElementById("email"), data.message);
+                                }
+                                if(data.message === "Username exist") {
+                                    showFieldError(document.getElementById("username"), data.message);
+                                }
+                            } 
                         } catch (err) {
                             openErrorModal(err.message);
                             showEditUserLoading(false);
@@ -767,7 +774,14 @@ function setupAddUserButton() {
                         
                         const data = await response.json();
                         if (data.success) openSuccessModal(data.message);
-                        else showFieldError(document.getElementById("username"), data.message);
+                        else {
+                            if(data.message === "Email exist") {
+                                showFieldError(document.getElementById("email"), data.message);
+                            }
+                            if(data.message === "Username exist") {
+                                showFieldError(document.getElementById("username"), data.message);
+                            }
+                        }
                     } catch (err) {
                         openErrorModal(err.message);
                         showAddUserLoading(false);

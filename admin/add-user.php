@@ -1,17 +1,17 @@
-<?php 
+<?php
 
-set_exception_handler(function($e) {
+set_exception_handler(function ($e) {
     json_response(["success" => false, "message" => "An error occurred"], 500);
 });
 
 require_once "../includes/config.php";
 
 $user = get_authenticated_user();
-if(!$user) {
+if (!$user) {
     json_response(['success' => false, 'message' => 'Authentication required'], 401);
 }
 
-if(!is_admin_authenticated()) {
+if (!is_admin_authenticated()) {
     json_response(['success' => false, 'message' => 'Admin access required'], 403);
 }
 
@@ -20,60 +20,65 @@ use PHPMailer\PHPMailer\PHPMailer;
 $mail = new PHPMailer(true);
 
 $cacheKey = "db:users";
-$mail->SMTPDebug = 0;                     
-$mail->isSMTP();                                          
-$mail->Host       = get_env_var("SMTP_HOST");                     
-$mail->SMTPAuth   = true;                                  
-$mail->Username   = get_env_var('GMAIL_USERNAME');                     
-$mail->Password   = get_env_var("GMAIL_PASSWORD");                              
-$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            
-$mail->Port       = get_env_var("SMTP_PORT");  
+$mail->SMTPDebug = 0;
+$mail->isSMTP();
+$mail->Host       = get_env_var("SMTP_HOST");
+$mail->SMTPAuth   = true;
+$mail->Username   = get_env_var('GMAIL_USERNAME');
+$mail->Password   = get_env_var("GMAIL_PASSWORD");
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+$mail->Port       = get_env_var("SMTP_PORT");
 
-try {
-    $input = get_json_input();
-    
-    $first_name = $input["first-name"];
-    $last_name = $input["last-name"] ?? "";
-    $email = $input["email"];
-    $username = $input["username"];
-    $password = $input["password"];
-    $phone_number = $input["phone"] ?? "";
-    $user_id = $input["user_id"] ?? $user["user_id"];
+$input = get_json_input();
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
+$first_name = $input["first-name"];
+$last_name = $input["last-name"] ?? "";
+$email = $input["email"];
+$username = $input["username"];
+$password = $input["password"];
+$phone_number = $input["phone"] ?? "";
+$user_id = $input["user_id"] ?? $user["user_id"];
 
-    if($result && $result->num_rows > 0) {
-        json_response(["success" => false, "message"=>"Username exist"]);
-    }else {
-        $token = generateToken();
-        $tokenExpires = date('Y-m-d H:i:s', strtotime('+24 hours'));
+$username_stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
+$username_stmt->bind_param("s", $username);
+$username_stmt->execute();
+$is_username_exists = $username_stmt->get_result();
 
-        $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $ins = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by, token_expires, setup_token, is_banned) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
-        $ins->bind_param("ssssssiss", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $user_id, $tokenExpires, $token);
-        $ins->execute();
-
-        $redis->del($cacheKey);
-
-        sendSetupEmail($username, $email, $first_name, $token);
-
-        json_response(["success" => true, "message" => "User created successfully"], 201);
-    }
-}catch(Error $e){
-    json_response([
-        "success" => false,
-        "error" => "Unexpected error: " . $e->getMessage()
-    ], 500);
+if ($is_username_exists && $is_username_exists->num_rows > 0) {
+    json_response(["success" => false, "message" => "Username exist"]);
 }
 
-function generateToken($length = 32) {
+$email_stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+$email_stmt->bind_param("s", $email);
+$email_stmt->execute();
+$is_email_exists = $email_stmt->get_result();
+
+if ($is_email_exists && $is_email_exists->num_rows > 0) {
+    json_response(["success" => false, "message" => "Email exist"]);
+}
+
+
+$token = generateToken();
+$tokenExpires = date('Y-m-d H:i:s', strtotime('+24 hours'));
+
+$password_hash = password_hash($password, PASSWORD_DEFAULT);
+$ins = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by, token_expires, setup_token, is_banned) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
+$ins->bind_param("ssssssiss", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $user_id, $tokenExpires, $token);
+$ins->execute();
+
+$redis->del($cacheKey);
+
+sendSetupEmail($username, $email, $first_name, $token);
+
+json_response(["success" => true, "message" => "User created successfully"], 201);
+
+function generateToken($length = 32)
+{
     return bin2hex(string: random_bytes($length));
 }
 
-function sendSetupEmail($username, $email, $name, $token) {
+function sendSetupEmail($username, $email, $name, $token)
+{
     $setupLink = get_env_var('BASE_URL') . "/setup-account.php?token=" . $token;
 
     global $mail;

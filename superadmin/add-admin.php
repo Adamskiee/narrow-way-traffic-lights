@@ -39,38 +39,48 @@ $phone_number = $input["phone"] ?? "";
 $user_id = $user['user_id'];
 $role = "admin";
 
-$stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$result = $stmt->get_result();
+$username_stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+$username_stmt->bind_param("s", $username);
+$username_stmt->execute();
+$$is_username_exists = $username_stmt->get_result();
 
-if ($result && $result->num_rows > 0) {
-    echo json_encode(["success" => false, "message" => "Username exist"]);
-} else {
-    $token = generateToken();
-    $tokenExpires = date('Y-m-d H:i:s', strtotime('+24 hours'));
-
-    $password_hash = password_hash($password, PASSWORD_DEFAULT);
-    $ins_user = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by, token_expires, setup_token, role) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $ins_user->bind_param("ssssssisss", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $user_id, $tokenExpires, $token, $role);
-    $ins_user->execute();
-
-    $redis->del($cacheKey);
-
-    $admin_id = $conn->insert_id;
-
-    $ins_schedule = $conn->prepare("INSERT INTO schedules(admin_id, week_day) VALUES (?,1), (?,2),(?,3), (?,4), (?,5), (?,6), (?,7)");
-    $ins_schedule->bind_param("iiiiiii", $admin_id, $admin_id, $admin_id, $admin_id, $admin_id, $admin_id, $admin_id);
-    $ins_schedule->execute();
-
-    $ins_delay = $conn->prepare("INSERT INTO delays(admin_id) VALUES (?)");
-    $ins_delay->bind_param('i', $admin_id);
-    $ins_delay->execute();
-
-    sendSetupEmail($username, $email, $first_name, $token);
-
-    json_response(["success" => true, "message" => "User created successfully"], 201);
+if ($is_username_exists && $is_username_exists->num_rows > 0) {
+    json_response(["success" => false, "message" => "Username exist"]);
 }
+
+$email_stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+$email_stmt->bind_param("s", $email);
+$email_stmt->execute();
+$is_email_exists = $email_stmt->get_result();
+
+if ($is_email_exists && $is_email_exists->num_rows > 0) {
+    json_response(["success" => false, "message" => "Email exist"]);
+}
+
+$token = generateToken();
+$tokenExpires = date('Y-m-d H:i:s', strtotime('+24 hours'));
+
+$password_hash = password_hash($password, PASSWORD_DEFAULT);
+$ins_user = $conn->prepare("INSERT INTO users(username, password, email, first_name, last_name, phone_number, created_by, token_expires, setup_token, role) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$ins_user->bind_param("ssssssisss", $username, $password_hash, $email, $first_name, $last_name, $phone_number, $user_id, $tokenExpires, $token, $role);
+$ins_user->execute();
+
+$redis->del($cacheKey);
+
+$admin_id = $conn->insert_id;
+
+$ins_schedule = $conn->prepare("INSERT INTO schedules(admin_id, week_day) VALUES (?,1), (?,2),(?,3), (?,4), (?,5), (?,6), (?,7)");
+$ins_schedule->bind_param("iiiiiii", $admin_id, $admin_id, $admin_id, $admin_id, $admin_id, $admin_id, $admin_id);
+$ins_schedule->execute();
+
+$ins_delay = $conn->prepare("INSERT INTO delays(admin_id) VALUES (?)");
+$ins_delay->bind_param('i', $admin_id);
+$ins_delay->execute();
+
+sendSetupEmail($username, $email, $first_name, $token);
+
+json_response(["success" => true, "message" => "User created successfully"], 201);
+
 
 function generateToken($length = 32)
 {

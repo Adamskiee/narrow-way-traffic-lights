@@ -4,7 +4,6 @@ set_exception_handler(function ($e) {
 });
 
 require_once "../includes/config.php";
-header('Content-Type: application/json');
 
 $user = get_authenticated_user();
 if (!$user) {
