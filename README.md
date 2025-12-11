@@ -26,7 +26,7 @@ This project implements a **smart traffic light system specifically designed for
 
 - **ESP-32-MB:** Microcontroller controlling traffic lights and handling IoT communication.
 - **LEDs:** Traffic lights for signaling.
-- **Camera:** Monitors real-time traffic flow (optional, if integrated).
+- **Camera:** Monitors real-time traffic flow.
 - **Web App:** Dashboard for monitoring, controlling traffic lights, and managing users.
 
 ---
