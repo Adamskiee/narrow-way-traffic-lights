@@ -1,36 +1,42 @@
-# Steps
+# IoT-Based Smart Traffic Light System for Narrow Roads
 
-## Install XAMPP and Git
+## Project Overview
 
-- [XAMPP download](https://www.apachefriends.org/download.html)
+This project implements a **smart traffic light system specifically designed for narrow or single-lane roads**, where vehicles from opposite directions cannot pass simultaneously. The system integrates **IoT technology**, a **camera for real-time traffic monitoring**, and a **web-based interface** for remote traffic light control. It ensures **safe, efficient, and alternating traffic flow** while providing robust user management and control functionalities.
 
-- Before downloading the **Git**, check if it is already install. Go to the **command prompt**, type git. If there is an error, follow this:
-  - [Git download](https://git-scm.com/install/windows)
-  - Watch this: [Git setup tutorial](https://youtu.be/s_ll71Q9CaI)
+---
 
-## Configure credentials
+## Features
 
-- Go to the **command prompt**, type: 
+- **Traffic Flow Logs:** Maintains detailed logs for traffic light operations.
+- **Traffic Light Error Detection:** Automatically detects and reports traffic light malfunctions.
+- **Emergency Override:** Emergency button that switches all traffic lights to red immediately.
+- **Scheduled Timing:** Allows defining default traffic light durations.
+- **Manual and Automatic Modes:** Switch between fully automatic operation or manual control.
+- **Temporary Override:** Admins and operators can temporarily override default traffic light durations during operations.
+- **User Roles and Permissions:**
+  - **Superadmin:** Can create Admin accounts.
+  - **Admin:** Can create Operator accounts, manage overrides, and ban operators.
+  - **Operator:** Only one active operator allowed to control traffic lights at a time.
+- **Safety and Control:** Ensures proper alternating flow for narrow or single-lane roads.
 
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "Your Email"
-```
+---
 
-REPLACE THE "Your Name" AND "Your Email" with your credentials
+## System Components
 
-## Go to the folder of htdocs (inside the XAMPP folder)
+- **ESP-32-MB:** Microcontroller controlling traffic lights and handling IoT communication.
+- **LEDs:** Traffic lights for signaling.
+- **Camera:** Monitors real-time traffic flow (optional, if integrated).
+- **Web App:** Dashboard for monitoring, controlling traffic lights, and managing users.
 
-- Go to the **command prompt**, type: 
+---
 
-```bash
-cd C:\xampp\htdocs\
-git clone https://github.com/Adamskiee/WST-Project.git
-```
+## License
 
-- Go to the **VS Code** and navigate the `C:\xampp\htdocs\WST-Project`
+MIT License
 
-## Configure the database
+---
 
-- Run the **XAMPP**. Then run **MYSQL** an **Apache**
-- Go to the [PHPMyAdmin](http://localhost/phpmyadmin/), and go the import tab. Choose file and navigate to the `C:\xampp\htdocs\WST-Project\database\narrowway_traffic_db.sql`
+## Contact
+
+For questions or contributions, contact: Adriele Tosino – <tosinomatthew@gmail.com>
